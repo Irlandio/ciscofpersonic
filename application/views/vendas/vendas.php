@@ -164,18 +164,14 @@
                                                 
                                                 ?>
                                                 <label for="Lançamento"><h5> <?php echo $presExc->id_presente.' protocolo '.$presExc->n_protocolo.' Data '.$presExc->data_presente.'.' ?></h5></label>  
-                                                <?php 
-                                                    
-                                                    
+                                                <?php
                                                 }else 
                                         //***Se o presente for o mesmo do anterior                                                 
                                                 if($protocRepet == $presExc->n_protocolo) 
-                                                {                                                                                                
+                                                {       
                                                 if($result_A->ent_Sai == 0) 
-                                                {
-                                                    
-                                                ?>   
-                                                
+                                                {  
+                                                ?>
                                                 <input type="hidden" id="oP_Exc" name="oP_Exc" value="exclui" />
                                                 <input type="hidden" id="idLanc" name="idLanc" value="<?php echo $idpresExc; ?>" />
                                                 <label for="Lançamento"><h5> <?php echo $presExc->id_presente.' protocolo '.$presExc->n_protocolo.' Data '.$presExc->data_presente.'. ' ?></h5></label> 
@@ -195,8 +191,6 @@
                                                     $idpresExc = $presExc->id_saida;
                                                     $protocRepet = $presExc->n_protocolo; 
                                                 }} ?>
-                                                
-                                 
                                             </li>
                                         </ul>
                                     </td>
@@ -206,55 +200,42 @@
       
                     </div>
                     <?php
-                    
                     }
-                    
                 }else
-
                 {?>
-                
-
                 <form action="<?php echo base_url(); ?>index.php/vendas/adicionar" method="post" name="form" class="form">	
                <!--<form  method="post" name="form" class="form">	 -->
-                  <div class="span4" >      
-                <p class="conta">
-                    
+                  <div class="span3" >      
+                    <p class="conta">                    
                         <label for="conta"><H5>Conta</H5></label>
                           <select id="conta" name="conta">
                          <?php
                               echo 'Conta '. $conta.' Nivel '. $nivel.' Acesso de conta '. $tipo_conta_acesso ;
-                                foreach ($result_caixas as $rcx) {                   
-                              if($usuario->conta_Usuario == 99)
-                              {?>
-
-                            <option value = "<?php echo $rcx->id_caixa ?>"><?php echo $rcx->id_caixa." | ".$rcx->nome_caixa ?></option>
-                                    <?php
-                                }else
-                                  if($usuario->conta_Usuario == $rcx->id_caixa){
-                                      ?>
-                            <option value = "<?php echo $rcx->id_caixa ?>"><?php echo $rcx->id_caixa." | ".$rcx->nome_caixa ?></option>
-                                    <?php
-                                  }
+                                foreach ($result_caixas as $rcx) 
+                                {                                    
+                                    if($usuario->conta_Usuario == 99)
+                                    {?>
+                                        <option value = "<?php echo $rcx->id_caixa ?>"><?php echo $rcx->id_caixa." | ".$rcx->nome_caixa ?></option>
+                                        <?php
+                                    }else
+                                        if($usuario->conta_Usuario == $rcx->id_caixa){
+                                        ?>
+                                        <option value = "<?php echo $rcx->id_caixa ?>"><?php echo $rcx->id_caixa." | ".$rcx->nome_caixa ?></option>
+                                        <?php
+                                    }
                                }
-
                               ?>														
                               </select>
-
-                            <font color=red><span class="style1"> * </span></font>	
-                    
-                  <p>
+                            <font color=red><span class="style1"> * </span></font>  
+                 </div>
+                 <div class="span3" >
                         <label for="tipCont"><H5>Movimentação</H5></label>
-                      <td>	
-
-                           <label  class="btn btn-default" submit><input  name="tipoES" checked="checked" type="radio" value="0"   class="badgebox" style="margin-top:5px;"/> <span class="badge" >&check;</span> Despesa</label>
-
-                         <?php 
-                         
-                          if($nivel < 3)
-                              {
-                          ?>
-                           <label  class="btn btn-default" submit><input  name="tipoES" type="radio" value="1"   class="badgebox" style="margin-top:5px;"/> <span class="badge" >&check;</span> Receita</label><br/>
-
+                        <label  class="btn btn-default" submit><input  name="tipoES" checked="checked" type="radio" value="0"   class="badgebox" style="margin-top:5px;"/> <span class="badge" >&check;</span> Despesa</label>
+                        <?php 
+                        if($nivel < 3)
+                        {
+                        ?>
+                        <label  class="btn btn-default" submit><input  name="tipoES" type="radio" value="1"   class="badgebox" style="margin-top:5px;"/> <span class="badge" >&check;</span> Receita</label><br/>
                        <?php }                
                         unset($_SESSION['conta']);        
                         unset($_SESSION['tipoCont']);
@@ -271,56 +252,14 @@
                         unset($_SESSION['cadastrante']);
                         unset($_SESSION['qtd_presentes']);
                         unset($_SESSION['id_presentes']) ;
-						unset($_SESSION['senhaAdm']);
-                        	 ?>
-                    </p>
-                        
-                    
+						unset($_SESSION['senhaAdm']);                        	 
+                     ?>
                  </div>
-                    <div class="span4" >
+                 <div class="span3" >
                     <p>
                         <label for="tipCont"><H5>Tipo de conta</H5></label>
-
-
-                            <?php
-
-                            switch ($tipo_conta_acesso) 
-                            {
-                                case 1:	?>	
-                                   <label  class="btn btn-default" submit><input  name="tipCont" checked="checked" type="radio" value="Suporte"   class="badgebox" style="margin-top:5px;"/>
-                                                            <span class="badge" >&check;</span> Suporte</label><br/>
-
-                                     <?php
-                                    break;    
-                                case 2:	?>	
-                                    <label  class="btn btn-default" submit><input  name="tipCont"  type="radio" value="Corrente"   class="badgebox" style="margin-top:15px;"/>
-                                                            <span class="badge" >&check;</span> Corrente</label> 
-
-                                     <?php
-                                    break;  
-                                case 3:		?>	
-                                   <label  class="btn btn-default" submit><input  name="tipCont" checked="checked" type="radio" value="Suporte"   class="badgebox" style="margin-top:5px;"/>
-                                                            <span class="badge" >&check;</span> Suporte</label><br/> 
-                                    <label  class="btn btn-default" submit><input  name="tipCont"  type="radio" value="Corrente"   class="badgebox" style="margin-top:5px;"/>
-                                                            <span class="badge" >&check;</span> Corrente</label> 
-
-                                     <?php
-                                    break;  
-                                case 4:	?>	
-                                   <label  class="btn btn-default" submit><input  name="tipCont" checked="checked" type="radio" value="Suporte"   class="badgebox" style="margin-top:5px;"/>
-                                                            <span class="badge" >&check;</span> Suporte</label> <br/>
-                                    <label  class="btn btn-default" submit><input  name="tipCont"  type="radio" value="Corrente"   class="badgebox" style="margin-top:5px;"/>
-                                                            <span class="badge" >&check;</span> Corrente</label> <br/>
-                                    <label  class="btn btn-default" submit><input  name="tipCont"  type="radio" value="Investimento"   class="badgebox" style="margin-top:5px;"/>
-                                                            <span class="badge" >&check;</span> F. Investimento</label> <br/>
-                                    <label  class="btn btn-default" submit><input  name="tipCont" type="radio" value="Poupança"   class="badgebox" style="margin-top:5px;"/>
-                                                            <span class="badge" >&check;</span> Poupança</label> 
-                                     <?php
-                                    break; 				
-                            }	
-                            ?>
-
-                        </p>
+                        <label  class="btn btn-default" submit><input  name="tipCont" checked="checked" type="radio" value="Suporte"   class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Suporte</label><br/>
+                    </p>
 
                     </div> 
 						<script type="text/javascript">
@@ -358,83 +297,25 @@
 							} 
 						</script>
 					
-                        <div class="span4" >
-                                <label for="presentes"><H5>presentes</H5></label>
-                                        <?php
-                                            if($nivel < 5 || $conta < 4 || ($conta > 8 && $conta <> 99))
-                                            {	?>	
-                               <label  class="btn btn-default" submit><input  name="presentes" checked="checked" type="radio" value="out"   class="badgebox" style="margin-top:5px;"/> <span class="badge" >&check;</span> Outros lançamentos</label><br/>
-                               <label  class="btn btn-default" submit><input  name="presentes" type="radio" value="true"   class="badgebox" style="margin-top:5px;"/> <span class="badge" >&check;</span> Presentes Especiais</label><br/><br/>
-                                           <?php
-                                            }	
-                                            ?>
-                                          <div id = "palco">
-                                          <div id = "true">
-                                            <?php
-                                              if($nivel < 3){
-                                            echo '<label for="pres">Se entrada de Presente Especial</label>';
-                                                    echo '<select id="presentes" name="qtd_presentes">';
-                                                            echo '<option value="1">Quantidade de presentes</option>';										
-                                                            $contar = 1; 
-                                                            while(($contar <= 40)) {										
-                                                                echo '<option value = '.$contar.'>'.$contar.' Presentes</option>';
-                                                                 $contar = $contar+1; }
-                                                             echo ' </select>';
-                                                } 
-                                        ?>
-                                         </div>   
-                                        <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'aVenda')){ ?>
-                                       <!--
-                                         <button class="btn btn-danger" ><i class="icon-wrench  icon-white"></i>  EM MANUTENÇÃO, (Tente mais tarde)</button>
-                                              -->
-                                              <button class="btn btn-success" id="btnContinuar"><i class="icon-plus  icon-white"></i>  Novo Lançamento</button>
+                        <div class="span3" >
+                               <input name="presentes"  type="hidden" value="out"/>
+                                <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'aVenda')){ ?>
+                               <!--
+                               <button class="btn btn-danger" ><i class="icon-wrench  icon-white"></i>  EM MANUTENÇÃO, (Tente mais tarde)</button>
+                               -->
+                               <button class="btn btn-success" id="btnContinuar"><i class="icon-plus  icon-white"></i>  Novo Lançamento</button>
 
-                                        <?php } ?>
-                                        </div>         
-
-
-                                <input name ="tab"  type="hidden" value="<?php echo $conta ?>" />
-                                <input name ="tipop" type="hidden" value="<?php echo $nivel ?>" />
-                                <input name ="tipo_conta_acesso" type="hidden" value="<?php echo $tipo_conta_acesso ?>" />
-                                 <input name ="tipoConsulta"  type="hidden" value="0" />
-                                <input name ="cadastrado"  type="hidden" value="sim"  />
-                                <input name ="termop" type="hidden" value="a" /><span class="style1"></span>		
-                            </div>
-                    <!--
-                        <div class="span3" style="background:#f0efea;">
-                            <?php
-                                if($nivel < 5 || $conta < 4 || ($conta > 8 && $conta <> 99))
-                                {	?>	
-                                <label for="presentes"><H5>Multi Lançamentos <br/>(Não disponível no momento)</H5></label>
-                                        
-                               <label  class="btn btn-default" submit><input  name="multi" checked="checked" type="radio" value="0"   class="badgebox" style="margin-top:5px;"/> <span class="badge" >&check;</span> Lançamento Simples</label><br/>
-                               <label  class="btn btn-default" submit><input  name="multi" type="radio" value="1"   class="badgebox" style="margin-top:5px;"/> <span class="badge" >&check;</span> Multi Lannçamento</label><br/><br/>
-                                          <div id = "palc">                                         
-                                            <?php
-                                              if($nivel < 3){
-                                          //  echo '<label for="pres">Se for multi lançamentos</label>';
-                                                    echo '<select id="qtd_Multi" name="qtd_Multi">';
-                                                            echo '<option value="1">Quantidade de lançamentos</option>';										
-                                                            $contar = 1; 
-                                                            while(($contar <= 30)) {										
-                                                                echo '<option value = '.$contar.'>'.$contar.' lançamentos</option>';
-                                                                 $contar = $contar+1; }
-                                                             echo ' </select>';
-                                                } 
-                                        ?>                                         
-                                        </div>  
-                                                          
-                           <?php
-                            }	
-                            ?>     
-                            </div> -->
-
-
-                    </form>
-                
+                               <?php } ?>
+                        </div>
+                            <input name ="tab"  type="hidden" value="<?php echo $conta ?>" />
+                            <input name ="tipop" type="hidden" value="<?php echo $nivel ?>" />
+                            <input name ="tipo_conta_acesso" type="hidden" value="<?php echo $tipo_conta_acesso ?>" />
+                             <input name ="tipoConsulta"  type="hidden" value="0" />
+                            <input name ="cadastrado"  type="hidden" value="sim"  />
+                            <input name ="termop" type="hidden" value="a" /><span class="style1"></span>                        
+                    </form>                
                     <?php
-                }
-                     
+                    }                     
                     if(!$results){?>
                         <div class="widget-box">
                          <div class="widget-title">

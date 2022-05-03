@@ -24,158 +24,115 @@
 <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.validate.js"></script>
 <div class="row-fluid" style="margin-top:0">
     
-			<div id="blCabeca" title="sitename">  
-				<?php
-					//include("seguranca.php"); // Inclui o arquivo com o sistema de segurança
-					//protegePagina(); // Chama a função que protege a página
-				
+        <div id="blCabeca" title="sitename">  
+            <?php
+                //include("seguranca.php"); // Inclui o arquivo com o sistema de segurança
+                //protegePagina(); // Chama a função que protege a página
+
             $conta = $usuario->conta_Usuario;
-			$nivel = $usuario->permissoes_id;	
+            $nivel = $usuario->permissoes_id;	
             $contaA = $usuario->celular;
+
+            //$contaA = $_SESSION['conta_acesso'];
+            //$nivel = $_SESSION['nivel_acesso'];			
+            if (session_status() !== PHP_SESSION_ACTIVE) {//Verificar se a sessão não já está aberta.
+            session_start();
+            }
+            foreach ($result_caixas as $rcx) {                   
+            if($usuario->conta_Usuario == 99)
+            { $contaNome = "Todas contas";
+            }else
+            { $contaNome = $rcx->nome_caixa;
+            }
+            }
+            ?>
+    </div>
+</div>
+        <?php	
+
+        if( isset($_SESSION['conta']))
+        {
+            $conta = ($_SESSION['conta']);        
+            if(null !== ( $_SESSION['tipoCont']))    $tipCont        = ($_SESSION['tipoCont']);
+            if(null !== ( $_SESSION['cod_Ass']))     $cod_assoc      = ($_SESSION['cod_Ass']);
+            if(null !== ( $_SESSION['cod_Comp']))    $cod_compassion = ($_SESSION['cod_Comp']) ;
+            if(null !== ( $_SESSION['numeroDoc']))   $num_Doc        = ($_SESSION['numeroDoc']);
+            if(null !== ( $_SESSION['numDocFiscal']))$numDocFiscal   = ($_SESSION['numDocFiscal']);
+            if(null !== ( $_SESSION['razaoSoc']))    $razaoSoc       = ($_SESSION['razaoSoc']);
+            if(null !== ( $_SESSION['descri']))      $descri         = ($_SESSION['descri']);	
+            if(null !== ( $_SESSION['valorFin']))    $valorFin       = ($_SESSION['valorFin']);
+            if(null !== ( $_SESSION['tipoPag']))     $tipo_Pag       = ($_SESSION['tipoPag']);
+            if(null !== ( $_SESSION['tipoES']))      $tipoES         = ($_SESSION['tipoES']) ; 
+            if(null !== ( $_SESSION['cadastrante'])) $cadastrante    = ($_SESSION['cadastrante']);
+            if(null !== ( $_SESSION['presentes'])) {  $presentes      = ($_SESSION['presentes']);
+             if(isset( $_SESSION['qtd_presentes'])) if(null !== ( $_SESSION['qtd_presentes']))$qtd_presentes= ($_SESSION['qtd_presentes']);}
+            if(isset( $_SESSION['id_presentes'])) $id_presentes  = ($_SESSION['id_presentes']) ;
+            if(isset( $_SESSION['senhaAdm']))     $senhaAdm      = ($_SESSION['senhaAdm']);
+            if(null !== ( $_SESSION['dataVenda']))     $dataVenda    = $_SESSION['dataVenda'];
+        }else {//Se a pagina foi chamada pela página cadatrarLançamento ou seja tentar denovo
+
+            unset($_SESSION['conta']);        
+            unset($_SESSION['tipoCont']);
+            unset($_SESSION['cod_Ass']);
+            unset($_SESSION['cod_Comp']) ;
+            unset($_SESSION['numeroDoc']);
+            unset($_SESSION['numDocFiscal']);
+            unset($_SESSION['razaoSoc']);
+            unset($_SESSION['descri']);	
+            unset($_SESSION['valorFin']);
+            unset($_SESSION['tipoPag']);//Id do registro com o ultimo saldo pa ser desmarcado quando cadastrar
+            unset($_SESSION['tipoES']) ; 
+            unset($_SESSION['conta_Destino']);        
+            unset($_SESSION['cadastrante']);
+            unset($_SESSION['qtd_presentes']);
+            unset($_SESSION['id_presentes']) ;
+            unset($_SESSION['senhaAdm']);
+
+        $contaA =  $_POST["tab"];
+        $nivel =  $_POST["tipop"];
+
+        $conta = $_POST["conta"];
+        $tipCont = $_POST["tipCont"];
+        $tipoES = $_POST["tipoES"];
+        $presentes = $_POST["presentes"];
+        $multiLance = '0';
+
+            if(($tipCont == "Suporte" && $presentes == "true" ))
+            {	echo "<center><font color = red >O tipo de conta selecionado foi Suporte (pequeno caixa).</font>";
+                echo "<font color = red >Verifique se a opção esta correta. </font></br></center>";           
+            } 	
+        }
+            if($tipoES == 0) $tipoEnt_Sai = "Despesa";
+            else if($tipoES == 1) $tipoEnt_Sai = "Receita";        
         
-					//$contaA = $_SESSION['conta_acesso'];
-					//$nivel = $_SESSION['nivel_acesso'];			
-					if (session_status() !== PHP_SESSION_ACTIVE) {//Verificar se a sessão não já está aberta.
-  session_start();
-}
-                    foreach ($result_caixas as $rcx) {                   
-                      if($usuario->conta_Usuario == 99)
-                      { $contaNome = "Todas contas";
-                        }else
-                          { $contaNome = $rcx->nome_caixa;
-                              
-                  }
+            foreach ($result_caixas as $rcx) 
+                {                   
+                  if($conta == $rcx->id_caixa)
+                       $contaNome = $rcx->nome_caixa;
+                      
                }
-                    
-					?>	
-				</div>  	
-</div>  				
-				
-					<?php	
-                    
-                    if( isset($_SESSION['conta']))
-                    {
-                         
-                        $conta = ($_SESSION['conta']);        
-                        if(null !== ( $_SESSION['tipoCont']))    $tipCont        = ($_SESSION['tipoCont']);
-                        if(null !== ( $_SESSION['cod_Ass']))     $cod_assoc      = ($_SESSION['cod_Ass']);
-                        if(null !== ( $_SESSION['cod_Comp']))    $cod_compassion = ($_SESSION['cod_Comp']) ;
-						if(null !== ( $_SESSION['numeroDoc']))   $num_Doc        = ($_SESSION['numeroDoc']);
-						if(null !== ( $_SESSION['numDocFiscal']))$numDocFiscal   = ($_SESSION['numDocFiscal']);
-						if(null !== ( $_SESSION['razaoSoc']))    $razaoSoc       = ($_SESSION['razaoSoc']);
-						if(null !== ( $_SESSION['descri']))      $descri         = ($_SESSION['descri']);	
-                        if(null !== ( $_SESSION['valorFin']))    $valorFin       = ($_SESSION['valorFin']);
-                        if(null !== ( $_SESSION['tipoPag']))     $tipo_Pag       = ($_SESSION['tipoPag']);
-						if(null !== ( $_SESSION['tipoES']))      $tipoES         = ($_SESSION['tipoES']) ; 
-                        if(null !== ( $_SESSION['cadastrante'])) $cadastrante    = ($_SESSION['cadastrante']);
-                        if(null !== ( $_SESSION['presentes'])) {  $presentes      = ($_SESSION['presentes']);
-                         if(isset( $_SESSION['qtd_presentes'])) if(null !== ( $_SESSION['qtd_presentes']))$qtd_presentes= ($_SESSION['qtd_presentes']);}
-                        if(isset( $_SESSION['id_presentes'])) $id_presentes  = ($_SESSION['id_presentes']) ;
-						if(isset( $_SESSION['senhaAdm']))     $senhaAdm      = ($_SESSION['senhaAdm']);
-                        if(null !== ( $_SESSION['dataVenda']))     $dataVenda    = $_SESSION['dataVenda'];
-                           
-                         /*  
-                          if( ($qtd_presentes) > 0)
-                          {
-                            $contar = 1;
-                                    while (($contar <= $qtd_presentes) ) 
-                                        {
-                                            $nome = 'nome'.$contar;
-                                            $Codigo = 'Codigo'.$contar;
-                                            $Protocolo = 'Protocolo'.$contar;
-                                            $valorPre = 'valorPre'.$contar;
-                                                $_POST[$nome] = $_SESSION[$nome]
-                                                $_POST[$Codigo] =  $_SESSION[$Codigo];	
-                                                $_POST[$Protocolo] = $_SESSION[$Protocolo];
-                                                $_POST[$valorPre] = $_SESSION[$valorPre];	
-
-                                            $contar = $contar+1;							
-
-                                        }
-                          }*/
-                        
-                    }else {//Se a pagina foi chamada pela página cadatrarLançamento ou seja tentar denovo
-                                      
-                        unset($_SESSION['conta']);        
-                        unset($_SESSION['tipoCont']);
-                        unset($_SESSION['cod_Ass']);
-                        unset($_SESSION['cod_Comp']) ;
-						unset($_SESSION['numeroDoc']);
-						unset($_SESSION['numDocFiscal']);
-						unset($_SESSION['razaoSoc']);
-						unset($_SESSION['descri']);	
-                        unset($_SESSION['valorFin']);
-                        unset($_SESSION['tipoPag']);//Id do registro com o ultimo saldo pa ser desmarcado quando cadastrar
-						unset($_SESSION['tipoES']) ; 
-                        unset($_SESSION['conta_Destino']);        
-                        unset($_SESSION['cadastrante']);
-                        unset($_SESSION['qtd_presentes']);
-                        unset($_SESSION['id_presentes']) ;
-						unset($_SESSION['senhaAdm']);
-                        	 
-                     
-					$contaA =  $_POST["tab"];
-                    $nivel =  $_POST["tipop"];
-          
-					$conta = $_POST["conta"];
-					$tipCont = $_POST["tipCont"];
-					$tipoES = $_POST["tipoES"];
-					$presentes = $_POST["presentes"];
-					$multiLance = '0';
-                        
-						if(($tipCont == "Suporte" && $presentes == "true" ))
-						{	echo "<center><font color = red >O tipo de conta selecionado foi Suporte (pequeno caixa).</font>";
-							echo "<font color = red >Verifique se a opção esta correta. </font></br></center>";
-						//echo "<center><font color = red >Para presentes especiais você deve retornar e </font>";
-						//	echo "<font color = red >selecionar tipo de conta Corrente!</font></center>";
-						//	$presentes = "false";
-                        // exit;
-						} 
-					//$conta = $_SESSION['Cont'];
-					//$tipCont = $_SESSION['t_Cont'];		
-					}
-
-                        if($tipoES == 0) $tipoEnt_Sai = "Despesa";
-                        else if($tipoES == 1) $tipoEnt_Sai = "Receita";
-
-					switch ($conta)
-					{
-						case 0:	$contaNome = "Retorne a pagina anterior o selecione uma conta para lançamento";	break;    
-						case 1:	$contaNome = "IEADALPE - 1444-3";	break;    
-						case 2:	$contaNome = "22360-3";	break;  
-						case 3:	$contaNome = "ILPI";	break;  
-						case 4:	$contaNome = "BR0214";	break;  
-						case 5:	$contaNome = "BR0518";	break;  
-						case 6:	$contaNome = "BR0542";	break;  
-						case 7:	$contaNome = "BR0549";	break;  
-						case 8:	$contaNome = "BR0579";	break;  
-						case 9:	$contaNome = "BB 28965-5";	break;  
-						case 10:$contaNome = "CEF 1948-4";	break; 				
-					}
-                        
-                        
-					$ano = date("Y");			
-					$mes = date("m");
-					$ano0 = $ano;
-					$ano2 = $ano;
-					switch ($mes) 
-						{
-							case "01":	$mes0 = "12"; $mes = "01"; $mes2 = "02"; $ano0 = $ano - 1 ; break;  	
-							case "02":	$mes0 = "01"; $mes = "02"; $mes2 = "03"; break;  
-							case "03":	$mes0 = "02"; $mes = "03"; $mes2 = "04"; break;  	
-							case "04":	$mes0 = "03"; $mes = "04"; $mes2 = "05"; break;  
-							case "05":	$mes0 = "04"; $mes = "05"; $mes2 = "06"; break;  	
-							case "06":	$mes0 = "05"; $mes = "06"; $mes2 = "07"; break;  
-							case "07":	$mes0 = "06"; $mes = "07"; $mes2 = "08"; break;  	
-							case "08":	$mes0 = "07"; $mes = "08"; $mes2 = "09"; break;  
-							case "09":	$mes0 = "08"; $mes = "09"; $mes2 = "10"; break;  	
-							case "10":	$mes0 = "09"; $mes = "10"; $mes2 = "11"; break;
-							case "11":	$mes0 = "10"; $mes = "11"; $mes2 = "12"; break;	
-							case "12":	$mes0 = "11"; $mes = "12"; $mes2 = "01"; $ano2 = $ano + 1 ; break;  				
-						}
-					$data1= date($ano.'-'.$mes.'-01');//Cria a variavel data inicial com o mês e o ano atual sendo dia 01
-					$data2= date($ano2.'-'.$mes2.'-01');//Cria a variavel data final com o mês seguinte sendo dia 01
-					$data_mes_Anterior= date($ano0.'-'.$mes0.'-01');//Cria a variavel data do dia 01 de 1 mes atráz
+        $ano = date("Y");			
+        $mes = date("m");
+        $ano0 = $ano;
+        $ano2 = $ano;
+        switch ($mes) 
+            {
+                case "01":	$mes0 = "12"; $mes = "01"; $mes2 = "02"; $ano0 = $ano - 1 ; break;  	
+                case "02":	$mes0 = "01"; $mes = "02"; $mes2 = "03"; break;  
+                case "03":	$mes0 = "02"; $mes = "03"; $mes2 = "04"; break;  	
+                case "04":	$mes0 = "03"; $mes = "04"; $mes2 = "05"; break;  
+                case "05":	$mes0 = "04"; $mes = "05"; $mes2 = "06"; break;  	
+                case "06":	$mes0 = "05"; $mes = "06"; $mes2 = "07"; break;  
+                case "07":	$mes0 = "06"; $mes = "07"; $mes2 = "08"; break;  	
+                case "08":	$mes0 = "07"; $mes = "08"; $mes2 = "09"; break;  
+                case "09":	$mes0 = "08"; $mes = "09"; $mes2 = "10"; break;  	
+                case "10":	$mes0 = "09"; $mes = "10"; $mes2 = "11"; break;
+                case "11":	$mes0 = "10"; $mes = "11"; $mes2 = "12"; break;	
+                case "12":	$mes0 = "11"; $mes = "12"; $mes2 = "01"; $ano2 = $ano + 1 ; break;  				
+            }
+        $data1= date($ano.'-'.$mes.'-01');//Cria a variavel data inicial com o mês e o ano atual sendo dia 01
+        $data2= date($ano2.'-'.$mes2.'-01');//Cria a variavel data final com o mês seguinte sendo dia 01
+        $data_mes_Anterior= date($ano0.'-'.$mes0.'-01');//Cria a variavel data do dia 01 de 1 mes atráz
 					
 if (!$resultUltimo || $resultUltimo == null )
 {
@@ -237,8 +194,6 @@ if (!$resultUltimo || $resultUltimo == null )
                                     -->
                                     <?php } ?>
                 <form action="<?php echo current_url(); ?>" method="post" id="formVendas">
-                           
-                         
                           <input name ="cadastrante"  type="hidden" value="<?php echo $usuario->idUsuarios ?>" />
                           <input name ="tab"  type="hidden" value="<?php echo $contaA ?>" />
                           <input name ="tipop"  type="hidden" value="<?php echo $nivel ?>" />
@@ -260,52 +215,10 @@ if (!$resultUltimo || $resultUltimo == null )
                 <?php  
     //******* Se a solicitação de lançamento deu erro e voltou, os campos são Realimentados
                 if( isset($_SESSION['conta']))
-                {?>
-                    
-                    <div class="span6"> 			
+                {?>                    
+                   <div class="span6"> 		
                             
-                       <?php 
-                        if( $presentes == "true" )
-                        {
-                        if( $tipoES == 0 )
-                        {     ?>
-                        <p class="cod_Comp">
-                            <label for="compassion">Código Compassion *</label>
-                                  <select id="cod_Comp" name="cod_Comp" class="span12" >
-
-                                        <option value = "D07 - 0730">
-                                        D07 - 0730 | Presentes - Beneficiário/Família /Projeto | FUNDOS ESPECIAIS COMPASSION</option>
-
-                                      </select>
-                        </p>
-                        <p class="cod_ass">
-                            <label for="cod_ass">Código IEADALPE *</label>
-                                 <select id="cod_Ass" name="cod_Ass" class="span12">
-                                    <option value = "D06-010">
-                                        D06-010 | PRESENTES ESPECIAIS (Compassion)</option>										
-                                      </select> 
-                            </p>
-                        <?php 
-                        } else if( $tipoES == 1 )
-                            {  ?>
-                            <p class="cod_Comp">
-                                <label for="compassion">Código Compassion *</label>
-                                  <select id="cod_Comp" name="cod_Comp" class="span12" >
-                                    <option value = "R01 - 1030">
-                                    R01 - 1030 | Presentes - Beneficiário/Família /Projeto | FUNDOS ESPECIAIS COMPASSION</option>
-                                    </select>
-                            </p>
-                            <p class="cod_ass">
-                                <label for="cod_ass">Código IEADALPE *</label>
-                                     <select id="cod_Ass" name="cod_Ass" class="span12">
-                                        <option value = "R01">
-                                            R01 | DOAÇÕES COMPASSION </option>										
-                                          </select> 
-                                </p>
-                        <?php 
-
-                            }
-                        } else
+                       <?php                         
                         {								
                          if( $conta <  4 || $conta >  8 )
                             {
@@ -315,9 +228,9 @@ if (!$resultUltimo || $resultUltimo == null )
                                       //  $query = mysqli_query($conex, "SELECT * FROM cod_compassion WHere  ent_Sai = 0 ");
                                         ?>
                                 <p class="cod_Comp">
-                                    <label for="compassion">Código Compassion *</label>
+                                    <label for="compassion">Centro de Custo *</label>
                                       <select id="cod_Comp" name="cod_Comp" >                                              
-                                        <option value = NULL >Opção financeira Compassion</option>
+                                        <option value = NULL >Centro de Custo</option>
                                         <?php 
                                           if( $tipoES == 0 )
                                           {                                                                                                 
@@ -356,11 +269,10 @@ if (!$resultUltimo || $resultUltimo == null )
                                       {$cod_A =   $rcodIead->cod_Ass;
                                       $descricao_A = $rcodIead->descricao_Ass;
                                       }     
-                                            }?> 
-                            
-                            <label for="cod_ass">Código IEADALPE *</label>
+                                            }?>                            
+                            <label for="cod_ass">Código Financeiro *</label>
                              <select id="cod_Ass" name="cod_Ass">
-                                <option value = NULL >Oopção Financeira IEADALPE</option>
+                                <option value = NULL >Meio Financeiro</option>
                                 <option value = "<?php echo $cod_A ?>">
                                     <?php echo $cod_A." | ".$descricao_A ?></option>
                              <?php 
@@ -414,8 +326,7 @@ if (!$resultUltimo || $resultUltimo == null )
                          <p class="docFiscal">
                                         <label for="dataInicial">Data do evento financeiro<span class="required">*</span></label>
                                         <input id="dataVenda" class="span6 datepicker" type="Text" name="dataVenda" value="<?php echo $dataVenda; ?>"  />
-                       </p> 
-                                                                             
+                       </p>                                                                              
                         <p class="conta">
                             <label for="conta">à beneficio da conta</label>
                             <select id="conta_Destino" name="conta_Destino">                                              
@@ -423,21 +334,18 @@ if (!$resultUltimo || $resultUltimo == null )
                              <?php
                                 foreach ($result_caixas as $rcx) 
                                 {                   
-                              if($usuario->conta_Usuario == 99)
-                                   if(($conta < 4) || ($conta > 8))
-                                  {?>                                               
-                                <option value = "<?php echo $rcx->id_caixa ?>"><?php echo $rcx->id_caixa." | ".$rcx->nome_caixa ?></option>
-                                        <?php
-                                }    
+                                  if($usuario->conta_Usuario == 99)
+                                       if(($conta < 4) || ($conta > 8))
+                                      {?>                                               
+                                    <option value = "<?php echo $rcx->id_caixa ?>"><?php echo $rcx->id_caixa." | ".$rcx->nome_caixa ?></option>
+                                            <?php
+                                    }    
                                }
                               ?>														
                             </select>
                          <font color=red><span class="style1"> * </span></font>	
-                        </p>
-                        
-                  
+                        </p> 
                     </div>
-                                
                     <div class="span5"> 
                                 <?php 
                             if($tipCont == "Corrente") 
@@ -515,443 +423,24 @@ if (!$resultUltimo || $resultUltimo == null )
                                     </p>
                     </div>
                     <div class="span12">
-                        <div id = "outro">								
-                                    <?php 
-                           if( $presentes == "true" )   
-                            {
-    //****** ENTRADA DE presentes especiais
-                           if($tipoES == ( 1))
-                            {
-                             //  $qtd_presentes = $_POST["qtd_presentes"];
-                                ?>
-                             <input name ="qtd_presentes"  type="hidden" value="<?php echo $qtd_presentes ?>" />
-
-
-                                <input type = "radio" name = "v_Valores" id = "v_Valores" value="1"  checked="checked"/> <font color = #458B74>- Verificar</font>
-                                  <input type = "radio" name = "v_Valores" id = "v_Valores" value ="0"  /> <font color = #458B74>- verificar e Cadastrar</font>
-                                </div>
-
-
-                                    <table>
-                                    <th font color="#458B74" >Beneficiário | Código BR</th>	
-                                    <th font color=red >Protocólo</th>
-                                    <th font color=red >Valor R$</th>		
-                                    <th font color=red >E / S</th>						
-
-                                    <?php
-                                    if($_SESSION['Codigo1'] == null)
-                                    {                                    
-                                        $contar = 1;
-                                        while (($contar <= $qtd_presentes) || $contar == 40) 
-                                        {
-                                        ?>
-                                        <tr>
-                                        <td width="50%">
-                                        <?php  $Codigo = 'Codigo'.$contar ?>
-                                        <select  class="span12"  id="<?php echo $Codigo ?>" name="<?php echo $Codigo ?>">                                              
-                                            <option value = "0"> Selecione...</option>
-                                             <?php
-                                                foreach ($resultss_Benefic as $rBnf) 
-                                                {                   
-                                                   if(($rBnf->telefone  == $conta))      
-                                                  {?>                                               
-                                                <option value = "<?php echo $rBnf->idClientes ?>"><?php echo $rBnf->nomeCliente." | ".$rBnf->documento ?></option>
-                                                <?php
-                                                }    
-                                               }
-                                              ?>														
-                                        </select>
-                                        </td>
-                                        <td >						
-                                        <?php  $Protocolo = 'Protocolo'.$contar ?>
-                                        <input   iid="Protocolo" name="<?php echo $Protocolo ?>" placeholder= "<?php echo $Protocolo ?>"  />
-                                        </td>
-                                        <td>
-                                        <?php  $valorPre = 'valorPre'.$contar ?>
-                                        <input   name="<?php echo $valorPre ?>" class="money"   placeholder= "<?php echo $valorPre ?>"    />
-                                        </td>
-                                        <td>
-                                        <?php  $entraSai = 'entraSai'.$contar ?>
-                                        <select  class="span12"  id="<?php echo $entraSai ?>" name="<?php echo $entraSai ?>">                                              
-                                            <option value = "1"> Entrada</option>               
-                                                <option value = "0"> Saída</option>	
-                                        </select>
-                                        </td>
-                                        </tr>
-                                    <?php
-                                    $contar = $contar+1;
-                                    if($contar == 41) exit;
-                                    }
-                                    } else
-                                    {                                
-										$contar = 1;
-										while (($contar <= $qtd_presentes) && $contar <= 40) 
-										{
-                                                                 
-                                         $Codigo = 'Codigo'.$contar;
-                                         foreach ($resultss_Benefic as $rBnf) 
-                                            { 
-                                             if($rBnf->idClientes  == $_SESSION[$Codigo])      
-                                                  $nomeBR = $rBnf->nomeCliente." | ".$rBnf->documento;
-                                                }								
-										?>
-										<tr>										
-                                        <td width="50%">                      
-                                        <select  class="span12"  id="<?php echo $Codigo ?>" name="<?php echo $Codigo ?>">                                              
-                                            <option value = "<?php echo $_SESSION[$Codigo] ?>"><?php echo $nomeBR ?></option>
-                                             <?php
-                                                foreach ($resultss_Benefic as $rBnf)
-                                                {                
-                                                   if(($rBnf->telefone  == $conta))     
-                                                  {?>                   
-                                                <option value = "<?php echo $rBnf->idClientes ?>"><?php echo $rBnf->nomeCliente." | ".$rBnf->documento ?></option>
-                                                <?php
-                                                }
-                                               }
-                                              ?>														
-                                        </select>
-                                        </td>
-										<td>		
-										<?php  $Protocolo = 'Protocolo'.$contar ?>
-										<input id="Protocolo" name="<?php echo $Protocolo ?>" value= "<?php echo $_SESSION[$Protocolo] ?>" />
-										</td>
-										<td>
-										<?php  $valorPre = 'valorPre'.$contar ?>
-										* R$ <input name="<?php echo $valorPre ?>"  class="money"  value= "<?php echo $_SESSION[$valorPre] ?>" />
-										</td>
-                                        <td>
-                                        <?php  $entraSai = 'entraSai'.$contar ?>
-                                        <select class="span12" id="<?php echo $entraSai ?>" name="<?php echo $entraSai ?>">
-                                         <?php  if(isset($_SESSION[$entraSai])) 
-                                              { $entraS = $_SESSION[$entraSai]; $n_ES = "Entrada";
-                                            if($entraS == "0" ) $n_ES = "Saída"; ?>                
-                                            <option value = "<?php echo $entraS ?>"> <?php echo $n_ES; ?></option> 
-                                         <?php  } ?>                                    
-                                            <option value = "1"> Entrada</option>               
-                                            <option value = "0"> Saída</option>	
-                                        </select>
-                                        </td>
-										</tr>
-										
-										
-										<?php
-										$contar = $contar+1;
-										if($contar == 41) exit;
-										}
-                                    }
-									?>       
-                                        
-                                <tr> <td></td>  <td>VALOR TOTAL</td> <td>
-                                <span class="style1">* R$ </span>
-                        <input name="valtotal" readonly><br>
-                        </td> 
-                                </tr>
-                        </table>
-                            <?php 
-                            }else 
-    //****** sAÍDA DE presentes especiais
-                               if($tipoES == ( 0))
-                                    {
-                                    if($nivel < 4)
-                                    {
-                                    require_once 'conexao.class.php';		
-                                    $con = new Conexao();		 
-                                    $con->connect(); $conex = $_SESSION['conex']; 
-                                    //id_presente, id_entrada, id_saida, data_presente, n_beneficiario, nome_beneficiario, n_protocolo
-                                        $presentes_abertos = mysqli_query($conex, 'SELECT * FROM presentes_especiais, aenpfin
-                                                    WHERE id_fin = id_entrada and  id_saida like 0 and  conta like '.$conta.' ORDER BY dataFin');
-
-                                    if (mysqli_num_rows($presentes_abertos) == 0 ) 
-                                        {	echo "<center><font color = red >Nao existem registros de presentes especiais!</font>";
-                                        }
-                                        
-                                            echo '<table border=1 bgcolor="LightGray" width="70%">';
-                                            echo '<thead bgcolor="#BDBDBD"><tr><th colspan="8" bgcolor="white" align="center" >Presentes especiais em aberto conta '.$contaNome.' </th>  </tr>';
-
-                                           // echo '<th> </th>';	
-                                            echo '<th>Nº</th>';	
-                                            echo '<th>Conta</th>';	
-                                            echo '<th>BR</th>';	
-                                            echo '<th>Nome Beneficiário</th>';	
-                                            echo '<th>Protocolo</th>';	
-                                            echo '<th>Data</th>';
-                                            echo '<th>Total R$</th>';	
-                                            echo '<th>Valor pendente R$</th>';	
-                                            echo '</tr></thead>';
-                                            echo '<tbody style="font-size:80%">';
-                                            $total = 0;	$inicio = 1;
-                                //	while ($rows_presentes = mysqli_fetch_assoc($presentes_abertos)) 
-                                        $contaY = "a"; 
-                                $data_2Mes = date('Y-m-d', strtotime("-60 day", strtotime( date('Y-m-d'))));
-                                $data_6Mes = date('Y-m-d', strtotime("-180 day", strtotime( date('Y-m-d'))));
-                                 foreach ($pre as $rpres)    
-                                 {
-                                    if(($rpres->dataFin > $data_6Mes) && (($rpres->dataFin > $data_2Mes) || ($rpres->valor_pendente > 3 && $rpres->dataFin <= $data_2Mes) ))
-                                    {	
-                                     
-                                     switch ($rpres->conta) 
-                                        {
-                                            case 1:	$contaN = "IEADALPE - 1444-3"; break;    
-                                            case 2:	$contaN = "22360-3"; break;  
-                                            case 3:	$contaN = "ILPI"; break;  
-                                            case 4:	$contaN = "BR214"; break;  
-                                            case 5:	$contaN = "BR518"; break;  
-                                            case 6:	$contaN = "BR542"; break;  
-                                            case 7:	$contaN = "BR549"; break;  
-                                            case 8:	$contaN = "BR579"; break;  
-                                            case 9:	$contaN = "BB 28965-5"; break;  
-                                            case 10:$contaN = "CEF 1948-4"; break;
-                                            case 99:$contaN = "Todas contas"; break;  				
-                                        }		
-                                            $data_Ch= implode('/',array_reverse(explode('-',$rpres->dataFin)));
-                                            $val_Ch= number_format($rpres->valor_entrada, 2, ',', '.');
-                                            $valor_pendente= number_format($rpres->valor_pendente, 2, ',', '.');
-
-                                            if ($contaY == $contaN)
-                                            {//id_presente, id_entrada, id_saida, data_presente, n_beneficiario, nome_beneficiario, n_protocolo
-                                                if ($val_Ch <> $valor_pendente)
-                                                {	echo '<tr bgcolor="Yellow">'; $presente_pendente = "true";
-                                                }	else 	echo '<tr bgcolor="#CEF6D8">';
-
-                                                echo '<td><label  class="btn btn-default" submit>'.$rpres->id_presente.'<input  name="id_presentes" type="radio" value= "'.$rpres->id_presente.'"  class="badgebox" style="margin-top:15px;" ><span class="badge" >&check;</span></label></td> ';
-
-                                                echo '<td>'.$contaN.'</td>';
-                                                echo '<td>'.$rpres->n_beneficiario.'</td> <td>'.$rpres->nome_beneficiario.'</td>';
-                                                echo '<td>'.$rpres->n_protocolo.'</td> <td align="right" valign=bottom >'.$data_Ch.'</td> ';
-                                                echo '<td align="right" valign=bottom >'.$val_Ch.'</td>';								
-                                                echo '<td align="right" valign=bottom >'.$valor_pendente.'</td></tr>';								
-                                                $total = $total + $rpres->valor_pendente;
-                                            }else
-                                            {
-                                                if ($inicio == 0)
-                                                {$val_ChT= number_format($total, 2, ',', '.');
-                                                    echo '<tr  bgcolor="#CEF6D8">';
-
-                                                    echo '<td></td> <td></td> <td></td> <td></td> <td></td> <td colspan="2">Total a compensar R$ </td>';	
-                                                    echo '<td bgcolor="green"  ><h4 align="right" valign=bottom >',$val_ChT.'</h4></td></tr>';
-
-                                                    if ($val_Ch <> $valor_pendente)
-                                                {	echo '<tr bgcolor="Yellow">'; $presente_pendente = "true";
-                                                }	else 	echo '<tr bgcolor="#CEF6D8">';
-
-                                                    
-                                                echo '<td><label  class="btn btn-default" submit>'.$rpres->id_presente.'<input  name="id_presentes" type="radio" value= "'.$rpres->id_presente.'"  class="badgebox" style="margin-top:15px;" ><span class="badge" >&check;</span></label></td> ';
-
-                                                echo '<td>'.$contaN.'</td>';
-                                                echo '<td>'.$rpres->n_beneficiario.'</td> <td>'.$rpres->nome_beneficiario.'</td>';
-                                                echo '<td>'.$rpres->n_protocolo.'</td> <td align="right" valign=bottom >'.$data_Ch.'</td> ';
-                                                    echo '<td align="right" valign=bottom >'.$val_Ch.'</td>';								
-                                                echo '<td align="right" valign=bottom >'.$valor_pendente.'</td></tr>';								
-                                                    $total = $total + $rpres->valor_pendente;
-                                                }else
-                                                {	 echo '<tr  bgcolor="#CEF6D8">';
-                                                   
-                                                echo '<td><label  class="btn btn-default" submit>'.$rpres->id_presente.'<input  name="id_presentes" type="radio" value= "'.$rpres->id_presente.'"  class="badgebox" style="margin-top:15px;" ><span class="badge" >&check;</span></label></td> ';
-
-                                                echo '<td>'.$contaN.'</td>';
-                                                echo '<td>'.$rpres->n_beneficiario.'</td> <td>'.$rpres->nome_beneficiario.'</td>';
-                                                echo '<td>'.$rpres->n_protocolo.'</td> <td align="right" valign=bottom >'.$data_Ch.'</td> ';
-                                                    echo '<td align="right" valign=bottom >'.$val_Ch.'</td>';								
-                                                echo '<td align="right" valign=bottom >'.$valor_pendente.'</td></tr>';								
-                                                    $total = $total + $rpres->valor_pendente;
-                                                    $inicio = 0;
-                                                }
-                                            }	
-                                            $inicio = 0;
-                                            $contaY = $contaN;
-                                    } 	}
-                                        $val_Ch= number_format($total, 2, ',', '.');
-                                        echo '<td></td> <td></td> <td></td>  <td></td> <td></td> <td colspan="2">Total a compensar R$ </td>';	
-                                        echo '<td bgcolor="Yellow"  ><h4 align="right" valign=bottom >',$val_Ch.'</h4></td></tr>';
-                                        echo '</tbody></table>';//caixa,cod_compassion,cod_assoc,num_Doc,historico,dataFin,valorFin,ent_Sai, cadastrante
-                                    }	
-                                    }	
-                            }
-
-                                    if( isset($presente_pendente)) 
-                                        if( $presente_pendente == "true") 
-                                        echo '* As linhas em amarelo são referentes a presentes com parte do valor ja lançado!';							
-                                            ?>	
-                                </div>
-                          <?php          
-//********* Insere "70_porcento" ou "30_porcento" para identificar de onde é o valor
-                                        if($conta == 3)
-                                        {		
-                                            echo '<label><input  checked="checked"  name="numeroDoc" type="radio" value= "70_porcento" />
-                            Pertence aos 70% </label>';                                            
-                                            echo '<label><input name="numeroDoc" type="radio" value= "30_porcento" />Pertence aos 30%</label></br></br>';	
-                                        }?>	
-
-
-
-
-                <?php
-                }else
-  
-    //******* Se o lançamento esta iniciando                  
-                {
-                     if( $multiLance =='1')
-                     {
-                         
-					$qtd_Mult = $_POST['qtd_Multi'];
-                              ?>
-                    <div class="widget-content nopadding">
-
-
-                    <table class="table table-bordered ">
-                        <thead>
-                            <tr style="backgroud-color: #2D335B">
-                                <th>Códigos</th>
-                                <th>Documentos</th>
-                                <th>Data/Valor</th>
-                                <th>Descrições</th>
-                                <th>Forma</th>
-                                
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php    
-                            for($cont = 0; $cont <= $qtd_Mult; $cont++) 
-                            {?>               
-                            <tr>
-                                <td><select id="cod_Comp" name="cod_Comp" >                                              
-                                        <option value = "">Opção financeira Compassion</option>
-                                        <?php 
-                                          if( $tipoES == 0 )
-                                          {                                                                                                 
-                                             foreach ($result_codComp as $rcodComp)
-                                             {
-                                                  if( $rcodComp->ent_SaiComp == 0 && $rcodComp->codigoNovo == 1 )
-                                                  { ?>                                           
-                                                <option value = "<?php echo $rcodComp->cod_Comp ?>">
-                                                <?php echo ' '.$rcodComp->cod_Comp." |
-                                                ".$rcodComp->descricao." | ".$rcodComp->area_Cod.' '?></option>
-                                               <?php } else { } 
-                                             }
-                                           } else 
-                                          if( $tipoES == 1 ) 
-                                          {                                                                                                 
-                                             foreach ($result_codComp as $rcodComp)
-                                             {
-                                                  if( $rcodComp->ent_SaiComp == 1 && $rcodComp->codigoNovo == 1 )
-                                                  {
-                                                  ?>                                        
-                                                    <option value = "<?php echo $rcodComp->cod_Comp ?>">
-                                                    <?php echo ' '.$rcodComp->cod_Comp." |
-                                                    ".$rcodComp->descricao." | ".$rcodComp->area_Cod.' '?></option>
-                                                   <?php } else { }
-                                               }
-                                         } ?>
-                                          </select>
-                                <select id="cod_Ass" name="cod_Ass">
-                                <option value = "">Oopção financeira IEADALPE</option>
-                                <?php 
-
-                             if( $tipoES == 0 )
-                                { 
-                                 foreach ($result_codIead as $rcodIead)
-                                { 
-                                    if( $rcodIead->ent_SaiAss == 0 )
-                                      { ?>                                           
-                                    <option value = "<?php echo $rcodIead->cod_Ass ?>">
-                                    <?php echo $rcodIead->cod_Ass." | ".$rcodIead->descricao_Ass ?></option>
-                                   <?php } else { }                                                      
-                                 }
-
-                                 } else 
-                                  if( $tipoES == 1 ) 
-                                  {
-                                  foreach ($result_codIead as $rcodIead)
-                                    { 
-                                      if( $rcodIead->ent_SaiAss == 1 )
-                                      {
-                                      ?>                                        
-                                        <option value = "<?php echo $rcodIead->cod_Ass ?>">
-                                        <?php echo '  '.$rcodIead->cod_Ass." |
-                                        ".$rcodIead->descricao_Ass ?></option>
-                                       <?php } else { }
-                                    } 
-                                }
-                                ?>														
-                                  </select></td>
-                                <td><input id="numeroDoc" name="numeroDoc"placeholder="Nº Bancário" />
-                                <input id="numDocFiscal" name="numDocFiscal"placeholder="(NF ou CF)- Nº Fiscal" /></td>
-                                <td><input id="dataVenda" class="span12 datepicker" type="Text" name="dataVenda" value="<?php echo date('d/m/Y'); ?>"  /><br/>
-                                    <input text-align="right" name="valorFin"  class="money"  ></td>
-                                <td><input  name ="razaoSoc" type="text" placeholder="Nome da Razão Social." maxlength=45 onChange="javascript:this.value=this.value.toUpperCase();">
-                                <input name ="descri" type="text" placeholder="- descrição." maxlength=100></td>
-                                <td><input  name="tipoPag" type="radio" value="trans" CHECKED>Transferência
-                                                    <input  name="tipoPag"  id = "rd-time" type="radio" value="cheq" style="margin-top:15px;" >Cheque</td>
-                                
-                               
-                            </tr>            
-                            <tr>
-                                 <td colspan="9" ></td>
-
-                            </tr>
-                            <?php    
-                            }?>
-                        </tbody>
-                    </table>
-                    </div>      
-                     <?php }else
-                     {?>
-                        <div class="span6"> 			
+                        <div id = "outro">
+                        </div>
                             
-                       <?php 
-                        if( $presentes == "true" )
-                        {
-                        if( $tipoES == 0 )
-                        {     ?>
-                        <p class="cod_Comp" class="span12">
-                            <label for="compassion">Código Compassion *</label>
-                                  <select id="cod_Comp" name="cod_Comp" class="span12" >
-
-                                        <option value = "D07 - 0730">
-                                        D07 - 0730 | Presentes - Beneficiário/Família /Projeto | FUNDOS ESPECIAIS COMPASSION</option>
-
-                                      </select>
-                        </p>
-                        <p class="cod_ass">
-                            <label for="cod_ass">Código IEADALPE *</label>
-                                 <select id="cod_Ass" name="cod_Ass" class="span12">
-                                    <option value = "D06-010">
-                                        D06-010 | PRESENTES ESPECIAIS (Compassion)</option>										
-                                      </select> 
-                            </p>
-                        <?php 
-                        } else if( $tipoES == 1 )
-                            {  ?>
-                            <p class="cod_Comp">
-                                <label for="compassion">Código Compassion *</label>
-                                  <select id="cod_Comp" name="cod_Comp" class="span12" >
-                                    <option value = "R01 - 1030">
-                                    R01 - 1030 | Presentes - Beneficiário/Família /Projeto | FUNDOS ESPECIAIS COMPASSION</option>
-                                    </select>
-                            </p>
-                            <p class="cod_ass">
-                                <label for="cod_ass">Código IEADALPE *</label>
-                                     <select id="cod_Ass" name="cod_Ass" class="span12">
-                                        <option value = "R01">
-                                            R01 | DOAÇÕES COMPASSION </option>										
-                                          </select> 
-                                </p>
-                        <?php 
-
-                            }
-                        } else
-                        {								
-                         if( $conta <  4 || $conta >  8 )
+                <?php
+                }else  
+    //******* Se o lançamento esta iniciando                  
+                {                     
+                     {?>
+                       <div class="span6">	
+                           <?php                         
                             {
-                               echo '<input id="cod_Comp" name="cod_Comp"  type=hidden value=III-III />';
-                            }else
                              {
-                                      //  $query = mysqli_query($conex, "SELECT * FROM cod_compassion WHere  ent_Sai = 0 ");
-                                        ?>
+                                //  $query = mysqli_query($conex, "SELECT * FROM cod_compassion WHere  ent_Sai = 0 ");
+                                ?>
                                 <p class="cod_Comp">
-                                    <label for="compassion">Código Compassion *</label>
+                                    <label for="compassion">Centro de Custo *</label>
                                       <select id="cod_Comp" name="cod_Comp" >                                              
-                                        <option value = "">Opção financeira Compassion</option>
+                                        <option value = "">Centro de Custo</option>
                                         <?php 
                                           if( $tipoES == 0 )
                                           {                                                                                                 
@@ -983,9 +472,9 @@ if (!$resultUltimo || $resultUltimo == null )
                             <?php }    ?>
                         <p class="cod_ass">
                                 								
-                            <label for="cod_ass">Código IEADALPE *</label>
+                            <label for="cod_ass">Código Financeiro *</label>
                              <select id="cod_Ass" name="cod_Ass">
-                                <option value = "">Oopção financeira IEADALPE</option>
+                                <option value = "">Meio Financeiro</option>
                                 <?php 
 
                              if( $tipoES == 0 )
@@ -1021,8 +510,8 @@ if (!$resultUltimo || $resultUltimo == null )
                         ?>
                         <p class="numeroDocBancario">
                             <?php                                  					
-                                    if($conta <> 3)
-                                    {?>
+                            if($conta <> 3)
+                            {?>
                                 <label for="numeroDocBanco">Número do Documento Bancário</label>
                                 <input id="numeroDoc" name="numeroDoc"placeholder="Nº Bancário" />
                             <?php }	
@@ -1063,7 +552,7 @@ if (!$resultUltimo || $resultUltimo == null )
                   
                     </div>
                         
-                    <div class="span5"> 
+                        <div class="span5"> 
                                 <?php 
                             if($tipCont == "Corrente") 
                                             { ?>
@@ -1261,20 +750,12 @@ if (!$resultUltimo || $resultUltimo == null )
                                  foreach ($pre as $rpres)  
                                  {
                                     if(($rpres->dataFin > $data_6Mes) && (($rpres->dataFin > $data_2Mes) || ($rpres->valor_pendente > 3 && $rpres->dataFin <= $data_2Mes) ))
-                                    {	switch ($rpres->conta) 
-                                        {
-                                            case 1:	$contaN = "IEADALPE - 1444-3"; break;    
-                                            case 2:	$contaN = "22360-3"; break;  
-                                            case 3:	$contaN = "ILPI"; break;  
-                                            case 4:	$contaN = "BR214"; break;  
-                                            case 5:	$contaN = "BR518"; break;  
-                                            case 6:	$contaN = "BR542"; break;  
-                                            case 7:	$contaN = "BR549"; break;  
-                                            case 8:	$contaN = "BR579"; break;  
-                                            case 9:	$contaN = "BB 28965-5"; break;  
-                                            case 10:$contaN = "CEF 1948-4"; break;
-                                            case 99:$contaN = "Todas contas"; break;  				
-                                        }		
+                                    {	
+                                     foreach ($result_caixas as $rcx) 
+                                        {                   
+                                          if($rpres->conta == $rcx->id_caixa)
+                                               $contaN = $rcx->nome_caixa;
+                                        }
                                             $data_Ch= implode('/',array_reverse(explode('-',$rpres->dataFin)));
                                             $val_Ch= number_format($rpres->valor_entrada, 2, ',', '.');
                                             $valor_pendente= number_format($rpres->valor_pendente, 2, ',', '.');
