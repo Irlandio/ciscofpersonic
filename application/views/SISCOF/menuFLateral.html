@@ -1,0 +1,40 @@
+<html>
+		
+		<link rel="stylesheet" href="styles.css" media="all" />	
+<body>
+<h3>Menu de Opções</h3> 
+
+	<ul>  			
+		<h2><a href=menuF.php>Pagina Inicial</a></h2>
+		
+		<h2><a href=PaginaLancamento1.php>Lançamentos</a></h2>
+		<li><a label for="atend">Cadastrar</label>
+		<ul>
+		<?php 
+        $contaA = $_SESSION['conta_acesso'];
+			if ($nivel == 5 ){?>
+        <li><a href='PaginaCadastroF.php'>Funcionario</a></li>
+		<li><a href='PaginaCadastroCod.php'>Código financeiro</a></li>
+            <?php }	
+			if ($contaA == 3 || $contaA == 99 ){?>
+		<li><a href='PaginaCadastroI.php'>Idoso</a></li><br />	
+            <?php }												
+		?>
+		</ul>
+		<li><a href='PaginaConsulta.php'>Consultar / Editar </a></li><br />
+		<!--<li><a href='Pagina2via1.php'>2ª Via Cupon </a></li><br />
+		<li><a href='PaginaExcDecide.php'>Excluir </a><br /><br /><br /></li> --> 
+		<li><a href='sair.php'>Sair </a></li> 
+						
+		<!--<li><a href='AdicoesParaTestes.php'>Cadastros para Simulacao </a><br /><br /><br /></li>  		
+		<li><a href='PagCriarBD.php'>Criar o Banco de dados</a><br /><br /><br /></li>	
+		
+		<li><a href='deletarBD.php'>Excluir o Banco de dados</a><br /><br /><br /></li>	
+	--></ul>		
+	
+	 
+	<a href="http://www.ieadalpe.org/portal/" target="_blank">IEADALPE</a><br />SISCOF (Sistema de Controle financeiro)
+	<br /> <br /> * Irlândio Oliveira, Soluções em tecnologia <br />
+
+	</body>
+</html>
