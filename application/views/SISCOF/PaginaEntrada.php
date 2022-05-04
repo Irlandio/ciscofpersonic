@@ -248,7 +248,7 @@
 			</div>  	
 			</div>  	
 			<div id="blRodape">  	
-								<h1>Utilidade pública federal<text-align=center/h1>					
+								<h1>Controle Pessoal<text-align=center/h1>					
 			</div>  
 		</div>  
 	 

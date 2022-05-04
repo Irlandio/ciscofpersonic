@@ -486,7 +486,7 @@ form.valtotal.value = (form.valorPre1.value*1)+(form.valorPre2.value*1)+(form.va
 								
 					</form>	
 			<div id="blRodape"> 
-			<h1>Utilidade pública federal<text-align=center/h1>					
+			<h1>Controle Pessoal<text-align=center/h1>					
 			</div>  
 		</div>
 			

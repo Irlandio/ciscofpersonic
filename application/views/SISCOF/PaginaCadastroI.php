@@ -99,7 +99,7 @@
 				</form>			
 			</div>  	
 			<div id="blRodape">  	
-					<h3 text-align=center>Utilidade pública federal</h3>					
+					<h3 text-align=center>Controle Pessoal</h3>					
 			</div>  
 		</div>  
 	</body>

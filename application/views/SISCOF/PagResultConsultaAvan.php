@@ -173,7 +173,7 @@ function plan(){
 			<!--
 			</div>  -->	
 			<div id="blRodape">  	
-					<h3>UTILIDADE PÚBLICA FEDERAL<text-align=center/h3>					
+					<h3>Controle Pessoal<text-align=center/h3>					
 			</div>  
 		</div>  
 	 

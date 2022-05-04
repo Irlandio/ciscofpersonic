@@ -117,23 +117,9 @@
                                                 
                                                 <?php   if($result_A->ent_Sai == 0) $e_S = 'Saída'; else  $e_S = 'Entrada'; ?>
                                                 <label for="numeroDocFiscal"><h5>Lançamento de <?php   echo $e_S; ?></h5></label>
-                                                 <?php 
                                                 
-                                                switch ($result_A->conta_Destino) 
-                                                        {						    
-                                                            case 1:	$cDestinoNome = "IEADALPE - 1444-3";	break;    
-                                                            case 2:	$cDestinoNome = "22360-3";	break;  
-                                                            case 3:	$cDestinoNome = "ILPI";	break;  
-                                                            case 4:	$cDestinoNome = "BR214";	break;  
-                                                            case 5:	$cDestinoNome = "BR518";	break;  
-                                                            case 6:	$cDestinoNome = "BR542";	break;  
-                                                            case 7:	$cDestinoNome = "BR549";	break;  
-                                                            case 8:	$cDestinoNome = "BR579";	break;  
-                                                            case 9:	$cDestinoNome = "BB 28965-5";	break;  
-                                                            case 10:$cDestinoNome = "CEF 1948-4";	break; 				
-                                                        }                        ?>
                                                 <span>Conta beneficiaria:</span><br/>
-                                                <label for="numeroDocFiscal"><h5><?php echo $cDestinoNome; ?></h5></label>
+                                                <label for="numeroDocFiscal"><h5><?php echo $result_A->conta_Destino; ?></h5></label>
                                                 
                                                 <?php if($_POST['oP_Exc'] ==  "exclui"){?>
                                                     <a href="#modal-excluir" role="button" data-toggle="modal" venda="<?php echo $result_A->id_fin ?>" class="btn btn-danger tip-top" title="Excluir lançamento"><button class="btn btn-danger">Excluir Lançamento</button></a>
@@ -300,11 +286,7 @@
                         <div class="span3" >
                                <input name="presentes"  type="hidden" value="out"/>
                                 <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'aVenda')){ ?>
-                               <!--
-                               <button class="btn btn-danger" ><i class="icon-wrench  icon-white"></i>  EM MANUTENÇÃO, (Tente mais tarde)</button>
-                               -->
                                <button class="btn btn-success" id="btnContinuar"><i class="icon-plus  icon-white"></i>  Novo Lançamento</button>
-
                                <?php } ?>
                         </div>
                             <input name ="tab"  type="hidden" value="<?php echo $conta ?>" />
@@ -323,12 +305,8 @@
                                 <i class="icon-folder-open"></i>
                              </span>
                             <h5>Lançamentos   </h5>
-
                          </div>
-
                     <div class="widget-content nopadding">
-
-
                     <table class="table table-bordered ">
                         <thead>
                             <tr style="backgroud-color: #2D335B">
@@ -501,7 +479,7 @@
 						          case "Investimento":	$cor = "#3f950a";	break; 
 						          case "Poupança":	   $cor = "#8A9B0F";	break; 
                                 }
-                            if ($r->cod_compassion == "III-III") $cod_compassi = '--- '; else  $cod_compassi = $r->cod_compassion; 
+                            $cod_compassi = $r->cod_compassion; 
                         echo '<td>'.$dataVenda.'<br><font color='.$corC.'>'.$r->nome_caixa.'</font> </td>
                         <td><font color="#570cbe">'.$cod_compassi.'</font><br><font color="#10840b">'.$r->cod_assoc.'</font> </td>
                         <td ><font color='.$cor.'>'.$tipoC.'</font><br><font color='.$cor.'>'.$r->tipo_Pag.'</font></td>
@@ -510,8 +488,6 @@
                             if (strlen($r->historico) > $limite) $hist = substr($r->historico,0,$limite).'(...) '; else  $hist = $r->historico.' ';
                             if (strlen($r->descricao) > $limite) $desc = substr($r->descricao,0,$limite).'(...)'; else  $desc = $r->descricao;
                              
-                       // echo '<td><a href="'.base_url().'index.php/clientes/visualizar/'.$r->idClientes.'">'.$r->nomeCliente.'</a></td>';tipo_Pag
-                       //echo '<td>'.$r->cod_assoc.' | '.$hist.' | '.strlen($r->descricao).'</a></td>';
                         echo '<td>'.$hist.' | '.$desc.'</a></td>';
                         echo '<td style="text-align:right;"><font color='.$corV.'>'.$sinal.'  '.$valorFin.'</font></td>';
 
@@ -541,18 +517,15 @@
                                     {
                                     if($aneX == 0){?>
                                          <input type="hidden" id="oP_Exc" name="oP_Exc" value="exclui" />
-
                                          <button class="btn btn-danger"><i class="icon-remove icon-white" title="Excluir lançamento"></i></button>
-
                                   <?php
-                                     //   echo '<a href="#modal-excluir" role="button" data-toggle="modal" venda="'.$r->id_fin.'" class="btn btn-danger tip-top" title="Excluir lançamento"><i class="icon-remove icon-white"></i></a>'; 
+                                     echo '<a href="#modal-excluir" role="button" data-toggle="modal" venda="'.$r->id_fin.'" class="btn btn-danger tip-top" title="Excluir lançamento"><i class="icon-remove icon-white"></i></a>'; 
                                     }else {
                                            ?>
-
                                          <input type="hidden" id="oP_Exc" name="oP_Exc" value="anexo" />
                                         <button class="btn btn-danger"><i class="icon-lock icon-white" title="Exclua antes o anexo!"></i></button>
                                   <?php 
-                                        //echo '<a href="#modal-exc" role="button" data-toggle="modal"  class="btn btn-danger tip-top" title="Exclua antes o anexo!"><i class="icon-lock icon-white"></i></a>';  
+                                        echo '<a href="#modal-exc" role="button" data-toggle="modal"  class="btn btn-danger tip-top" title="Exclua antes o anexo!"><i class="icon-lock icon-white"></i></a>';  
                                     }}else 
                                     {
                                            ?>
@@ -560,7 +533,7 @@
                                          <input type="hidden" id="oP_Exc" name="oP_Exc" value="presentes" />
                                         <button class="btn btn-danger"><i class="icon-lock icon-white" title="Exclua antes os lançamentos de saida destes presentes!"></i></button>
                                   <?php
-                                        //echo '<a href="#modal-exc" role="button" data-toggle="modal"  class="btn btn-danger tip-top" title="Exclua antes os lançamentos de saida destes presentes!"><i class="icon-lock icon-white"></i></a>'; 
+                                        echo '<a href="#modal-exc" role="button" data-toggle="modal"  class="btn btn-danger tip-top" title="Exclua antes os lançamentos de saida destes presentes!"><i class="icon-lock icon-white"></i></a>'; 
                                 }
                                     ?>
                             </form>

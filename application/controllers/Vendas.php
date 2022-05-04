@@ -8,6 +8,25 @@ class Vendas extends CI_Controller {
      * email: irlandiooliveira@gmail.com
      * 
      */
+    /*
+                'conta'         => $caixa,
+                'tipo_Conta'    => $tipoCont,
+                'cod_compassion'=> CENTRO DE CUSTO,
+                'cod_assoc'     => FUNDO FINANCEIRO,
+                'num_Doc_Banco' => PARCELA ATUAL / TOTAL,
+                'num_Doc_Fiscal'=> $numDocFiscal,
+                'historico'     => $razaoSoc,
+                'descricao'     => $descri,
+                'dataFin'       => $dataF,
+                'valorFin'      => $valorFin,
+                'ent_Sai'       => $ent_Sai,
+                'tipo_Pag'      => TIPO PERIODICIDADE,
+                'conta_Destino' => QTD PARCELAS,
+                'saldo'         => $saldo_Final,
+                'saldo_Mes'     => 'S',
+                'cadastrante'   => $cadastrante
+                'par_ES'        => LANÇAMENTO PAI
+    */
     
     function __construct() {
         parent::__construct();
@@ -232,7 +251,7 @@ class Vendas extends CI_Controller {
 			$con->connect(); $conex = $_SESSION['conex'];
            // if(null !==  ( $this->input->post('id_caixa')))
 //****** VARIAVEIS RECEBIDAS******
-             { 
+             //{ 
                 $caixa         = $this->input->post('conta');
                 $tipoCont      = $this->input->post('tipoCont');								
                 $cod_assoc     = $this->input->post('cod_Ass');
@@ -299,59 +318,37 @@ class Vendas extends CI_Controller {
             }
 
             
-                $_SESSION['conta']          = $this->input->post('conta');
-                $_SESSION['tipoCont']       = $this->input->post('tipoCont');								
-                $_SESSION['cod_Ass']        = $this->input->post('cod_Ass');
-                $_SESSION['cod_Comp']       = $this->input->post('cod_Comp');
-                $_SESSION['numeroDoc']      = $this->input->post('numeroDoc');
-                $_SESSION['numDocFiscal']   = $this->input->post('numDocFiscal');
-                $_SESSION['razaoSoc']       = $this->input->post('razaoSoc');
-                $_SESSION['descri']         = $this->input->post('descri');
-                $_SESSION['saldo_Atual']    = $this->input->post('saldo_Atual');
-                $_SESSION['diaUm_mêsAtual'] = $this->input->post('diaUm_mêsAtual');
-                $_SESSION['valorFin']       = $valorFin;
-                if(null !== (  $this->input->post('v_Valores') )) {  $_SESSION['v_Valores'] = $this->input->post('v_Valores'); }
-                $_SESSION['tipoPag']        = $this->input->post('tipoPag');
-                $_SESSION['tipoES']         = $this->input->post('tipoES');//Código para ENTRADA  é ( 1 ) para SAÍDA  é ( 0 )
-                $_SESSION['conta_Destino']  = $this->input->post('conta_Destino');//Registra Qual a conta beneficiada pelo  lançamento
-                $_SESSION['cadastrante']    = $this->input->post('cadastrante');
-                $_SESSION['dataVenda']      =  $dataVendaSecion;
+            $lancamento = array(
+                'conta'         => $caixa,
+                'tipo_Conta'    => $tipoCont,
+                'cod_compassion'=> $cod_compassion,
+                'cod_assoc'     => $cod_assoc,
+                'num_Doc_Banco' => $num_Doc,
+                'num_Doc_Fiscal'=> $numDocFiscal,
+                'historico'     => $razaoSoc,
+                'descricao'     => $descri,
+                'dataFin'       => $dataF,
+                'valorFin'      => $valorFin,
+                'ent_Sai'       => $ent_Sai,
+                'tipo_Pag'      => $tipo_Pag,
+                'conta_Destino' => $conta_Destino,
+                'saldo'         => $saldo_Final,
+                'cadastrante'   => $cadastrante
+            ); 
+//            
+               $_SESSION['lancamento']          = $lancamento;
                 $dia = date('Y-m-d');
-                $entrada_Saida = $_SESSION['tipoES'];
+                $entrada_Saida = $lancamento['tipoES'];
                 $saldo_mes_lancamento = 'S';
-                $tip_Cont      =  $_SESSION['tipoCont'];
-                $contaX        = $_SESSION['conta'];
+                $tip_Cont      =  $lancamento['tipoCont'];
+                $contaX        = $lancamento['conta'];
                 $_SESSION['saldo_AtualConsult']  = $this->input->post('saldo_AtualConsult');
-                 
-                if(null !== ( $this->input->post('presentes'))){ $_SESSION['presentes'] = $this->input->post('presentes');
-                if(null !== ( $this->input->post('qtd_presentes'))) $_SESSION['qtd_presentes'] = $this->input->post('qtd_presentes');}
-                if(null !== ( $this->input->post('id_presentes')))   $_SESSION['id_presentes'] = $this->input->post('id_presentes');	
+//                 
+//               	
                 if(null !== (   $this->input->post('senhaAdm') )) {  
                     $_SESSION['senhaAdm']  = $this->input->post('senhaAdm');} 
                 
                  
-                  if( null !== $qtd_presentes && ($qtd_presentes) > 0)
-                  {
-                    $contar = 1;
-							while (($contar <= $qtd_presentes) ) 
-								{
-									$nome = 'nome'.$contar;
-									$CodigoId = 'Codigo'.$contar;
-									$Protocolo = 'Protocolo'.$contar;
-									$valorPre = 'valorPre'.$contar;
-								//	$_SESSION[$nome] = $_POST[$nome];
-									$_SESSION[$CodigoId]	= $_POST[$CodigoId];								
-									$_SESSION[$Protocolo] = $_POST[$Protocolo];
-									$_SESSION[$valorPre] = $_POST[$valorPre];	
-                                
-									$contar = $contar+1;							
-				
-                                }
-                  }
-            } 
-            /*
-            $this->session->set_flashdata('success','Caixa '.$_SESSION[$caixa].' tipo '.$_SESSION[$tipoCont].' C comp '.$_SESSION[$cod_compassion].' doc '.$_SESSION[$num_Doc].' '.$_SESSION[$numDocFiscal].'R soc '.$_SESSION[$razaoSoc].' '.$_SESSION[$descri].' - '.$_SESSION[$saldo_Final].' - tipo pag '.$_SESSION[$tipo_Pag].' - ent sai '.$_SESSION[$ent_Sai].' - '.$_SESSION[$cadastrante].' ent sai '.$_SESSION[$entrada_Saida].' '.$_SESSION[$tip_Cont].' qtd pres '.$_SESSION[$qtd_presentes].' .');
-            */
             $data = array(
                 'conta'         => $caixa,
                 'tipo_Conta'    => $tipoCont,
