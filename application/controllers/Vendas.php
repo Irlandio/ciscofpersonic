@@ -208,30 +208,18 @@ class Vendas extends CI_Controller {
         $this->data['usuario'] = $this->vendas_model->getByIdUser($this->session->userdata('id'));
         $datainicioLimite = '2020-01-01';
        // if ($this->form_validation->run('vendas') == false) {
-        if ($this->input->post('razaoSoc') == null)
+        if ($this->input->post('dataVenda') == null)
         {
            //  $this->session->set_flashdata('error','Falha na verificação');
            $this->data['custom_error'] = (validation_errors() ? true : false);
         
             if ($this->input->post('conta') !== null ) {
                 $contta = $this->input->post('conta');
-            if ($this->input->post('presentes') !== null ) {
-                
-                $presentess = $this->input->post('presentes');
-                
-            if($conta > 8)  $datainicioLimite = '2020-01-01';else   $datainicioLimite = '2020-01-01';
-                
-            if (($contta < 4 || $contta > 8) &&  $presentess == "true")  {
-           //  $this->session->set_flashdata('error','Falha na verificação');
-           $this->session->set_flashdata('error','Para a conta selecionada não existe presente especial! Selecione novamente.');
-            redirect(base_url(). 'index.php/vendas');
-            }}
-        }
+            }
         } 
-        else {          
-            
-        $user_id = $this->vendas_model->getByIdUser($this->session->userdata('id'));
-        $permissoes_id = $user_id->permissoes_id;
+        else {
+            $user_id = $this->vendas_model->getByIdUser($this->session->userdata('id'));
+            $permissoes_id = $user_id->permissoes_id;
             
             $dataVendaSecion = $this->input->post('dataVenda');
             $dataVenda = $this->input->post('dataVenda');
@@ -280,6 +268,29 @@ class Vendas extends CI_Controller {
                 if(null !== ( $this->input->post('id_presentes'))) $id_presentes =  ($this->input->post('id_presentes'));	
                 if(null !== (   $this->input->post('senhaAdm') )) {  $senhaAdm  = $this->input->post('senhaAdm');} 
                 $p_Origem = base_url().'index.php/vendas/adicionar';  
+            
+            
+            
+            
+            $lancamento = array(
+                'conta'         => $caixa,
+                'tipo_Conta'    => $tipoCont,
+                'cod_compassion'=> $cod_compassion,
+                'cod_assoc'     => $cod_assoc,
+                'num_Doc_Banco' => $num_Doc,
+                'num_Doc_Fiscal'=> $numDocFiscal,
+                'historico'     => $razaoSoc,
+                'descricao'     => $descri,
+                'dataFin'       => $dataF,
+                'valorFin'      => $valorFin,
+                'ent_Sai'       => $ent_Sai,
+                'tipo_Pag'      => $tipo_Pag,
+                'conta_Destino' => $conta_Destino,
+                'saldo'         => $saldo_Final,
+                'cadastrante'   => $cadastrante
+            ); 
+               $_SESSION['lancamento'] = $lancamento;
+            
  //*******Verifica se o valor foi digitado adequadamente.
             {
                      if(formatoRealPntVrg($valorFin) == true) 
@@ -317,38 +328,15 @@ class Vendas extends CI_Controller {
                }
             }
 
-            
-            $lancamento = array(
-                'conta'         => $caixa,
-                'tipo_Conta'    => $tipoCont,
-                'cod_compassion'=> $cod_compassion,
-                'cod_assoc'     => $cod_assoc,
-                'num_Doc_Banco' => $num_Doc,
-                'num_Doc_Fiscal'=> $numDocFiscal,
-                'historico'     => $razaoSoc,
-                'descricao'     => $descri,
-                'dataFin'       => $dataF,
-                'valorFin'      => $valorFin,
-                'ent_Sai'       => $ent_Sai,
-                'tipo_Pag'      => $tipo_Pag,
-                'conta_Destino' => $conta_Destino,
-                'saldo'         => $saldo_Final,
-                'cadastrante'   => $cadastrante
-            ); 
-//            
-               $_SESSION['lancamento']          = $lancamento;
                 $dia = date('Y-m-d');
                 $entrada_Saida = $lancamento['tipoES'];
                 $saldo_mes_lancamento = 'S';
                 $tip_Cont      =  $lancamento['tipoCont'];
                 $contaX        = $lancamento['conta'];
                 $_SESSION['saldo_AtualConsult']  = $this->input->post('saldo_AtualConsult');
-//                 
-//               	
                 if(null !== (   $this->input->post('senhaAdm') )) {  
                     $_SESSION['senhaAdm']  = $this->input->post('senhaAdm');} 
-                
-                 
+            
             $data = array(
                 'conta'         => $caixa,
                 'tipo_Conta'    => $tipoCont,
@@ -389,11 +377,11 @@ class Vendas extends CI_Controller {
                         }
 
                 if(!$cod_assoc || !$cod_compassion)
-                { echo 'Os códigos IEADALPE  e Compassion não Foram identificados.
-                                    Volte a pagina anterior e preencha todos os campos! Caixa '.$_SESSION[$caixa].$caixa.' tipo '.$_SESSION[$tipoCont].' C comp '.$_SESSION[$cod_compassion].' doc '.$_SESSION[$num_Doc].'- Cod ASS  '.$_SESSION[$numDocFiscal].' '.$numDocFiscal.' - R soc '.$_SESSION[$razaoSoc].' '.$razaoSoc.' '.$cod_assoc.' - cod Comp '.$cod_compassion.' - tipo pag '.$_SESSION[$tipo_Pag].' - ent sai '.$_SESSION[$ent_Sai].' - '.$_SESSION[$cadastrante].' ent sai '.$_SESSION[$entrada_Saida].' '.$_SESSION[$tip_Cont].' qtd pres '.$_SESSION[$qtd_presentes].' ';
+                { echo 'O Cetntro de Custo e Fundo Financeiro não Foram identificados.
+                                    Volte a pagina anterior e preencha todos os campos! Caixa '.$lancamento[$caixa].$caixa.' tipo '.$lancamento[$tipoCont].' C comp '.$lancamento[$cod_compassion].' doc '.$lancamento[$num_Doc].'- Cod ASS  '.$lancamento[$numDocFiscal].' '.$numDocFiscal.' - R soc '.$lancamento[$razaoSoc].' '.$razaoSoc.' '.$cod_assoc.' - cod Comp '.$cod_compassion.' - tipo pag '.$lancamento[$tipo_Pag].' - ent sai '.$lancamento[$ent_Sai].' - '.$lancamento[$cadastrante].' ent sai '.$lancamento[$entrada_Saida].' '.$lancamento[$tip_Cont].' qtd pres '.$lancamento[$qtd_presentes].' ';
                   echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
                                     <script type=\"text/javascript\">
-                                    alert(\"Os códigos IEADALPE  e Compassion não Foram identificados. Volte a pagina anterior e preencha todos os campos! - Linha: ". __LINE__ . "\");
+                                    alert(\"O Cetntro de Custo e Fundo Financeiro não Foram identificados. Volte a pagina anterior e preencha todos os campos! - Linha: ". __LINE__ . "\");
                                     </script>";						  
                  exit; 
                 }
@@ -419,42 +407,7 @@ class Vendas extends CI_Controller {
                 //	$dataF= implode('-',array_reverse(explode('/',$data)));
                         $data_001 =  primeiroDiaMes($datahj);								
                         $data_007 =  setimoDiadoMes($datahj);
-                
-                
-            if(($datahj > $data_007) && ($dataF < $data_001))
-            {
-                if($senhaAdm == "0000")
-                 {echo "<br/><font color = #458B74 size = 3 text-align:center>Prazo Limite para lançamento referente a esta data foi aspirado. <br/> 
-                            Retorne e altere a data ou contate o administrador.</font><br/>";
-                             echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                        <script type=\"text/javascript\">
-                                        alert(\" Prazo Limite para lançamento referente a esta data foi aspirado, tente novamente! Linha: ". __LINE__ . "\");
-                                        </script>";	
-                      exit;  
-                            }else
-                if($senhaAdm <> "aenp@z18")
-                 {echo "<br/><font color = #458B74 size = 3 text-align:center>Senha inválida para lançamento desta data. <br/> 
-                            Retorne e altere a data ou contate o administrador.</font><br/>";
-                             echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                        <script type=\"text/javascript\">
-                                        alert(\" Senha inválida para lançamento desta data, tente novamente! Linha: ". __LINE__ . "\");
-                                        </script>";	
-                      exit;  
-                            }else
-                if($dataF < $datainicioLimite)
-                 {echo "<br/><font color = #458B74 size = 3 text-align:center>Data não autorizada para lançamento. <br/> 
-                            Retorne e altere a data ou contate o administrador.</font><br/>";
-                             echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                        <script type=\"text/javascript\">
-                                        alert(\" Data não autorizada para lançamento. Tente novamente! Linha: ". __LINE__ . "\");
-                                        </script>";	
-                      exit;  
-                            }
-                    
-            }
-
-
-            if($dataF < $datainicioLimite || $dataF > $datahj )
+            if($dataF < $datainicioLimite)
                 {
                                 echo "ERRO!  - <strong><td> A data não é uma data válida, tente novamente!</td></strong><br/>";
                              echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
@@ -462,8 +415,7 @@ class Vendas extends CI_Controller {
                                         alert(\" A data não é uma data válida, tente novamente! Linha: ". __LINE__ . "\");
                                         </script>";	
                       exit;  
-                            }
-             //   echo "</b></br> Valor recebdo <strong><td> R$  ".$valorFin."</td></strong></br>";            
+                            }         
 
  //*******Verifica se o valor foi digitado adequadamente.
             {
@@ -496,299 +448,10 @@ class Vendas extends CI_Controller {
                                         <script type=\"text/javascript\">
                                         alert(\"O valor digitado não esta nos parametros solicitados. Tente novamente! Linha: ". __LINE__ . "\");
                                         </script>";	
-                      exit;  
-
-
+                      exit;
                }
             }
-
-
-            if($cod_compassion == ( "R01 - 1030") )//Entrada com presentes especiais
-            {
-                
-                if($qtd_presentes > 0 )
-                {
-                }else{				echo "Não há presentes especiais.
-                                    Volte a pagina anterior e preencha todos os campos! Linha " . __LINE__ ;
-                  echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                    <script type=\"text/javascript\">
-                                    alert(\"Não há presentes especiais.	Volte a pagina anterior e preencha todos os campos! <br>Linha: ". __LINE__ . "\");
-                                    </script>";						  
-                 exit; 
-                }
-                
-                $contar = 1;
-                $valorFinTotal =   "0.00";
-                while (($contar <= $qtd_presentes) ) 
-                    {
-                        $n_nome = 'nome'.$contar;// Nomes das variaveis de cada cadastro
-                        $n_codigo = 'Codigo'.$contar;
-                        $n_protocolo = 'Protocolo'.$contar;
-                        $n_valorPre = 'valorPre'.$contar; 
-                        $n_entraSai = 'entraSai'.$contar;
-                    
-                        $CodigoId	= $_POST[$n_codigo];
-                    
-                        $Protocolo = $_POST[$n_protocolo];
-                        $valorPre = $_POST[$n_valorPre];
-                        $entraSai = $_POST[$n_entraSai];
-                    
-                        if(  !$CodigoId  || !$Protocolo  || !$valorPre  )
-                        {				echo "Algum campo do ".$contar."º Presente da lista não foi preenchido.
-                                            Volte a pagina anterior e preencha todos os campos! Linha " . __LINE__ ;
-
-                           echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                            <script type=\"text/javascript\">
-                                            alert(\"Algum campo do ".$contar."º Prsente da lista não foi preenchido.Volte a pagina anterior e preencha todos os campos! Linha: ". __LINE__ . "\");
-                                            </script>";	
-
-                         exit; 
-                        }	
-                    $negativ = 0;
-                     /*   if ( $valorPre < 0 ) {
-                               $valorPre = abs($valorPre);
-                         $negativ = 1;
-                        }*/
-                   $formatoValor = true;
-                    //Verificação dos formatos dos valores
-                      {
-                     if(formatoRealPntVrg($valorPre) == true) 
-                       {//Verific se o numero digitado é com (.) milhar e (,) decimal
-                           //serve pra validar  valores acima e abaixo de 1000
-                           //      echo "Ponto e virgula!  - <strong><td> ;Linha: ". __LINE__ . ", OK!</td></strong><br/>"; 
-                           $valorPreExibe  =    $valorPre;   
-                           $valorPre  =    (str_replace("," , "." , (str_replace("." , "" , $valorPre)) ));
-                       }else if(formatoRealInt($valorPre) == true)
-                       {//Verific se o numero digitado é inteiro sem ponto nem virgula
-                           //serve pra validar  valores acima e abaixo de 1000
-                           //      echo "Inteiro!  - <strong><td> ;Linha: ". __LINE__ . ", OK!</td></strong><br/>"; 
-                          $valorPreExibe  =    number_format(str_replace(",",".",$valorPre), 2, ',', '.');  
-                           $valorPre  =    number_format(str_replace("." , "" ,$valorPre), 2, '.', '');
-                       }else if(formatoRealPnt($valorPre) == true)
-                       { 
-                           //     echo "Ponto!  - <strong><td> ;Linha: ". __LINE__ . ", OK!</td></strong><br/>"; 
-                           $valorPre  =    $valorPre;
-                           $valorPreExibe  =    number_format(str_replace(",",".",$valorPre), 2, ',', '.');  
-                       }else if(formatoRealVrg($valorPre) == true)
-                       { 
-                            //    echo "Virgula!  - <strong><td> ;Linha: ". __LINE__ . ", OK!</td></strong><br/>"; 
-                           $valorPreExibe  =    number_format(str_replace(",",".",$valorPre), 2, ',', '.');  
-                           $valorPre  =   (str_replace("," , "." , (str_replace("." , "" , $valorPre)) ));
-                       }else
-                       {
-                           $formatoValor = false;
-                       }
-                       /*  
-                        if($valorPre <= 0 )
-                        {				echo "Verifique o valor do  ".$contar."º Prsente é inválido.
-                                            Volte a pagina anterior e preencha todos os campos! Linha " . __LINE__ ;
-                          echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                            <script type=\"text/javascript\">
-                                            alert(\"Verifique o valor do  ".$contar."º Prsente é inválido. Volte a pagina anterior e preencha todos os campos!\");
-                                            </script>";						  
-                         exit; 
-                        }*/
-                      }
-                   
-                  //  if($negativ == 1) { $valorPre = number_format($valorPre) * -1;}
-                       //   $valorPreExibe = number_format($valorPreExibe) * -1;
-                if($formatoValor == false)
-                {
-                 echo "Um ou mais valores inseridos não esta nos parametros solicitados";
-                  echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                <script type=\"text/javascript\">
-                                alert(\"Um ou mais valores inseridos não esta nos parametros solicitados. Tente novamente! Linha: ". __LINE__ . "\");
-                                </script>";	
-                  exit;
-                }
-                    if($entraSai == "0")
-                      {  $valorFinTotal = $valorFinTotal - $valorPre;
-                        $valorPen = 0.00;
-                        $idPre = $this->vendas_model->getByIdPre($Protocolo);
-                        if(isset($idPre) )  
-                             {
-                                if($idPre->valor_entrada == $valorPre)
-                                    echo $idPre->nome_beneficiario.' - '.$idPre->id_presente.'</BR>'; 
-                            else{ echo ' O valor do presente a ser devolvido NÃO esta igual.</BR> Presente'.$idPre->id_presente.', Data '.$idPre->data_presente.' - Valor em aberto R$'.$idPre->valor_entrada.' - Valor lançado R$'.$valorPreExibe;
-                    echo "<META HTTP-EQUIV=REFRESH CONTENT='0;  URL=".$p_Origem."'> 
-                                    <script type=\"text/javascript\">
-                                    alert(\"O valor do presente a ser devolvido NÃO esta igual. Presente ".$idPre->id_presente." ".$idPre->n_protocolo.", Data ".$idPre->data_presente." ( Valor a devolver R$".$idPre->valor_entrada." - Valor lançado R$".$valorPreExibe.") - Linha: ". __LINE__ . "\");
-                                    </script>";						  
-                 exit;
-                                
-                      }}
-                       else{ 
-                    echo "<META HTTP-EQUIV=REFRESH CONTENT='0;  URL=".$p_Origem."'> 
-                                    <script type=\"text/javascript\">
-                                    alert(\"NÃo foi encontrado nenhum presente com NÚMERO DE PROTOCOLO ".$Protocolo.", para ser devolvido. Verifique se este presente é realmente para devolução. - Linha: ". __LINE__ . "\");
-                                    </script>";						  
-                 exit;
-                          
-                                
-                      }
-                      }
-                        else  
-                        $valorFinTotal = $valorFinTotal + $valorPre;
-                    
-                        echo "presente ".$contar."  = R$ <strong>".$valorPreExibe."</strong><br>";
-                        $contar = $contar+1;	
-                    }
-                $val_Total = $valorFinTotal;
-
-                $valorTotExibe  =    number_format(str_replace(",",".",$val_Total), 2, ',', '.');		
-           //     echo  "<br><font color = #0cb20c size = 2> Verificar valor =  ".$v_Valores;// variavel pra não cadastrar e voltar
-                echo "<br><font color = red size = 2> Soma Total =  R$ <strong>".$valorTotExibe."</strong></font> <br><br>";
-            //    echo gettype($valorFinTotal), "<br>";
-                echo "<font color = red size = 2>Valor lançado =  R$ <strong>".$valorFinExibe."</strong></font><br><br>";
-               // echo gettype($valorFin), "<br>";
-                 $val_Total_float = floatval($val_Total);
-                 $valorFin_float = floatval($valorFin);
-
-               if($v_Valores == "1")                                
-                {
-                  
-                if( ($valorFin_float !==  $val_Total_float) )
-                {
-                    echo "<font color = red><H3>Valor lançado é diferente do somatório</H3></font><br><br>";
-                     echo "<br><font color = red size = 2> Soma Total =  R$ <strong>".$valorTotExibe."</strong></font> (".$val_Total_float." ".gettype($val_Total_float).") <br><br>";
-                    //    echo gettype($valorFinTotal), "<br>";
-                        echo "<font color = red size = 2>Valor lançado =  R$ <strong>".$valorFinExibe."</strong></font> (".$valorFin_float." ".gettype($valorFin_float).")<br><br>";
-
-                    echo "<META HTTP-EQUIV=REFRESH CONTENT='0;  URL=".$p_Origem."'> 
-                                    <script type=\"text/javascript\">
-                                    alert(\"Valor lançado é diferente do somatório! - Linha: ". __LINE__ . "\");
-                                    </script>";						  
-                 exit; 
-                } else  
-                   
-                {
-                    echo "<font color = BLUE><H3>Somatório  é igual ao valor total do lançamento!</H3></font>";
-
-                    echo "<META HTTP-EQUIV=REFRESH CONTENT='0;  URL=".$p_Origem."'> 
-                                    <script type=\"text/javascript\">
-                                    alert(\"  Nada foi alterado, retorne e desmarque -visualizar- !\");
-                                    </script>";						  
-                 exit; 
-                }}
-
-
-            }	
 //*****se for presente especial faz um lançamento 
-            if($cod_compassion == ( "D07 - 0730"))//Saída com presentes especiais
-            {
-            //	echo 'linha '. __LINE__;
-                if(!$id_presentes)//Saída com presentes especiais
-                {						
-                //echo "cod_compassion: ".$cod_compassion." qtd_presentes: ".$qtd_presentes."<br>";
-                echo "Linha: ". __LINE__ . "<br>Nenhum Beneficiário foi selecionado para este presente especial.
-                                    Volte a pagina anterior e preencha todos os campos!";
-                  echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                <script type=\"text/javascript\">
-                                alert(\" Nenhum Beneficiário foi selecionado para este presente especial. Volte a pagina anterior e preencha todos os campos! Linha: ". __LINE__ . "\");
-                                </script>";						  
-                 exit; 
-                }	
-                if($id_presentes == 0 ) 
-                    {	echo "<META HTTP-EQUIV=REFRESH CONTENT='0;URL=".$p_Origem."'> 
-                                    <script type=\"text/javascript\">
-                                    alert(\"Desculpe, Nenhum Beneficiário foi selecionado para este presente especial. Volte a pagina anterior e preencha todos os campos!\");
-                                    </script>";			
-                            exit;
-                    }
-
-                    $res_max = mysqli_query($conex, 'SELECT id_fin FROM aenpfin ORDER BY id_fin DESC LIMIT 1 ');
-                    if (!$res_max  ) 
-                    {			die ("<center>Desculpe, Nao foi encontrado o ultimo registro. Tente novamente:  " 
-                            . '<br>Linha: ' . __LINE__ . "<br>" . mysqli_error() . "<br>
-                                <a href='PaginaLancamento1.php'> Tente novamente</a></center>");
-                                exit;
-                    }
-                    if (mysqli_num_rows($res_max ) == 0 ) 
-                    {	echo "Nao foi encontrado nenhum ultimo registro. Tente novamente!"; //exit;
-                    }
-                    while ($id_ultimo = mysqli_fetch_assoc($res_max)) 
-                    {	$id_Maxaenp = $id_ultimo['id_fin'] +1; }
-
-
-
-
-                    $presentes_saida = mysqli_query($conex, 'SELECT * FROM presentes_especiais
-                                        WHERE  id_presente =  '.$id_presentes.' LIMIT 1');
-
-                    if (!$presentes_saida  ) 
-                    {			die ("<center>Desculpe, Nao foi encontrado o registro de presente ".$id_presentes.". Tente novamente:  " 
-                            . '<br>Linha: ' . __LINE__ . "<br>" . mysqli_error() . "<br>
-                                <a href='PaginaLancamento1.php'> Tente novamente</a></center>");											
-                    }	
-
-
-
-                    if (mysqli_num_rows($presentes_saida) == 0 ) 
-                        {	echo "<center><font color = red >Nao existem registros do presentes especiais ".$id_presentes." Linha ". __LINE__ . "</font>"; 
-
-                    echo "<META HTTP-EQUIV=REFRESH CONTENT='0;  URL=".$p_Origem."'> 
-                                    <script type=\"text/javascript\">
-                                    alert(\"VNao existem registros do presentes especiais ".$id_presentes."! - Linha: ". __LINE__ . "\");
-                                    </script>";		
-                         exit;
-                        }	
-
-
-                    while ($rows_presentes = mysqli_fetch_assoc($presentes_saida)) 
-                    {							
-                          if ( $valorFin > $rows_presentes['valor_pendente'] + 4.5)
-                            {echo "Linha: ". __LINE__ . "<br>Desculpe, O valor do lançamento é maior que o valor do presente.Retorne e refaça o lançamento!";
-                              echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                <script type=\"text/javascript\">
-                                alert(\" Desculpe, O valor do lançamento é maior que o valor do presente.Retorne e refaça o lançamento! Linha: ". __LINE__ . "\");
-                                </script>";	
-                            exit;
-                            }    
-                        $val_Restante = $rows_presentes['valor_pendente'] - $valorFin;
-                        $datapresUp = array(
-                            'id_saida' => $id_Maxaenp,
-                            'data_presente' => $dataF,
-                            'valor_saida' => $valorFin,
-                            'valor_pendente' => $val_Restante
-                        );
-
-                        if ($this->vendas_model->edit('presentes_especiais', $datapresUp, 'id_presente', $rows_presentes['id_presente']) == TRUE) 
-                        {
-                            $this->session->set_flashdata('success','presente editado com sucesso!');
-                          //  redirect(base_url() . 'index.php/vendas/editar/'.$this->input->post('idVendas'));
-
-                        $id_entrada = $rows_presentes['id_entrada'];
-                        $data_presente = $rows_presentes['data_presente'];
-                        $n_beneficiario = $rows_presentes['n_beneficiario'];
-                        $nome_beneficiario = $rows_presentes['nome_beneficiario'];
-                        $n_protocolo = $rows_presentes['n_protocolo'];
-                        $valor_entrada = $rows_presentes['valor_entrada'];
-                        }else 
-                        {
-                            $this->data['custom_error'] = '<div class="form_error"><p>Ocorreu um erro</p></div>';
-                        }
-                    }			
-                        if($val_Restante > 0 )
-                        {
-                        $datapres = array(
-                        'id_entrada'        => $id_entrada,
-                        'id_saida'          => 0,
-                        'data_presente'     => $data_presente,
-                        'n_beneficiario'    => $n_beneficiario,
-                        'nome_beneficiario' => $nome_beneficiario,
-                        'n_protocolo'       => $n_protocolo,
-                        'valor_entrada'     => $valor_entrada,
-                        'valor_pendente'    => $val_Restante
-                        ); 
-                      if (is_numeric($id = $this->vendas_model->add( 'presentes_especiais', $datapres, true)) ) 
-                      {
-
-                      }else 
-                      {
-                      }
-                        }
-            }
-
             echo "Conta lançaento - ".$caixa." | Tipo - ".$tipoCont." | Doc Banco - ".$num_Doc." | Doc Fiscal ".$numDocFiscal." | Histórico ".$razaoSoc." | Data - ".$dataF." | Valor - ".$valorFin." | conta_Destino - ".$conta_Destino." | ent_Sai - ".$ent_Sai;
             //exit;	            
 //******Insere o lançamento na tabela aenpfin*********
@@ -857,94 +520,6 @@ class Vendas extends CI_Controller {
                         {		
                         }
                     }
-//*****se for presente especial faz um lançamento 
-                    if($cod_compassion == ( "R01 - 1030"))//Entrada com presentes especiais
-                    {	 
-                        $contar = 1;
-                        while (($contar <= $qtd_presentes) || $contar == 50) 
-                        {
-
-
-                            $n_nome = 'nome'.$contar;//Nomes das variaveis de cada cadastro
-                            $n_codigo = 'Codigo'.$contar;
-                            $n_protocolo = 'Protocolo'.$contar;
-                            $n_valorPre = 'valorPre'.$contar;
-                            $n_entraSai = 'entraSai'.$contar;
-
-                            
-                            $CodigoId	= $_POST[$n_codigo];
-                                $benef   = $this->vendas_model->get2('clientes');
-                                 foreach ($benef as $rBnf) 
-                                    { if(($rBnf->idClientes  == $CodigoId))      
-                                    {  $nome = $rBnf->nomeCliente;    
-                                          $CodigoBR = $rBnf->documento;
-                                    }
-                                    }								
-                            $Protocolo = $_POST[$n_protocolo];
-                            $valorPre = $_POST[$n_valorPre];
-                            $entraSai = $_POST[$n_entraSai];	
-                            $negativ = 0;
-                            $data_presente = $dataF;
-                          /*  if ( $valorPre < 0.00 ) {
-                               $valorPre = abs($valorPre);
-                         $negativ = 1;
-                        }*/
-
-                             if(formatoRealPntVrg($valorPre) == true) 
-                               {//Verific se o numero digitado é com (.) milhar e (,) decimal
-                                   //serve pra validar  valores acima e abaixo de 1000
-                                    //      echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
-                                    $valorPre  =    ((float)str_replace("," , "." , (str_replace("." , "" , $valorPre)) ));
-                               }else if(formatoRealInt($valorPre) == true)
-                               {//Verific se o numero digitado é inteiro sem ponto nem virgula
-                                   //serve pra validar  valores acima e abaixo de 1000
-                                  //        echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
-                                    $valorPre  =    number_format(str_replace("." , "" ,$valorPre), 2, '.', '');
-                               }else if(formatoRealPnt($valorPre) == true)
-                               { 
-                                   //      echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
-                                   $valorPre  =    $valorPre;
-                             }else if(formatoRealVrg($valorPre) == true)
-                               {  
-                                   $valorPre  =   ((float)str_replace("," , "." , (str_replace("." , "" , $valorPre)) ));
-                               }
-                            
-                          //  if($negativ == 1) { $valorPre = number_format($valorPre) * -1;}
-                        $valorPen = $valorPre;
-                         $id_saida = 0;
-                    if($entraSai == "0") // *** SE FOR VALOR DE DEVOLUÇÃO (NEGATIVO)
-                       { 
-                        $valorPre = 0.00 - $valorPre;
-                         $valorPen = 0.00;
-                        $idPre = $this->vendas_model->getByIdPre($Protocolo); //** PROCURA O PRESENTE A SER DEVOLVIDO
-                        if(isset($idPre) )                        
-                            echo $idPre->$nome;
-                            $id_saida = $id_Maxaenp;
-                             $dataP = array(
-                            'id_saida'          => $id_Maxaenp,
-                            'valor_pendente'    => $valorPen
-                            );                             
-                            if ($this->vendas_model->edit('presentes_especiais', $dataP, 'id_presente', $idPre->id_presente) == TRUE){ }
-                       }
-                          
-//****Colocar condição para se o valor for negativo procurar o lançamento identico anterior e lançar como saída
-
-                             $datapres = array(
-                            'id_entrada'        => $id_Maxaenp,
-                            'id_saida'          => $id_saida,
-                            'data_presente'     => $data_presente,
-                            'n_beneficiario'    => $CodigoBR,
-                            'nome_beneficiario' => $nome,
-                            'n_protocolo'       => $Protocolo,
-                            'valor_entrada'     => $valorPre,
-                            'valor_pendente'    => $valorPen
-                            ); 
-                          if (is_numeric($id = $this->vendas_model->add( 'presentes_especiais', $datapres, true)) ) 
-
-                              
-                            $contar = $contar+1;							
-                        }
-                    }	
 // ******* Se a data do ultimo saldo for maior que a do lançamento altera todos saldos posteriores			
                     
                  //	{**** primeiro dia do mês do lançamento
@@ -1055,22 +630,7 @@ class Vendas extends CI_Controller {
                             alert(\"Alterações realizada com sucesso. 
                             Novo lançamento. \");										
                             </script>";	
-                   /*      */  
-                   
-            switch ($caixa) 
-					{						    
-						case 1:	$contaNome = "IEADALPE - 1444-3";	break;    
-						case 2:	$contaNome = "22360-3";	break;  
-						case 3:	$contaNome = "ILPI";	break;  
-						case 4:	$contaNome = "BR214";	break;  
-						case 5:	$contaNome = "BR518";	break;  
-						case 6:	$contaNome = "BR542";	break;  
-						case 7:	$contaNome = "BR549";	break;  
-						case 8:	$contaNome = "BR579";	break;  
-						case 9:	$contaNome = "BB 28965-5";	break;  
-						case 10:$contaNome = "CEF 1948-4";	break; 				
-					}                        
-            $this->session->set_flashdata('success','Lançamento efetuado com sucesso! Conta '.$contaNome.' - '.$tipoCont.' doc '.$num_Doc.' doc Fiscal '.$numDocFiscal.'Razão social '.$razaoSoc.' '.$descri.' - tipo pag '.$tipo_Pag.'. | <strong>Adicione o ANEXO do documento fiscal.</strong>');  
+            $this->session->set_flashdata('success','Lançamento efetuado com sucesso! Conta '.$caixa.' - '.$tipoCont.' doc '.$num_Doc.' doc Fiscal '.$numDocFiscal.'Razão social '.$razaoSoc.' '.$descri.' - tipo pag '.$tipo_Pag.'. | <strong>Adicione o ANEXO do documento fiscal.</strong>');  
                 redirect(base_url() . 'index.php/vendas/adicionar/');
                 } else 
                     {                
