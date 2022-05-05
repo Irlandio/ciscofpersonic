@@ -231,15 +231,34 @@ $config = array('clientes' => array(array(
                                     'label' => 'Data da Venda',
                                     'rules' => 'required|trim'
                                 ),
-                                array(
-                                    'field'=>'clientes_id',
-                                    'label'=>'clientes',
-                                    'rules'=>'trim|required'
+                                  array(
+
+                                    'field' => 'cCustos',
+                                    'label' => 'Centro de Custos',
+                                    'rules' => 'required|trim'
+                                ),
+                                  array(
+
+                                    'field' => 'fundoF',
+                                    'label' => 'Fundo Financeiro',
+                                    'rules' => 'required|trim'
+                                ),
+                                  array(
+
+                                    'field' => 'descricao',
+                                    'label' => 'Descrição',
+                                    'rules' => 'required|trim'
+                                ),
+                                  array(
+
+                                    'field' => 'razaoSoc',
+                                    'label' => 'Razão Social',
+                                    'rules' => 'required|trim'
                                 ),
                                 array(
-                                    'field'=>'usuarios_id',
-                                    'label'=>'usuarios_id',
-                                    'rules'=>'trim|required'
+                                    'field'=>'valorFin',
+                                    'label'=>'Valor',
+                                    'rules'=>'required|trim'
                                 ))
 		);
 			   

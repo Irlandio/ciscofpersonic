@@ -60,13 +60,13 @@
     <?php } ?>
       
     <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vCliente')){ ?>
-     <!--<li class="<?php if(isset($menuClientes)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/clientes"><i class="icon icon-group"></i> <span>Fornecedores</span></a></li>-->
+     <li class="<?php if(isset($menuClientes)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/clientes"><i class="icon icon-group"></i> <span>Fornecedores</span></a></li>
     <?php } ?>
     
     <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vProduto')){ ?>
       <li class="<?php if(isset($menuProdutos)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/produtos"><i class="icon icon-group"></i> <span>Presentes Especiais</span></a></li>
     <?php } ?>
-    <!--
+    
     <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vServico')){ ?>
         <li class="<?php if(isset($menuServicos)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/servicos"><i class="icon icon-wrench"></i> <span>Serviços</span></a></li>
     <?php } ?>
@@ -77,7 +77,7 @@
 
     
     <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vArquivo')){ ?>
-        <li class="<?php if(isset($menuArquivos)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/arquivos"><i class="icon icon-hdd"></i> <span>Arquivos</span></a></li>-->
+        <li class="<?php if(isset($menuArquivos)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/arquivos"><i class="icon icon-hdd"></i> <span>Arquivos</span></a></li>
     <?php } ?>
 
     <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vLancamento')){ ?>
@@ -163,7 +163,7 @@
         case 'clientes': $seg ='Beneficiário'; break;              
         case 'produtos': $seg ='Presentes Especiais'; break;               
         case 'servicos': $seg ='Servicos'; break;                   
-        case 'mapos': $seg ='CiscoF'; break; 
+        case 'mapos': $seg ='CiscoFiP'; break; 
             default: $seg = $segmento1;
     }
     ?>

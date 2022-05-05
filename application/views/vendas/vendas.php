@@ -386,8 +386,8 @@
                         <th>#</th>
                         <th><H5>Data / Conta </H5></th>
                         <th><H5>Códigos</H5></th>
-                        <th><H5>Tipo / Forma</H5></th>
-                        <th><H5>Doc (Banc/Fiscal)</H5></th>
+                        <th><H5>Forma</H5></th>
+                        <th><H5>Parcela</H5></th>
                         <th><H5>Histórico | Descrição detalhada </H5></th>
                         <th><H5>Valor (R$)</H5></th>
                         <th></th>
@@ -452,10 +452,6 @@
                             }
 
 
-                        echo '<tr>';
-
-                        echo '<td><span class="badge" style="background-color: '.$cor.'; border-color: '.$cor.'">'.$r->id_fin.'</span></td>';   
-
                       //  echo '<td>'.$r->id_fin.'</td>';<font color=red>Razão Social</font>
                             $caix = $r->conta;
                         switch ($caix) 
@@ -471,19 +467,23 @@
                                     case 9:	$corC = "#fd7908";	break;  
                                     case 10:$corC = "#935103";	break; 				
                                 }                  
-                            $tipoC = $r->tipo_Conta;
-                        switch ($tipoC) 
-                                {						    
-						          case "Corrente":	   $cor = "#354789";	break; 
+                            $status = $r->num_Doc_Fiscal;
+                        switch ($status) 
+                                {			    
+						          case "Efetuado":	   $cor = "#354789";	break; 
 						          case "Suporte":	    $cor = "red";	break; 
-						          case "Investimento":	$cor = "#3f950a";	break; 
+						          case "Previsto":	$cor = "#3f950a";	break; 
 						          case "Poupança":	   $cor = "#8A9B0F";	break; 
                                 }
                             $cod_compassi = $r->cod_compassion; 
+                        echo '<tr>';
+
+                        echo '<td><span class="badge" style="background-color: '.$cor.'; border-color: '.$cor.'">'.$r->id_fin.'<br>'.$status.'</span></td>';   
+
                         echo '<td>'.$dataVenda.'<br><font color='.$corC.'>'.$r->nome_caixa.'</font> </td>
                         <td><font color="#570cbe">'.$cod_compassi.'</font><br><font color="#10840b">'.$r->cod_assoc.'</font> </td>
-                        <td ><font color='.$cor.'>'.$tipoC.'</font><br><font color='.$cor.'>'.$r->tipo_Pag.'</font></td>
-                        <td><font color="#570cbe">'.$r->num_Doc_Banco.'</font><br><font color="#10840b">'.$r->num_Doc_Fiscal.'</font> </td>';
+                        <td ><font color='.$cor.'>'.$r->tipo_Pag.'</font></td>
+                        <td><font color="#570cbe">'.$r->num_Doc_Banco.'</font><br><font color="#10840b"></font> </td>';
                                 $limite = 100;
                             if (strlen($r->historico) > $limite) $hist = substr($r->historico,0,$limite).'(...) '; else  $hist = $r->historico.' ';
                             if (strlen($r->descricao) > $limite) $desc = substr($r->descricao,0,$limite).'(...)'; else  $desc = $r->descricao;

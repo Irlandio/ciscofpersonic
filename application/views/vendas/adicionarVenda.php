@@ -46,11 +46,12 @@
             $lancamento     = $_SESSION['lancamento'];
             $conta          = $lancamento['conta'];        
             $tipCont        = $lancamento['tipo_Conta'];
-            $cod_assoc      = $lancamento['cod_assoc'];
-            $cod_compassion = $lancamento['cod_compassion'] ;
+            $fundoF         = $lancamento['fundoF'];
+            $cCustos        = $lancamento['cCustos'] ;
             $num_Doc        = $lancamento['num_Doc_Banco'];
             $numDocFiscal   = $lancamento['num_Doc_Fiscal'];
             $razaoSoc       = $lancamento['historico'];
+            $dataFin       = $lancamento['dataFin'];
             $descri         = $lancamento['descricao'];	
             $valorFin       = $lancamento['valorFin'];
             $tipo_Pag       = $lancamento['tipo_Pag'];
@@ -150,9 +151,10 @@ if (!$resultUltimo || $resultUltimo == null )
             <div class="tab-content">
                 <div class="tab-pane active" id="tab1">
                     <div class="span12" id="divCadastrarOs">
-                            <?php //if($custom_error == true)
-                                { ?>
-                            <?php } ?>
+                            
+                        <?php if ($custom_error != '') {
+                            echo '<div class="alert alert-danger">'.$custom_error.'</div>';
+                        } ?>
                         <form action="<?php echo current_url(); ?>" method="post" id="formVendas">
                             <input name ="cadastrante"  type="hidden" value="<?php echo $usuario->idUsuarios ?>" />
                             <input name ="tab"  type="hidden" value="<?php echo $contaA ?>" />
@@ -172,30 +174,23 @@ if (!$resultUltimo || $resultUltimo == null )
                             <input name ="dataUlt_saldo"  type="hidden" value="<?php echo $dataUlt_saldo ?>" />
                             <input name ="op"  type="hidden" value="opCad" />
                             <input name ="tipoConsulta"  type="hidden" value=3 />
-                        <?php  
-            //******* Se a solicitação de lançamento deu erro e voltou, os campos são Realimentados
-                        if( !empty($lancamento))
-                        {?>                    
-                           <div class="span3">                            
-                               <?php                         
-                                {			
-                                {
-                                   //  $query = mysqli_query($conex, "SELECT * FROM cod_compassion WHere  ent_Sai = 0 ");
-                                    ?>
-                                <p class="cod_Comp">
-                                    <label for="compassion">Centro de Custo *</label>
-                                      <select id="cod_Comp" name="cod_Comp" >                                              
-                                        <option value = NULL >Centro de Custo</option>
+                          
+                          
+                       <div class="span12">                 
+                           <div class="span3">
+                                <div class="control-group">
+                                    <label for="cCustos" class="control-label">Centro de Custo<span class="required">*</span></label>
+                                    <div class="controls">
+                                      <select id="cCustos" name="cCustos" >                                              
+                                        <option value = "" >Centro de Custo</option>
                                         <?php 
                                           if( $tipoES == 0 )
                                           {      
                                              foreach ($result_codComp as $rcodComp)
                                              {
-                                                 $select = '';
-                                                  if( $rcodComp->cod_Comp == $cod_compassion) $select = 'required';
                                                   if( $rcodComp->ent_SaiComp == 0)
                                                   { ?>                                           
-                                                    <option value = "<?php echo $rcodComp->cod_Comp ?>" <?php echo $select ?>>
+                                                    <option value = "<?php echo $rcodComp->cod_Comp ?>" <?php if( !empty($lancamento))if($rcodComp->cod_Comp == $cCustos){ echo 'selected';} ?>>
                                                     <?php echo ' '.$rcodComp->cod_Comp." |
                                                     ".$rcodComp->descricao." | ".$rcodComp->area_Cod.' '?></option>
                                                <?php } else { } 
@@ -208,66 +203,57 @@ if (!$resultUltimo || $resultUltimo == null )
                                                   if( $rcodComp->ent_SaiComp == 1)
                                                   {
                                                   ?>                                        
-                                                    <option value = "<?php echo $rcodComp->cod_Comp ?>">
+                                                    <option value = "<?php echo $rcodComp->cod_Comp ?>" <?php if( !empty($lancamento))if($rcodComp->cod_Comp == $cCustos){ echo 'selected';} ?>>
                                                     <?php echo ' '.$rcodComp->cod_Comp." |
                                                     ".$rcodComp->descricao." | ".$rcodComp->area_Cod.' '?></option>
                                                    <?php } else { }
                                                }
                                          } ?>
                                       </select>
-                                </p>
-                                    <?php }?>
-                                <p class="cod_ass">
-                                     <?php                                
-                                       foreach ($result_codIead as $rcodIead)
-                                        {
-                                          if($rcodIead->cod_Ass == $cod_assoc) 
-                                          {$cod_A =   $rcodIead->cod_Ass;
-                                          $descricao_A = $rcodIead->descricao_Ass;
-                                          }     
-                                        }?>                            
-                                    <label for="cod_ass">Fundo Financeiro *</label>
-                                     <select id="cod_Ass" name="cod_Ass">
-                                        <option value = NULL >Meio Financeiro</option>
-                                        <option value = "<?php echo $cod_A ?>">
-                                            <?php echo $cod_A." | ".$descricao_A ?></option>
-                                     <?php 
-                                        
+                                    </div>
+                                </div>
+                                    
+                                <div class="control-group">
+                                    <label for="fundoF" class="control-label">Fundo Financeiro<span class="required">*</span></label>
+                                    <div class="controls">
+                                     <select id="fundoF" name="fundoF">
+                                        <option value = "" >Fundo Financeiro</option>
+                                     <?php                                        
                                         { 
                                         foreach ($result_codIead as $rcodIead)
                                             { ?>                                           
-                                                <option value = "<?php echo $rcodIead->cod_Ass ?>">
+                                                <option value = "<?php echo $rcodIead->cod_Ass ?>" <?php if( !empty($lancamento))if($rcodIead->cod_Ass == $fundoF){ echo 'selected';} ?>>
                                                 <?php echo $rcodIead->cod_Ass." | ".$rcodIead->descricao_Ass ?></option>
                                                <?php                                                       
                                              }
                                          } 
                                         ?>														
                                           </select>
-                                </p>
-                                <?php }
-                                ?>
-                               <p class="docFiscal">
+                                    </div>
+                                </div>
+                                
                                     <label for="dataInicial">Data do evento financeiro<span class="required">*</span></label>
-                                    <input id="dataVenda" class="span6 datepicker" type="Text" name="dataVenda" value="<?php echo $valorFin; ?>"  />
-                               </p>
-                                <input  name ="numeroDoc" type="hidden"  value= "1"  >
-                                <input id="conta_Destino" name="conta_Destino" type="hidden" value = "<?php echo $conta ?>" />
+                                    <input id="dataVenda" class="span6 datepicker" type="Text" name="dataVenda" value="<?php echo $numDocFiscal = !empty($lancamento) ? $dataFin : date('d/m/Y');?>"  />
                                
+                                <input  name ="numeroDoc" type="hidden"  value= "1"  >
+                                <input id="conta_Destino" name="conta_Destino" type="hidden" value = "<?php if( !empty($lancamento)) echo $conta ?>" />
+                              
                             <p class="confirma"> 
-                                <?php   $chekFisc0 = $numDocFiscal == 0 ? "checked" : "";
-                                        $chekFisc1 = $numDocFiscal == 1 ? "checked" : ""; var_dump($numDocFiscal); ?>
+                                <?php  $numDocFiscal = !empty($lancamento) ? $numDocFiscal : "Previsto";
+                                       $chekFisc0 = $numDocFiscal == "Previsto" ? "checked" : "";
+                                       if( !empty($lancamento)) $chekFisc1 = $numDocFiscal == "Efetuado" ? "checked" : ""; ?>
                                 <label for="tiposaida">Situação</label>
                                 <label class="btn btn-default" submit>
-                                    <input name="numDocFiscal" type="radio" value="0" <?php echo $chekFisc0 ?> class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Previsto</label> 
+                                    <input name="numDocFiscal" type="radio" value="Previsto" <?php echo $chekFisc0 ?> class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Previsto</label> 
                                 <label class="btn btn-default" submit>
-                                    <input name="numDocFiscal" type="radio"  value="1" <?php echo $chekFisc1 ?> class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Efetuado</label>                                
+                                    <input name="numDocFiscal" type="radio"  value="Efetuado" <?php if( !empty($lancamento))echo $chekFisc1 ?> class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Efetuado</label>                                
                             </p>
                             </div>
                            <div class="span3"> 
                                 <label for="tiposaida">Tipo de Lançamento</label>
                                 <label class="btn btn-default" submit><input name="tipoPag" id="rd-time" type="radio" checked  value="Eventual" class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Eventual</label>
                                 <label class="btn btn-default" submit><input name="tipoPag" id="rd-time" type="radio"   value="Periodico" class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Periodico</label>
-                                <label class="btn btn-default" submit><input name="tipoPag" id="rd-time" type="radio"   value="Fixo" class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Eventual</label>
+                                <label class="btn btn-default" submit><input name="tipoPag" id="rd-time" type="radio"   value="Fixo" class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Fixo</label>
                                 <label class="btn btn-default" submit><input name="tipoPag" id="rd-time" type="radio"   value="Parcelado" class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Parcelado</label>
 
                                 <div id = "palco">
@@ -281,19 +267,28 @@ if (!$resultUltimo || $resultUltimo == null )
                                 </div>
 
                                 <div id="blAux6">
-                                    <p class="VALOR">
-                                    <label for="valor">Valor do lançamento</label>
-                                    <span class="style1">* R$ </span><input text-align="right" name="valorFin" class="money"  value= "<?php echo $valorFin ?>"  ><font color=red> **</font>
-                                    </p>
-                                    <p class="Historico">
-                                        <label for="razao"><font color=red>Histórico</font></label>
-                                        <textarea name ="razaoSoc" type="text" maxlength=100 ></textarea><font color=red> *</font>
+                                    
+                                <div class="control-group">
+                                    <label for="valorFin" class="control-label">Valor do lançamento<span class="required">*</span></label>
+                                    <div class="controls">
+                                        <input text-align="right" name="valorFin" class="money"  value= "<?php if( !empty($lancamento))echo $valorFin ?>"  >
+                                    </div>
+                                </div>
+                                    
+                                <div class="control-group">
+                                            <label for="razaoSoc" class="control-label">Histórico<span class="required">*</span></label>
+                                    <div class="controls">
+                                             <textarea name ="razaoSoc" type="text" maxlength=100  placeholder="- Rzão Social."><?php if( !empty($lancamento))echo $razaoSoc ?></textarea>  
+                                    </div>
 
-                                    </p>
-                                    <p class="descri">
-                                        <label for="descri">Descrição</label>
-                                        <textarea name ="descri" type="text" maxlength=100 ><?php echo $descri ?></textarea><font color=red> *</font>
-                                    </p>   
+                                    </div>
+                                    
+                                <div class="control-group">
+                                        <label for="descricao" class="control-label">Descrição<span class="required">*</span></label>
+                                    <div class="controls">
+                                        <textarea name ="descricao" type="text" maxlength=100  placeholder="- Descrição."><?php if( !empty($lancamento))echo $descri ?></textarea>
+                                    </div>
+                                </div>
                                 </div> 
                                     <p class="Senha">
                                         <label for="senhaAdm"><font color=red>Senha Admnistrador</font></label>
@@ -301,123 +296,14 @@ if (!$resultUltimo || $resultUltimo == null )
 
                                     </p>
                             </div>
-                        <?php
-                        }else  
-            //******* Se o lançamento esta iniciando                  
-                        { ?>
-                           <div class="span3">                    
-                                <p class="cod_Comp">
-                                        <label for="compassion">Centro de Custo *</label>
-                                          <select id="cod_Comp" name="cod_Comp" >                                              
-                                            <option value = "">Centro de Custo</option>
-                                            <?php 
-                                              if( $tipoES == 0 )
-                                              { 
-                                               foreach ($result_codComp as $rcodComp)
-                                                 {
-                                                      if( $rcodComp->ent_SaiComp == 0 && $rcodComp->codigoNovo == 1 )
-                                                      { ?>                                           
-                                                    <option value = "<?php echo $rcodComp->cod_Comp ?>">
-                                                    <?php echo ' '.$rcodComp->cod_Comp." |
-                                                    ".$rcodComp->descricao." | ".$rcodComp->area_Cod.' '?></option>
-                                                   <?php } else { } 
-                                                 }
-                                               } else 
-                                              if( $tipoES == 1 ) 
-                                              {                                                                                                 
-                                                 foreach ($result_codComp as $rcodComp)
-                                                 {
-                                                      if( $rcodComp->ent_SaiComp == 1 && $rcodComp->codigoNovo == 1 )
-                                                      {
-                                                      ?>                                        
-                                                        <option value = "<?php echo $rcodComp->cod_Comp ?>">
-                                                        <?php echo ' '.$rcodComp->cod_Comp." |
-                                                        ".$rcodComp->descricao." | ".$rcodComp->area_Cod.' '?></option>
-                                                       <?php } else { }
-                                                   }
-                                             } ?>
-                                              </select>
-                                </p>
-                                <p class="cod_ass">
-
-                                <label for="cod_ass">Fundo Financeiro *</label>
-                                 <select id="cod_Ass" name="cod_Ass">
-                                    <option value = "">Meio Financeiro</option>
-                                    <?php 
-                                    foreach ($result_codIead as $rcodIead)
-                                        { ?>                                           
-                                            <option value = "<?php echo $rcodIead->cod_Ass ?>">
-                                            <?php echo $rcodIead->cod_Ass." | ".$rcodIead->descricao_Ass ?></option>
-                                           <?php                                                       
-                                         }
-                                    ?>														
-                                </select>
-                            </p>
-                                <input  name ="numeroDoc" type="hidden"  value= "1"  >
-                            <p class="conta" class="span6">
-                                <label for="dataInicial">Data do evento financeiro<span class="required">*</span></label>
-                                <input id="dataVenda" class="span6 datepicker" type="Text" name="dataVenda" value="<?php echo date('d/m/Y'); ?>"  />
-                             </p>
-                               
-                                <input  name ="numDocFiscal" type="hidden"  value= "S/N"  >
-                            <p class="confirma">                                
-                                <label for="tiposaida">Situação</label>
-                                <label class="btn btn-default" submit><input name="numDocFiscal" type="radio"  checked value="0" class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Previsto</label> 
-                                <label class="btn btn-default" submit><input name="numDocFiscal" type="radio"  value="1" class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Efetuado</label>                                
-                            </p>
-                           </div>
-                           <div class="span3">
-                                <label for="tiposaida">Tipo de Lançamento</label>
-                                <label class="btn btn-default" submit><input name="tipoPag" id="rd-time" type="radio" checked  value="Eventual" class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Eventual</label>
-                                <label class="btn btn-default" submit><input name="tipoPag" id="rd-time" type="radio"   value="Periodico" class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Periodico</label>
-                                <label class="btn btn-default" submit><input name="tipoPag" id="rd-time" type="radio"   value="Fixo" class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Eventual</label>
-                                <label class="btn btn-default" submit><input name="tipoPag" id="rd-time" type="radio"   value="Parcelado" class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Parcelado</label>
-
-                                <div id = "palco">
-                                 <div id = "Periodico">
-                                    <label for="conta_Destino">Repetir</label>
-                                    <td>
-                                        <input  name="conta_Destino"  id = "conta_Destino" type="number" value="1" max=24 >
-                                        <font color=red> *</font>
-                                    </td>
-                                 </div>
-                                </div>
-
-                                   <div id="blAux6">
-                                        <p class="VALOR">
-                                        <label for="valor">Valor do lançamento</label>
-                                        <span class="style1">* R$ </span><input text-align="right" name="valorFin"  class="money"  ><font color=red> **</font>
-                                        </p>
-                                        <p class="Historico">
-                                            <label for="raz"><font color=red>Histórico</font></label>
-                                             <textarea name ="razaoSoc" type="text" maxlength=100  placeholder="Descrição."></textarea><font color=red> *</font>
-
-                                        </p>
-                                        <p class="descri">
-                                            <label for="descri">Descrição</label>
-                                            <textarea name ="descri" type="text" placeholder="- Observação." maxlength=100></textarea><font color=red> *</font>
-                                        </p>   
-                                    </div>
-
-                                <p class="senhaAdm">
-                                     <input  style ="background: transparent; border: none;" name ="raz" type="hidden"  >
-                                    <label for="senhaAd"><font color=red>senha Administrador</font></label>
-                                    <input  name ="senhaAdm" type="text"  value=""  maxlength=50><font color=red> *</font>
-                                </p>
-                            </div>                 
-                           <div class="span12">
-                               <div id = "outro">								
-
-                               </div>                          	
-                               <?php
-                                }
-                                ?>
+                       </div>   
+                       <div class="span12">
                             <div class="span4" style="padding: 1%; margin-left: 0">
                                 <div class="span6 offset3" style="text-align: center">
                                     <button class="btn btn-success" id="btnContinuar"><i class="icon-share-alt icon-white"></i> Continuar</button>
                                     <a href="<?php echo base_url() ?>index.php/vendas" class="btn"><i class="icon-arrow-left"></i> Voltar</a>
                                 </div>
-                            </div>
+                           </div>
                         </div>
                     </form>	
                     </div>
@@ -476,27 +362,22 @@ if (!$resultUltimo || $resultUltimo == null )
 <script type="text/javascript">
 $(document).ready(function(){
  $(".money").maskMoney();
-      $("#cliente").autocomplete({
-            source: "<?php echo base_url(); ?>index.php/vendas/autoCompleteCliente",
-            minLength: 1,
-            select: function( event, ui ) {
-                 $("#clientes_id").val(ui.item.id);    
-            }
-      });
-      $("#tecnico").autocomplete({
-            source: "<?php echo base_url(); ?>index.php/vendas/autoCompleteUsuario",
-            minLength: 1,
-            select: function( event, ui ) {
-                 $("#usuarios_id").val(ui.item.id);
-            }
-      });
       $("#formVendas").validate({
           rules:{
+             descricao: {required:true},
+             razaoSoc: {required:true},
+             dataVenda: {required:true},
+             valorFin: {required:true},
+             cCustos: {required:true},
+             fundoF: {required:true}
           },
           messages:{
-             cliente: {required: 'Campo Requerido.'},
-             tecnico: {required: 'Campo Requerido.'},
-             dataVenda: {required: 'Campo Requerido.'}
+             descricao: {required: 'Campo Requerido.'},
+             razaoSoc: {required: 'Campo Requerido.'},
+             dataVenda: {required: 'Campo Requerido.'},
+             valorFin: {required: 'Campo Requerido.'},
+             cCustos: {required: 'Campo Requerido.'},
+             fundoF: {required: 'Campo Requerido.'}
           },
             errorClass: "help-inline",
             errorElement: "span",
