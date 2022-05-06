@@ -28,10 +28,12 @@ class Vendas_model extends CI_Model {
                 }
             }
         }
-        $this->db->select($fields.', caixas.nome_caixa, caixas.id_caixa');
+        $this->db->select($fields.', caixas.nome_caixa, caixas.id_caixa, cod_assoc.descricao_Ass, cc.descricao');
         $this->db->from($table);
         $this->db->limit($perpage,$start);
         $this->db->join('caixas', 'caixas.id_caixa = '.$table.'.conta');
+        $this->db->join('cod_compassion cc', 'cc.cod_Comp = '.$table.'.cod_compassion');
+        $this->db->join('cod_assoc', 'cod_assoc.cod_Ass = '.$table.'.cod_assoc');
         $this->db->order_by('id_fin','desc');
       //  if($where){ $this->db->where($where);   }
 // condicionais da pesquisa

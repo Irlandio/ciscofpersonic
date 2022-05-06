@@ -43,6 +43,34 @@
         <div class="widget-box">
             <div class="widget-title"><span class="icon"><i class="icon-signal"></i></span><h5>Quantidades de Lançamentos no mês atual</h5>                
         <?php 
+    (if(1==2))
+          { $cor[7] = "#f2938f";
+            $cor[7] = "#d11109";
+            $cor[7] = "#0d1d98";
+            $cor[7] = "#4b5de4";
+              foreach ($c_Custos as $cC)
+              {
+                $caixaNome[] = "IEADALPE - 1444-3";    $total[] = 0;               
+                        $cor[] = "#0085cc"; 
+              }
+    foreach ($os as $o) 
+    {
+    switch ($o->conta) 
+					{
+						case 1:   ++$total[1]  ;  $cor[1] = "#0085cc"; break;    
+						case 2:	  ++$total[2]  ;  $cor[2] = "#0085cc";break;  
+						case 3:	  ++$total[3]  ;  $cor[3] = "#0085cc";break;  
+						case 4:	  ++$total[4]  ;  $cor[4] = "#4b5de4";break;  
+						case 5:	  ++$total[5]  ;  $cor[5] = "#4b5de4";break;  
+						case 6:	  ++$total[6]  ;  $cor[6] = "#4b5de4";break;  
+						case 7:	  ++$total[7]  ;  $cor[7] = "#4b5de4";break;  
+						case 8:	  ++$total[8]  ;  $cor[8] = "#4b5de4";break;  
+						case 9:	  ++$total[9]  ;  $cor[9] = "#0085cc";break;  
+						case 10:  ++$total[10] ;  $cor[10] = "#0085cc";break;  				
+					}
+           // echo "['".$caixaNome."', ".$o->total."],";
+        }
+    }
             $caixaNome[1] = "IEADALPE - 1444-3";    $total[1] = 0;
             $caixaNome[2] = "22360-3";              $total[2] = 0;
             $caixaNome[3] = "ILPI";                 $total[3] = 0;

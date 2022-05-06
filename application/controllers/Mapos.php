@@ -24,6 +24,7 @@ class Mapos extends CI_Controller {
         $this->data['lancamentos'] = $this->mapos_model->getLancamentos('aenpfin');
         $this->data['os'] = $this->mapos_model->getOsEstatisticas();
         $this->data['estatisticas_financeiro'] = $this->mapos_model->getEstatisticasFinanceiro();
+        $this->data['c_Custos'] = $this->mapos_model->get3('cod_compassion','cod_Comp','ent_SaiComp')
         $this->data['menuPainel'] = 'Painel';
         $this->data['view'] = 'mapos/painel';
         $this->load->view('tema/topo',  $this->data);

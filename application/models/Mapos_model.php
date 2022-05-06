@@ -83,6 +83,12 @@ class Mapos_model extends CI_Model {
 
     }
 
+    function get3($table,$fields,$fields2){
+        
+        $this->db->order_by($fields2,'desc');
+        $this->db->order_by($fields);
+        return $this->db->get($table)->result();
+    }
     
     function add($table,$data){
         $this->db->insert($table, $data);         
@@ -152,8 +158,9 @@ class Mapos_model extends CI_Model {
 
     function getOsEstatisticas(){
         $dataInicial = date('Y-m-01');
+        $dataFim = date('Y-m-d', strtotime("+1 month", strtotime($dataInicial)));
        // $sql = "SELECT conta, COUNT(conta) as total FROM aenpfin  WHERE dataFin >= ".$dataInicial." GROUP BY conta ORDER BY conta";
-        $sql = "SELECT conta FROM aenpfin  WHERE dataFin >= '".$dataInicial."'  ORDER BY conta";
+        $sql = "SELECT conta FROM aenpfin  WHERE dataFin >= '".$dataInicial."' AND dataFin < '".$dataFim."'  ORDER BY conta";
         return $this->db->query($sql)->result();
     }
 

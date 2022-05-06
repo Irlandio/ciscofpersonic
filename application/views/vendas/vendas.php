@@ -478,10 +478,9 @@
                             $cod_compassi = $r->cod_compassion; 
                         echo '<tr>';
 
-                        echo '<td><span class="badge" style="background-color: '.$cor.'; border-color: '.$cor.'">'.$r->id_fin.'<br>'.$status.'</span></td>';   
-
-                        echo '<td>'.$dataVenda.'<br><font color='.$corC.'>'.$r->nome_caixa.'</font> </td>
-                        <td><font color="#570cbe">'.$cod_compassi.'</font><br><font color="#10840b">'.$r->cod_assoc.'</font> </td>
+                        echo '<td><span class="badge" style="background-color: '.$cor.'; border-color: '.$cor.'">'.$r->id_fin.'<br>'.$status.'</span></td>';
+                        echo '<td>'.$dataVenda.' </td>
+                        <td><font color="#570cbe">'.$cod_compassi.' ('.$r->descricao.')</font><br><font color="#10840b">'.$r->cod_assoc.' ('.$r->descricao_Ass.')</font> </td>
                         <td ><font color='.$cor.'>'.$r->tipo_Pag.'</font></td>
                         <td><font color="#570cbe">'.$r->num_Doc_Banco.'</font><br><font color="#10840b"></font> </td>';
                                 $limite = 100;
