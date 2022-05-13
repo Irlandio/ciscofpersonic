@@ -1,11 +1,13 @@
 <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="<?php echo base_url();?>js/dist/excanvas.min.js"></script><![endif]-->
-
-<script language="javascript" type="text/javascript" src="<?php echo base_url();?>assets/js/dist/jquery.jqplot.min.js"></script>
+<?php if("http://127.0.0.1:80/ciscofpersonic/" == base_url())
+{ $urlAux = "http://127.0.0.1:80/ciscodtk/";}else
+    { $urlAux = "http://imprimadesign.tk/"; }
+?>
+<script language="javascript" type="text/javascript" src="<?php echo $urlAux;?>assets/js/dist/jquery.jqplot.min.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/js/dist/jquery.jqplot.min.css" />
 
 <script type="text/javascript" src="<?php echo base_url();?>assets/js/dist/plugins/jqplot.pieRenderer.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/js/dist/plugins/jqplot.donutRenderer.min.js"></script>
-
 <!--Action boxes-->
   <div class="container-fluid">
       <h5> CiScoFiP (Cadastro de Informação e Suporte de controle Financeiro Pessoal)</h5>
@@ -31,112 +33,96 @@
       </ul>
     </div>
   </div>  
-<!--End-Action boxes-->  
-
-
-
+<!--End-Action boxes-->
 <?php if($os != null){ ?>
 <div class="row-fluid" style="margin-top: 0">
-
-    <div class="span12">
-        
+    <div class="span12">               
         <div class="widget-box">
             <div class="widget-title"><span class="icon"><i class="icon-signal"></i></span><h5>Quantidades de Lançamentos no mês atual</h5>                
-        <?php 
-    (if(1==2))
-          { $cor[7] = "#f2938f";
-            $cor[7] = "#d11109";
-            $cor[7] = "#0d1d98";
-            $cor[7] = "#4b5de4";
-              foreach ($c_Custos as $cC)
-              {
-                $caixaNome[] = "IEADALPE - 1444-3";    $total[] = 0;               
-                        $cor[] = "#0085cc"; 
-              }
-    foreach ($os as $o) 
-    {
-    switch ($o->conta) 
-					{
-						case 1:   ++$total[1]  ;  $cor[1] = "#0085cc"; break;    
-						case 2:	  ++$total[2]  ;  $cor[2] = "#0085cc";break;  
-						case 3:	  ++$total[3]  ;  $cor[3] = "#0085cc";break;  
-						case 4:	  ++$total[4]  ;  $cor[4] = "#4b5de4";break;  
-						case 5:	  ++$total[5]  ;  $cor[5] = "#4b5de4";break;  
-						case 6:	  ++$total[6]  ;  $cor[6] = "#4b5de4";break;  
-						case 7:	  ++$total[7]  ;  $cor[7] = "#4b5de4";break;  
-						case 8:	  ++$total[8]  ;  $cor[8] = "#4b5de4";break;  
-						case 9:	  ++$total[9]  ;  $cor[9] = "#0085cc";break;  
-						case 10:  ++$total[10] ;  $cor[10] = "#0085cc";break;  				
-					}
-           // echo "['".$caixaNome."', ".$o->total."],";
-        }
-    }
-            $caixaNome[1] = "IEADALPE - 1444-3";    $total[1] = 0;
-            $caixaNome[2] = "22360-3";              $total[2] = 0;
-            $caixaNome[3] = "ILPI";                 $total[3] = 0;
-            $caixaNome[4] = "BR214";                $total[4] = 0;
-            $caixaNome[5] = "BR518";                $total[5] = 0;
-            $caixaNome[6] = "BR542";                $total[6] = 0;
-            $caixaNome[7] = "BR549";                $total[7] = 0;
-            $caixaNome[8] ="BR579";                 $total[8] = 0;
-            $caixaNome[9] = "BB 28965-5";           $total[9] = 0;
-            $caixaNome[10] = "CEF 1948-4";          $total[10] = 0; 
-                        $cor[1] = "#0085cc";     
-                        $cor[2] = "#0085cc";  
-                        $cor[3] = "#0085cc"; 
-						$cor[4] = "#4b5de4"; 
-						$cor[5] = "#4b5de4";  
-						$cor[6] = "#4b5de4"; 
-						$cor[7] = "#4b5de4";  
-						$cor[8] = "#4b5de4";  
-						$cor[9] = "#0085cc";  
-						$cor[10] = "#0085cc";
-    foreach ($os as $o) 
-    {
-    switch ($o->conta) 
-					{
-						case 1:   ++$total[1]  ;  $cor[1] = "#0085cc"; break;    
-						case 2:	  ++$total[2]  ;  $cor[2] = "#0085cc";break;  
-						case 3:	  ++$total[3]  ;  $cor[3] = "#0085cc";break;  
-						case 4:	  ++$total[4]  ;  $cor[4] = "#4b5de4";break;  
-						case 5:	  ++$total[5]  ;  $cor[5] = "#4b5de4";break;  
-						case 6:	  ++$total[6]  ;  $cor[6] = "#4b5de4";break;  
-						case 7:	  ++$total[7]  ;  $cor[7] = "#4b5de4";break;  
-						case 8:	  ++$total[8]  ;  $cor[8] = "#4b5de4";break;  
-						case 9:	  ++$total[9]  ;  $cor[9] = "#0085cc";break;  
-						case 10:  ++$total[10] ;  $cor[10] = "#0085cc";break;  				
-					}
-           // echo "['".$caixaNome."', ".$o->total."],";
-        }
-                        ?></div>
+                    <?php 
+                        $cor[0] = "#839557";
+                        $cor[1] = "#f2938f";
+                        $cor[2] = "#d11109";
+                        $cor[3] = "#d8b83f";
+                        $cor[4] = "#0d1d98";
+                        $cor[5] = "#10a527";
+                       $i=0;
+                    foreach ($c_Custos as $c)
+                      {
+                        $i++;
+                        $cC = $i%6;
+                        $c_Custo[$c->cod_Comp] = $c->cod_Comp; 
+                        $total1[$c->cod_Comp] = 0;  
+                        $total0[$c->cod_Comp] = 0; 
+                        $cor[$c->cod_Comp]= $cor[$cC]; 
+                      }
+                $total1T = $total0T = $total0Pago = $total1Recebido = 0;
+                foreach ($os as $o) 
+                {
+                    if($o->ent_Sai == 0 && isset($total0[$o->cod_compassion]))
+                     {   $total0[$o->cod_compassion] += $o->valorFin;
+                        if($o->num_Doc_Fiscal == "Efetuado" ) $total0Pago += $o->valorFin;
+                         $total0T += $o->valorFin;
+                     echo 'D '.$o->valorFin.', ';
+                     }
+                    if($o->ent_Sai == 1  && isset($total1[$o->cod_compassion]))
+                     {   $total1[$o->cod_compassion] += $o->valorFin;
+                        if($o->num_Doc_Fiscal == "Efetuado" ) $total1Recebido += $o->valorFin;
+                         $total1T += $o->valorFin;
+                     echo 'C '.$o->valorFin.', ';
+                     }
+                }
+                $diferenca = abs($total1T-$total0T); //Diferença dos totais receita -despesa
+                $total1TRelativo = $total1T>$total0T ? $total1T-$diferenca : $total1T;
+                $total0TRelativo = $total0T>$total1T ? $total0T-$diferenca : $total0T;
+                $saldoTXT = $total1T>$total0T ? "Saldo Positivo" : "Saldo Negativo";
+                $saldPositivoTXT = "Receita Comprometida";
+                $saldnegativoTXT = "Despesa Acobertada";
+    
+                $diferencaReal = $total1Recebido-$total0Pago;
+                $EntradasReeal = $total1Recebido-$diferencaReal;
+                $SaidasReeal = $total0Pago;
+                ?>
+            </div>
             <div class="widget-content">
                 <div class="row-fluid">
-                    <div class="span8">
-        
-                     <div id="chart-os" style=""></div>
+                    <div class="span5"><h5>Saldo Previsto <?=$diferencaReal?></h5>
+                    <div id="chart-saldo" style=""></div>
                     </div>
-             
+                    <div class="span5"><h5>Saldo Real <?=$diferenca?></h5>
+                    <div id="chart-saldoReal" style=""></div>
+                    </div>
+                    <div class="span5"><h5>Créditos <?=$total1T?></h5>
+                    <div id="chart-creditos" style=""></div>
+                    </div>
+                    <div class="span5"><h5>Débitos <?=$total0T?></h5>
+                    <div id="chart-debitos" style=""></div>
+                    </div>
+
+<!--
                     <div class="span4">       
-            <table class="table table-bordered ">
-                <tbody>
-                    <?php
-                     for ($i = 4; $i <= 8; $i++) {
-                         if($i < 7)$ii = $i-3; else  if($i > 6)$ii = $i+2; 
-                         echo '<tr> <td><span class="badge" style="background-color: '.$cor[$i].'; border-color: '.$cor[$i].'">'.$total[$i].' - '.$caixaNome[$i].'</span></td> <td><span class="badge" style="background-color: '.$cor[$ii].'; border-color: '.$cor[$ii].'">'.$total[$ii].' - '.$caixaNome[$ii].'</span></td> </tr> ';
-                    }
-                                    ?>                                        
-                </tbody>
-            </table>
+                        <table class="table table-bordered ">
+                            <tbody>
+                                <?php
+                                 // foreach ($c_Custos as $c)
+                                  {
+                                     //if($total[$c->cod_Comp] != 0)
+                                      { 
+                                        // echo '<tr> <td><span class="badge" style="background-color: '.$cor[$c->cod_Comp].'; border-color: '.$cor[$c->cod_Comp].'">'.$total[$c->cod_Comp].' - '.$c_Custo[$c->cod_Comp].'</span></td>/<td></td> </tr> ';
+                                      }
+                                }
+                            ?>                                        
+                            </tbody>
+                        </table>
                     </div>
-                
+-->
                 </div>
             </div>
         </div>
     </div>
 </div>
-<?php } ?>
-
-
+<?php } 
+?>
 <div class="row-fluid" style="margin-top: 0">
     
     <div class="span12">
@@ -234,9 +220,6 @@
     </div>
 
 </div>
-
-
-
 <?php if($estatisticas_financeiro != null){ 
       if($estatisticas_financeiro->total_receita1C != null || $estatisticas_financeiro->total_despesa1C != null || $estatisticas_financeiro->total_despesa1S != null || $estatisticas_financeiro->total_despesa1S != null){  ?>
 <div class="row-fluid" style="margin-top: 0">
@@ -289,7 +272,6 @@
 
 </div>
 <?php } } ?>
-
 <div class="row-fluid" style="margin-top: 0">
 
     <div class="span12">
@@ -314,47 +296,79 @@
         </div>
     </div>
 </div>
-
-
-
 <script src="<?php echo base_url();?>assets/js/bootstrap.min.js"></script>
-
-
-<?php if($os != null) {?>
-<script type="text/javascript">
-    
+<?php //if($c_Custos != null) 
+{?>
+<script type="text/javascript">    
     $(document).ready(function(){
-      var data = [
-        <?php 
-    if($usuario->conta_Usuario > 3 && $usuario->conta_Usuario < 9 ) 
-    { 
-        for ($i = 4; $i <= 8; $i++) {
-             echo "['".$caixaNome[$i]."', ".$total[$i]."],";
-        }
-       }else
-       {
-        for ($i = 1; $i <= 10; $i++) {
-             echo "['".$caixaNome[$i]."', ".$total[$i]."],";
-        } 
-       }
-          ?>
-       
-      ];
-      var plot1 = jQuery.jqplot ('chart-os', [data], 
-        { 
-          seriesDefaults: {
-            // Make this a pie chart.
-            renderer: jQuery.jqplot.PieRenderer, 
-            rendererOptions: {
-              // Put data labels on the pie slices.
-              // By default, labels show the percentage of the slice.
-              showDataLabels: true
-            }
-          }, 
-          legend: { show:true, location: 'e' }
-        }
-      );
-
+            var dataSR = [
+                        <?php 
+                      {
+                           echo "['Entradas Efetuadas R$".$EntradasReeal."', ".$EntradasReeal."],";
+                           echo "['Saidas Pagas R$".$SaidasReeal."', ".$SaidasReeal."],";
+                           echo "['Saldo Real R$".$diferencaReal."', ".$diferencaReal."],";
+                      }
+                ?>
+              ];
+              var plot = jQuery.jqplot ('chart-saldoReal', [dataSR], 
+                {  seriesDefaults: {
+                    renderer: jQuery.jqplot.PieRenderer, 
+                    rendererOptions: {
+                      showDataLabels: true   }  }, 
+                  legend: { show:true, location: 'e' }
+                }
+            );
+            var dataS = [
+                        <?php 
+                      {
+                           echo "['".$saldPositivoTXT." R$".$total1TRelativo."', ".$total1TRelativo."],";
+                           echo "['".$saldnegativoTXT." R$".$total0TRelativo."', ".$total0TRelativo."],";
+                           echo "['".$saldoTXT." R$".$diferenca."', ".$diferenca."],";
+                      }
+                ?>
+              ];
+              var plot = jQuery.jqplot ('chart-saldo', [dataS], 
+                {  seriesDefaults: {
+                    renderer: jQuery.jqplot.PieRenderer, 
+                    rendererOptions: {
+                      showDataLabels: true   }  }, 
+                  legend: { show:true, location: 'e' }
+                }
+            );
+            var dataD = [
+                        <?php     
+                foreach ($c_Custos as $c)
+                      {
+                           if($total0[$c->cod_Comp] != 0)
+                           echo "['".$c->cod_Comp." (".$c->descricao.") R$".$total0[$c->cod_Comp]."', ".$total0[$c->cod_Comp]."],";
+                      }
+                ?>
+              ];
+              var plot = jQuery.jqplot ('chart-debitos', [dataD], 
+                {  seriesDefaults: {
+                    renderer: jQuery.jqplot.PieRenderer, 
+                    rendererOptions: {
+                      showDataLabels: true   }  }, 
+                  legend: { show:true, location: 'e' }
+                }
+            );
+            var dataC = [
+                        <?php     
+                foreach ($c_Custos as $c)
+                      {
+                           if($total1[$c->cod_Comp] != 0)
+                           echo "['".$c->cod_Comp." (".$c->descricao.") R$".$total0[$c->cod_Comp]."', ".$total1[$c->cod_Comp]."],";
+                      }
+                ?>
+              ];
+              var plot = jQuery.jqplot ('chart-creditos', [dataC], 
+                {  seriesDefaults: {
+                    renderer: jQuery.jqplot.PieRenderer, 
+                    rendererOptions: {
+                      showDataLabels: true   }  }, 
+                  legend: { show:true, location: 'e' }
+                }
+            );
     });
  
 </script>

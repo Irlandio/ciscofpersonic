@@ -159,8 +159,9 @@ class Mapos_model extends CI_Model {
     function getOsEstatisticas(){
         $dataInicial = date('Y-m-01');
         $dataFim = date('Y-m-d', strtotime("+1 month", strtotime($dataInicial)));
+        $dataFim = date('2022-06-01');
        // $sql = "SELECT conta, COUNT(conta) as total FROM aenpfin  WHERE dataFin >= ".$dataInicial." GROUP BY conta ORDER BY conta";
-        $sql = "SELECT conta FROM aenpfin  WHERE dataFin >= '".$dataInicial."' AND dataFin < '".$dataFim."'  ORDER BY conta";
+        $sql = "SELECT * FROM aenpfin  WHERE dataFin >= '".$dataInicial."' AND dataFin < '".$dataFim."'  ORDER BY conta";
         return $this->db->query($sql)->result();
     }
 

@@ -28,7 +28,7 @@ class Vendas_model extends CI_Model {
                 }
             }
         }
-        $this->db->select($fields.', caixas.nome_caixa, caixas.id_caixa, cod_assoc.descricao_Ass, cc.descricao');
+        $this->db->select($fields.', caixas.nome_caixa, caixas.id_caixa, cod_assoc.descricao_Ass, cc.descricaoCod');
         $this->db->from($table);
         $this->db->limit($perpage,$start);
         $this->db->join('caixas', 'caixas.id_caixa = '.$table.'.conta');

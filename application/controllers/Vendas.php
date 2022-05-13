@@ -74,7 +74,6 @@ class Vendas extends CI_Controller {
         $count = 100;
         }
         if($de){
-
             $de = explode('/', $de);
             $de = $de[2].'-'.$de[1].'-'.$de[0];
             $where_array['de'] = $de;
@@ -86,7 +85,6 @@ class Vendas extends CI_Controller {
             $where_array['ate'] = $ate;
         $count = 100;
         }
-        
         
         $config['base_url'] = base_url().'index.php/vendas/gerenciar/';
         $config['total_rows'] = $this->vendas_model->count('aenpfin');
@@ -117,13 +115,13 @@ class Vendas extends CI_Controller {
         
         $contaU = $user->conta_Usuario;
         
-        if($contaU == 99)
-        {
-            $this->data['results'] = $this->vendas_model->get('aenpfin','*',$where_array,$config['per_page'],$this->uri->segment(3));
-        }else
-           {
-        $this->data['results'] = $this->vendas_model->get0('aenpfin','*',$contaU,'',$config['per_page'],$this->uri->segment(3));
-            }
+            $this->data['results'] = $this->vendas_model->get('aenpfin','*',$where_array,$config['per_page'],$this->uri->segment(3));        
+        if(!$de){ 
+            $dia1 = date("Y-m-01");
+            $where_array['de'] = $dia1;
+            $where_array['ate'] = date('Y-m-d', strtotime("+1 month", strtotime($dia1)));
+        }
+            $this->data['resultsMes'] = $this->vendas_model->get('aenpfin','*',$where_array,$config['per_page'],$this->uri->segment(3));
 
         
         $this->data['result_codComp'] = $this->vendas_model->get2('cod_compassion');
@@ -337,6 +335,9 @@ class Vendas extends CI_Controller {
                 if(null !== (   $this->input->post('senhaAdm') )) {  
                     $_SESSION['senhaAdm']  = $this->input->post('senhaAdm');} 
             
+                    $res_max = mysqli_query($conex, 'SELECT MAX(id_fin) AS maximo FROM aenpfin');                            
+                    while ($id_ultimo = mysqli_fetch_assoc($res_max)) 
+                    {	$id_Maxaenp = $id_ultimo['maximo']+1; }
             $data = array(
                 'conta'         => $caixa,
                 'tipo_Conta'    => $tipoCont,
@@ -353,6 +354,7 @@ class Vendas extends CI_Controller {
                 'conta_Destino' => $conta_Destino,
                 'saldo'         => $saldo_Final,
                 'saldo_Mes'     => 'S',
+                'par_ES'        => $id_Maxaenp,
                 'cadastrante'   => $cadastrante
             ); 
  //***** VERIFICAÇÕES PARA LANÇAMENTO           
@@ -404,7 +406,250 @@ class Vendas extends CI_Controller {
                                     <script type=\"text/javascript\">
                                     alert(\" Você não informou todos os dados nescessário. ".$faltaCampo." Tente novamente! Linha: ". __LINE__ . "\");
                                     </script>";	
-                  exit;  
+                 // exit;  
+                }	//URL=PaginaLancamento1.php
+                
+                $datahj = date('Y-m-d');
+                $data_R = date('Y-m-d', strtotime("-6 month", strtotime($datahj)));
+                if($permissoes_id < 3 && $dataF > $data_R)  $senhaAdm = "aenp@z18";
+                if(!(isset($senhaAdm))){ $senhaAdm = "0000";}else if($senhaAdm == "vid@18") $senhaAdm = "aenp@z18";
+                //echo $datahj;
+                //	$dataF= implode('-',array_reverse(explode('/',$data)));
+                $data_001 =  primeiroDiaMes($datahj);								
+                $data_007 =  setimoDiadoMes($datahj);
+            if($dataF < $datainicioLimite)
+                {
+                             echo "ERRO!  - <strong><td> A data não é uma data válida, tente novamente!</td></strong><br/>";
+                             echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
+                                        <script type=\"text/javascript\">
+                                        alert(\" A data não é uma data válida, tente novamente! Linha: ". __LINE__ . "\");
+                                        </script>";	
+                      exit;  
+                            }
+//******Verifica se existem parcelas a acrescentar
+                {
+                    
+                    $meses = array('01'=>"Jan",'02'=>"Fev",'03'=>"Mar",'04'=>"Abr",'05'=>"Mai",'06'=>"Jun",'07'=>"Jul",'08'=>"Ago",'09'=>"Set",10=>"Out",11=>"Nov",12=>"Dez",
+                    );
+                   $adicionado = 0;
+                if($tipo_Pag == "Eventual")$parcelas =1;else{
+                   $parcelas = $tipo_Pag != "Fixo" ? $conta_Destino : 18;}
+                    
+                    for( $i=1; $i<=$parcelas; $i++)
+                    {
+//                    var_dump($parcelas, $tipo_Pag, $conta_Destino);
+//                    exit;
+                        $data['num_Doc_Banco'] = $tipo_Pag == "Parcelado" ? $i.'/'.$parcelas : '1';
+                       if($i != 1)
+                        $data['dataFin'] =  date('Y-m-d', strtotime("+1 month", strtotime($data['dataFin'])));
+                       $mes =  date('m', strtotime($data['dataFin']));
+                       $ano =  date('Y', strtotime($data['dataFin']));
+                       $data['descricao'] =  $descri.' ('.$meses[$mes].'/'.$ano.')';
+                       
+                    //var_dump($data);
+                    //die;
+//******Insere o lançamento na tabela aenpfin*********   descricao           
+                        if (is_numeric($id = $this->vendas_model->add('aenpfin', $data, true)) ) 
+                        {                           
+                            var_dump($i); 
+        //****** Resgata o ID do lançamento feito
+                            $adicionado++;
+                        }			  
+                    }
+                    
+                   if($adicionado > 0)
+                    {
+                       $this->session->set_flashdata('success','Lançamento efetuado com sucesso! '.$descri.' - em '.$razaoSoc.' . | '.$data['num_Doc_Banco'].' <strong>Adicione o ANEXO do documento fiscal.</strong> ');  
+                        redirect(base_url() . 'index.php/vendas/');
+                    }else 
+                    {                
+                            $this->data['custom_error'] = '<div class="form_error"><p>Ocorreu um erro.</p></div>';
+                        }
+                }
+        }   
+        }
+          
+        $this->data['usuario'] = $this->vendas_model->getByIdUser($this->session->userdata('id'));
+        $this->data['result_caixas']    = $this->vendas_model->get2('caixas');
+        $this->data['resultUltimo']     = $this->vendas_model->getIdultimo($conta, $t_conta);
+        $this->data['resultss_Benefic']   = $this->vendas_model->get3('clientes','nomeCliente','celular');
+        $this->data['result_codComp']   = $this->vendas_model->get3('cod_compassion','cod_Comp','ent_SaiComp');
+        $this->data['result_codIead']   = $this->vendas_model->get3('cod_assoc','cod_Ass','ent_SaiAss');
+        $this->data['pre']              = $this->vendas_model->getPresentes($conta);
+        $this->data['view']             = 'vendas/adicionarVenda';
+        $this->load->view('tema/topo', $this->data);
+    }     
+    function editar() {
+
+        if(!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))){
+            $this->session->set_flashdata('error','Item não pode ser encontrado, parâmetro não foi passado corretamente.');
+            redirect('mapos');
+        }
+        if(!$this->permission->checkPermission($this->session->userdata('permissao'),'eVenda')){
+          $this->session->set_flashdata('error','Você não tem permissão para editar Lançamento');
+          redirect(base_url());
+        }
+        $this->load->library('form_validation');
+        $this->data['custom_error'] = '';
+
+        if ($this->input->post('numDocFiscal') != null)
+        if ($this->form_validation->run('vendas') == false) {
+           $this->session->set_flashdata('error','Falha na verificação'.validation_errors());
+           $this->data['custom_error'] = (validation_errors() ? true : false);        
+        }else 
+        {        
+            $user_id = $this->vendas_model->getByIdUser($this->session->userdata('id'));
+            $permissoes_id = $user_id->permissoes_id;
+        
+                $conta          = $this->input->post('conta');
+        
+            $datainicioLimite = '2020-01-01';
+        
+        if ($this->input->post('numDocFiscal') == null)
+        {
+         } else {
+            
+            include 'apoio/funcao.php';
+            require_once 'apoio/conexao.class.php';
+           // require_once 'funcao.php';
+            $con = new Conexao();
+			$con->connect(); $conex = $_SESSION['conex'];
+            $p_Origem = base_url() . 'index.php/vendas/editar/'.$this->input->post('id_fin');
+        
+                $id_fin         = $this->input->post('id_fin');
+                $caixa          = $this->input->post('conta');
+                $tipoCont       = $this->input->post('tipo_Conta');
+                $tipoCont_Atual = $tipo_Conta;
+                $cod_compassion = $this->input->post('cCustos');
+                $fundoF         =$this->input->post('fundoF');
+                $num_Doc        = $this->input->post('numeroDoc');
+                $numDocFiscal   = $this->input->post('numDocFiscal');
+                $razaoSoc       = $this->input->post('razaoSoc');
+                $descri         = $this->input->post('descricao');
+                $valorFin       = $this->input->post('valorFin');
+                $ent_Sai        = $this->input->post('ent_Sai');
+                $tipo_Pag       = $this->input->post('tipoPag');
+                $conta_Destino  = $this->input->post('conta_Destino');
+                $dataFin        = $this->input->post('dataVenda');
+                $tip_PagAnt     = $this->input->post('tip_PagAnt');
+                $saldo          = $this->input->post('saldo');
+                $cadastrante    = $this->input->post('cadastrante');
+                if(null !== (   $this->input->post('senhaAdm') )) {  $senhaAdm  = $this->input->post('senhaAdm');} 
+                    try {                
+                        $dataVenda = explode('/', $dataFin);
+                        $dataF = $dataVenda[2].'-'.$dataVenda[1].'-'.$dataVenda[0];
+                    } catch (Exception $e) {
+                       $dataF = date('Y-m-d'); 
+                    }
+                  
+            
+            $lancamento = array(
+                'conta'         => $caixa,
+                'tipo_Conta'    => $tipoCont,
+                'cCustos'       => $cod_compassion,
+                'fundoF'        => $fundoF,
+                'num_Doc_Banco' => $num_Doc,
+                'num_Doc_Fiscal'=> $numDocFiscal,
+                'historico'     => $razaoSoc,
+                'descricao'     => $descri,
+                'dataFin'       => date('d/m/Y', strtotime($dataF)),
+                'valorFin'      => $valorFin,
+                'ent_Sai'       => $ent_Sai,
+                'tipo_Pag'      => $tipo_Pag,
+                'conta_Destino' => $conta_Destino,
+                'saldo'         => $saldo_Final,
+                'cadastrante'   => $cadastrante
+            ); 
+               $_SESSION['lancamento'] = $lancamento;     
+ //*******Verifica se o valor foi digitado adequadamente.
+            {
+                     if(formatoRealPntVrg($valorFin) == true) 
+               {//Verific se o numero digitado é com (.) milhar e (,) decimal
+                   //serve pra validar  valores acima e abaixo de 1000
+                    //      echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
+                    $valorFinExibe  =    $valorFin;   
+                   $valorFin  =    ((float)str_replace("," , "." , (str_replace("." , "" , $valorFin)) ));
+               }else if(formatoRealInt($valorFin) == true)
+               {//Verific se o numero digitado é inteiro sem ponto nem virgula
+                   //serve pra validar  valores acima e abaixo de 1000
+                   //       echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
+                    $valorFinExibe  =    number_format(str_replace(",",".",$valorFin), 2, ',', '.');  
+                   $valorFin  =    number_format(str_replace("." , "" ,$valorFin), 2, '.', '');
+               }else if(formatoRealPnt($valorFin) == true)
+               { 
+                   //      echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
+                   $valorFin  =    $valorFin;
+                    $valorFinExibe  =    number_format(str_replace(",",".",$valorFin), 2, ',', '.');  
+               }else if(formatoRealVrg($valorFin) == true)
+               { 
+                 //        echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
+                    $valorFinExibe  =    number_format(str_replace(",",".",$valorFin), 2, ',', '.');  
+                   $valorFin  =   ((float)str_replace("," , "." , (str_replace("." , "" , $valorFin)) ));
+               }else
+               {
+                   echo "O valor digitado não esta nos parametros solicitados";
+                          echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
+                                        <script type=\"text/javascript\">
+                                        alert(\"O valor digitado não esta nos parametros solicitados. Tente novamente! Linha: ". __LINE__ . "\");
+                                        </script>";	
+                      exit;  
+
+
+               }
+            }
+    
+             
+            $data = array(
+                'conta'         => $caixa,
+                'tipo_Conta'    => $tipoCont,
+                'cod_compassion'=> $cod_compassion,
+                'cod_assoc'     => $fundoF,
+                'num_Doc_Banco' => $num_Doc,
+                'num_Doc_Fiscal'=> $numDocFiscal,
+                'historico'     => $razaoSoc,
+                'descricao'     => $descri,
+                'dataFin'       => $dataF,
+                'valorFin'      => $valorFin,
+                'ent_Sai'       => $ent_Sai,
+                'tipo_Pag'      => $tipo_Pag,
+                'conta_Destino' => $conta_Destino,
+                'saldo'         => $saldo_Final,
+                'saldo_Mes'     => 'S',
+                'cadastrante'   => $cadastrante
+            ); 
+ //***** VERIFICAÇÕES PARA LANÇAMENTO           
+            {
+                $p_Origem = base_url().'index.php/vendas/adicionar';
+               
+                if(!$fundoF || !$cod_compassion)
+                { echo 'O Cetntro de Custo e Fundo Financeiro não Foram identificados.
+                                    Volte a pagina anterior e preencha todos os campos! Caixa '.$lancamento[$caixa].$caixa.' tipo '.$lancamento[$tipoCont].' C comp '.$lancamento[$cod_compassion].' doc '.$lancamento[$num_Doc].'- Cod ASS  '.$lancamento[$numDocFiscal].' '.$numDocFiscal.' - R soc '.$lancamento[$razaoSoc].' '.$razaoSoc.' '.$fundoF.' - cod Comp '.$cod_compassion.' - tipo pag '.$lancamento[$tipo_Pag].' - ent sai '.$lancamento[$ent_Sai].' - '.$lancamento[$cadastrante].' ent sai '.$lancamento[$entrada_Saida].' '.$lancamento[$tip_Cont].' qtd pres '.$lancamento[$qtd_presentes].' ';
+                  echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
+                                    <script type=\"text/javascript\">
+                                    alert(\"O Cetntro de Custo e Fundo Financeiro não Foram identificados. Volte a pagina anterior e preencha todos os campos! - Linha: ". __LINE__ . "\");
+                                    </script>";						  
+                 exit; 
+                }
+                // echo "Conta - ".$caixa." | Tipo - ".$tipoCont." | Doc Banco - ".$num_Doc." | Doc Fiscal ".$numDocFiscal." | Histórico ".$razaoSoc." | Data - ".$dataF." | Valor - ".$valorFin;
+                $faltaCampo = "";
+
+                if(!$caixa  ) $faltaCampo .= "Conta, ";
+                if(!$tipoCont ) $faltaCampo .= "tipoCont, ";
+                if(!$num_Doc ) $faltaCampo .= "num_Doc, ";
+                if(!$numDocFiscal) $faltaCampo .= "numDocFiscal, ";
+                if(!$razaoSoc) $faltaCampo .= "razaoSoc, ";
+                if(!$dataF) $faltaCampo .= "dataF, ";
+                if(!$valorFin ) $faltaCampo .= "valorFin, ";
+                if(!$caixa  || !$tipoCont  || !$num_Doc  || !$numDocFiscal  || !$razaoSoc   || !$dataF  ||  !$valorFin )
+                {
+                    echo "Conta - ".$caixa." | Tipo - ".$tipoCont." | Doc Banco - ".$num_Doc." | Doc Fiscal ".$numDocFiscal." | Histórico ".$razaoSoc." | Data - ".$dataF." | Valor - ".$valorFin;
+                echo "<p><font color=red>Voce nao entrou com os dados necessarios.
+                        Você não informou todos os dados nescessário. Tente novamente!</font</p>";
+                  echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
+                                    <script type=\"text/javascript\">
+                                    alert(\" Você não informou todos os dados nescessário. ".$faltaCampo." Tente novamente! Linha: ". __LINE__ . "\");
+                                    </script>";	
+                 // exit;  
                 }	//URL=PaginaLancamento1.php
                 
                 $datahj = date('Y-m-d');
@@ -424,44 +669,10 @@ class Vendas extends CI_Controller {
                                         </script>";	
                       exit;  
                             }
-//******Verifica se existem parcelas a acrescentar
-                {
-                    
-                    $meses = array('01'=>"Jan",'02'=>"Fev",'03'=>"Mar",'04'=>"Abr",'05'=>"Mai",'06'=>"Jun",'07'=>"Jul",'08'=>"Ago",'09'=>"Set",10=>"Out",11=>"Nov",12=>"Dez",
-                    );
-                   $adicionado = 0;
-                if($tipo_Pag != "Eventual")$parcelas =1;else{
-                   $parcelas = $tipo_Pag != "Fixo" ? $conta_Destino : 18;}
-                    for( $i=1; $i<=$parcelas; $i++)
-                    {
-                        $data['num_Doc_Banco'] = $tipo_Pag == "Parcelado" ? $i.'/'.$parcelas : '1';
-                       $data['dataFin'] =  date('Y-m-d', strtotime("+1 month", strtotime($data['dataFin'])));
-                       $mes =  date('m', strtotime($data['dataFin']));
-                       $ano =  date('Y', strtotime($data['dataFin']));
-                       $data['descricao'] =  $data['descricao'].' ('.$meses[$mes].'/'.$ano.')';
-                        
-//******Insere o lançamento na tabela aenpfin*********   descricao           
-                        if (is_numeric($id = $this->vendas_model->add('aenpfin', $data, true)) ) 
-                        {
-                            
-        //****** Resgata o ID do lançamento feito
-                            if($i==1){
-                            $res_max = mysqli_query($conex, 'SELECT id_fin FROM aenpfin ORDER BY id_fin DESC LIMIT 1 ');
-                            if (mysqli_num_rows($res_max ) == 0 ) 
-                            {	echo "Nao foi encontrado nenhum id_aenpfin. Tente novamente!"; 
-                            }
-                            while ($id_ultimo = mysqli_fetch_assoc($res_max)) 
-                            {	$id_Maxaenp = $id_ultimo['id_fin']; }
-                                $idUltimo_L = $id_Maxaenp;
-                            }
-                            
-                            $dataE = array(
-                                'par_ES' => $id_Maxaenp
-                            );
-                            if ($this->vendas_model->edit('aenpfin', $dataE, 'id_fin', $idUltimo_L) == TRUE) 
-                            {
-                            }
-                            $idUltimo_L++;
+            }
+            if ($this->vendas_model->edit('aenpfin', $data, 'id_fin', $id_fin) == TRUE) 
+            {
+     
                             if($data['dataFin'] < date('Y-m-d'))
                             {
         //******busca do ultimo registro com o saldo do mês marcado *********
@@ -599,430 +810,14 @@ class Vendas extends CI_Controller {
                                     Novo lançamento. \");										
                                     </script>";	
                         }
-                            $adicionado++;
-                        }			  
-                    }
-                    
-                   if($adicionado > 0)
-                    {
-                       $this->session->set_flashdata('success','Lançamento efetuado com sucesso! '.$descri.' - em '.$razaoSoc.' . | '.$data['num_Doc_Banco'].' <strong>Adicione o ANEXO do documento fiscal.</strong>');  
-                        redirect(base_url() . 'index.php/vendas/');
-                    }else 
-                    {                
-                            $this->data['custom_error'] = '<div class="form_error"><p>Ocorreu um erro.</p></div>';
-                        }
-                }
-        }   
-        }
-          
-        $this->data['usuario'] = $this->vendas_model->getByIdUser($this->session->userdata('id'));
-        $this->data['result_caixas']    = $this->vendas_model->get2('caixas');
-        $this->data['resultUltimo']     = $this->vendas_model->getIdultimo($conta, $t_conta);
-        $this->data['resultss_Benefic']   = $this->vendas_model->get3('clientes','nomeCliente','celular');
-        $this->data['result_codComp']   = $this->vendas_model->get3('cod_compassion','cod_Comp','ent_SaiComp');
-        $this->data['result_codIead']   = $this->vendas_model->get3('cod_assoc','cod_Ass','ent_SaiAss');
-        $this->data['pre']              = $this->vendas_model->getPresentes($conta);
-        $this->data['view']             = 'vendas/adicionarVenda';
-        $this->load->view('tema/topo', $this->data);
-    }     
-    function editar() {
-
-        if(!$this->uri->segment(3) || !is_numeric($this->uri->segment(3))){
-            $this->session->set_flashdata('error','Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('mapos');
-        }
-        if(!$this->permission->checkPermission($this->session->userdata('permissao'),'eVenda')){
-          $this->session->set_flashdata('error','Você não tem permissão para editar Lançamento');
-          redirect(base_url());
-        }
-        $this->load->library('form_validation');
-        $this->data['custom_error'] = '';
-
-        //if ($this->form_validation->run('vendas') == false)         
-        $user_id = $this->vendas_model->getByIdUser($this->session->userdata('id'));
-        $permissoes_id = $user_id->permissoes_id;
-        
-                $conta          = $this->input->post('conta');
-        
-            if($conta > 8)  $datainicioLimite = '2020-01-01';else   $datainicioLimite = '2020-01-01';
-        
-        if ($this->input->post('razaoSoc') == null)
-        {
-         } else {
-            
-            include 'apoio/funcao.php';
-            require_once 'apoio/conexao.class.php';
-           // require_once 'funcao.php';
-            $con = new Conexao();
-			$con->connect(); $conex = $_SESSION['conex'];
-         $p_Origem = base_url() . 'index.php/vendas/editar/'.$this->input->post('id_fin');
-        
-                $id_fin         = $this->input->post('id_fin');
-                $conta          = $this->input->post('conta');
-                $tipo_Conta     = $this->input->post('tipo_Conta');
-                $tipoCont_Atual = $tipo_Conta;
-                $cod_compassion = $this->input->post('cod_Comp');
-                $fundoF      =$this->input->post('cod_Ass');
-                $num_Doc_Banco  = $this->input->post('numeroDoc');
-                $num_Doc_Fiscal = $this->input->post('numDocFiscal');
-                $razaoSoc       = $this->input->post('razaoSoc');
-                $descricao      = $this->input->post('descri');
-                $valorFin       = $this->input->post('valorFin');
-                $ent_Sai        = $this->input->post('ent_Sai');
-                $tipo_Pag       = $this->input->post('tipo_Pag');
-                $conta_Destino  = $this->input->post('conta_Destino');
-                $dataFin        = $this->input->post('dataVenda');
-                $tip_PagAnt     = $this->input->post('tip_PagAnt');
-                $cadastrante   = $this->input->post('cadastrante');
-                if(null !== (   $this->input->post('senhaAdm') )) {  $senhaAdm  = $this->input->post('senhaAdm');} 
-                    try {                
-                        $dataVenda = explode('/', $dataFin);
-                        $dataF = $dataVenda[2].'-'.$dataVenda[1].'-'.$dataVenda[0];
-                    } catch (Exception $e) {
-                       $dataF = date('Y-m-d'); 
-                    }
-                       
- //*******Verifica se o valor foi digitado adequadamente.
-            {
-                     if(formatoRealPntVrg($valorFin) == true) 
-               {//Verific se o numero digitado é com (.) milhar e (,) decimal
-                   //serve pra validar  valores acima e abaixo de 1000
-                    //      echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
-                    $valorFinExibe  =    $valorFin;   
-                   $valorFin  =    ((float)str_replace("," , "." , (str_replace("." , "" , $valorFin)) ));
-               }else if(formatoRealInt($valorFin) == true)
-               {//Verific se o numero digitado é inteiro sem ponto nem virgula
-                   //serve pra validar  valores acima e abaixo de 1000
-                   //       echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
-                    $valorFinExibe  =    number_format(str_replace(",",".",$valorFin), 2, ',', '.');  
-                   $valorFin  =    number_format(str_replace("." , "" ,$valorFin), 2, '.', '');
-               }else if(formatoRealPnt($valorFin) == true)
-               { 
-                   //      echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
-                   $valorFin  =    $valorFin;
-                    $valorFinExibe  =    number_format(str_replace(",",".",$valorFin), 2, ',', '.');  
-               }else if(formatoRealVrg($valorFin) == true)
-               { 
-                 //        echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
-                    $valorFinExibe  =    number_format(str_replace(",",".",$valorFin), 2, ',', '.');  
-                   $valorFin  =   ((float)str_replace("," , "." , (str_replace("." , "" , $valorFin)) ));
-               }else
-               {
-                   echo "O valor digitado não esta nos parametros solicitados";
-                          echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                        <script type=\"text/javascript\">
-                                        alert(\"O valor digitado não esta nos parametros solicitados. Tente novamente! Linha: ". __LINE__ . "\");
-                                        </script>";	
-                      exit;  
-
-
-               }
-            }
-    
-                if(!$fundoF || !$cod_compassion)
-                { echo 'Os códigos IEADALPE  e Compassion não condizem com a escolha de entrada e saída.
-                                    Volte a pagina anterior e preencha todos os campos!';
-                  echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                    <script type=\"text/javascript\">
-                                    alert(\"Os códigos IEADALPE  e Compassion não condizem com a escolha de entrada e saída. Volte a pagina anterior e preencha todos os campos! - Linha: ". __LINE__ . "\");
-                                    </script>";						  
-                 exit; 
-                }
-                    $query = mysqli_query($conex, 'SELECT ent_SaiComp FROM cod_compassion 
-                                        WHERE cod_comp LIKE "'.$cod_compassion.'" LIMIT 1  ');
-                    if (!$query) 
-							{
-										die ("<center>Desculpe, erro na busca de saldo atual.:  " 
-										. '<br>Linha: ' . __LINE__ . "<br>" . mysqli_error() . "<br>
-											<a href='menu1.php'>Voltar ao Menu</a></center>");
-											//exit;
-							}
-						if (mysqli_num_rows($query) == 0  ) 
-						{
-							echo "Nao existem lançamentos. cod comassion ".$cod_compassion." .Linha " . __LINE__ . "</br>";
-						   
-						}		
-                    while($comp_row = mysqli_fetch_array($query))
-                    $cod_compES = $comp_row['ent_SaiComp']; 
-
-                    $queryA = mysqli_query($conex, 'SELECT ent_SaiAss FROM cod_assoc 
-                                        WHERE cod_Ass LIKE "'.$fundoF.'" LIMIT 1  ');
-                    while($ass_row = mysqli_fetch_array($queryA))
-                    $cod_asES = $ass_row['ent_SaiAss']; 	
-            
-                    if(($ent_Sai <> $cod_asES  ) )
-                    {echo "<p><font color=red>Os códigos IEADALPE  e Compassion não condizem com a escolha de entrada e saída.
-                                        Volte a pagina anterior e preencha todos os campos!</font</p>";
-
-                      echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=PaginaEditar1.php'>
-                                        <script type=\"text/javascript\">
-                                        alert(\"Os códigos IEADALPE  e Compassion não condizem com a escolha de entrada e saída. Volte a pagina anterior e preencha todos os campos! Linha: ". __LINE__ ."\");
-                                        </script>";
-                      exit;
-                    }			
-							
-                // echo "Conta - ".$caixa." | Tipo - ".$tipoCont." | Doc Banco - ".$num_Doc." | Doc Fiscal ".$numDocFiscal." | Histórico ".$razaoSoc." | Data - ".$dataF." | Valor - ".$valorFin;
-
-                if(!$conta  || !$tipo_Conta  || !$num_Doc_Banco  || !$num_Doc_Fiscal  || !$razaoSoc   || !$dataF  ||  !$valorFin )
-                {
-                    echo "Conta - ".$conta." | Tipo - ".$tipo_Conta." | Doc Banco - ".$num_Doc_Banco." | Doc Fiscal ".$num_Doc_Fiscal." | Histórico ".$razaoSoc." | Data - ".$dataF." | Valor - ".$valorFin;
-                echo "<p><font color=red>Voce nao entrou com os dados necessarios.
-                        Você não informou todos os dados nescessário. Tente novamente!</font</p>";
-                 echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                    <script type=\"text/javascript\">
-                                    alert(\" Você não informou todos os dados nescessário. Tente novamente! Linha: ". __LINE__ . "\");
-                                    </script>";	
-                  exit;  
-                }	//URL=PaginaLancamento1.php
-            if($permissoes_id < 3)  $senhaAdm = "aenp@z18"; 
-                $datahj = date('Y-m-d');
-            if(!(isset($senhaAdm))){ $senhaAdm = "0000";}else if($senhaAdm == "vid@19") $senhaAdm = "aenp@z18";
-                    //echo $datahj;
-                //	$dataF= implode('-',array_reverse(explode('/',$data)));
-                        $data_001 =  primeiroDiaMes($datahj);								
-                        $data_007 =  setimoDiadoMes($datahj);
                 
-            if(($datahj > $data_007) && ($dataF < $data_001) )
-            {
-                if($senhaAdm == "0000")
-                 {echo "<br/><font color = #458B74 size = 3 text-align:center>Prazo Limite para lançamento referente a esta data foi aspirado. <br/> 
-                            Retorne e altere a data ou contate o administrador.</font><br/>";
-                             echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                        <script type=\"text/javascript\">
-                                        alert(\" Prazo Limite para lançamento referente a esta data foi aspirado, tente novamente! Linha: ". __LINE__ . "\");
-                                        </script>";	
-                      exit;  
-                            }else
-                if($senhaAdm <> "aenp@z18")
-                 {echo "<br/><font color = #458B74 size = 3 text-align:center>Senha inválida para lançamento desta data. <br/> 
-                            Retorne e altere a data ou contate o administrador.</font><br/>";
-                             echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                        <script type=\"text/javascript\">
-                                        alert(\" Senha inválida para lançamento desta data, tente novamente! Linha: ". __LINE__ . "\");
-                                        </script>";	
-                      exit;  
-                            }else
-                if($dataF < $datainicioLimite)
-                 {echo "<br/><font color = #458B74 size = 3 text-align:center>Data não autorizada para lançamento. <br/> 
-                            Retorne e altere a data ou contate o administrador.</font><br/>";
-                             echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                                        <script type=\"text/javascript\">
-                                        alert(\" Data anterior ao Fechamento do relatório contábil não autorizada edição. Tente novamente! Linha: ". __LINE__ . "\");
-                                        </script>";	
-                      exit;  
-                            }
-                    
-            }
-         //   if($dataF < "2010-01-01" || $dataF > $datahj)              
-            if( $dataF > $datahj )
-                {
-                 echo "ERRO!  - <strong><td> A data não é uma data válida, tente novamente!</td></strong><br/>";
-                 echo "<META HTTP-EQUIV=REFRESH CONTENT='0; URL=".$p_Origem."'>
-                            <script type=\"text/javascript\">
-                            alert(\" A data não é uma data válida, tente novamente! Linha: ". __LINE__ . "\");
-                            </script>";	
-                exit;  
-            }
-          //$this->session->set_flashdata('error','Lançamento não efetuado por falta de validação.');
-          //  $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
-            $data = array(
-                'conta'         => $this->input->post('conta'),
-                'tipo_Conta'    => $this->input->post('tipo_Conta'),
-                'cod_compassion'=> $this->input->post('cod_Comp'),
-                'cod_assoc'     => $this->input->post('cod_Ass'),
-                'num_Doc_Banco' => $this->input->post('numeroDoc'),
-                'num_Doc_Fiscal'=> $this->input->post('numDocFiscal'),
-                'historico'     => $this->input->post('razaoSoc'),
-                'descricao'     => $this->input->post('descri'),
-                'dataFin'       => $dataF,
-                'valorFin'      => $valorFin,
-                'ent_Sai'       => $this->input->post('ent_Sai'),
-                'tipo_Pag'      => $this->input->post('tipo_Pag'),
-                'conta_Destino' => $this->input->post('conta_Destino')
-            );
-            if ($this->vendas_model->edit('aenpfin', $data, 'id_fin', $this->input->post('id_fin')) == TRUE) 
-            {
-                
-                
-                 //	{**** primeiro dia do mês do lançamento
-    //******busca do ultimo registro, anterior ao mês do lançamento, que tenha o saldo do mês marcado *********	
-    //******No caso aqui esta usando como refencia o ultimo saldo de 2016 e recalcula todos os saldos dos lançamentos posteriores***			
-               $sql_Saldo_Atual = 'SELECT id_fin, saldo, dataFin FROM aenpfin				
-											WHERE dataFin > "'.$datainicioLimite.'" and 
-											conta = '.$conta.'  and tipo_Conta = "'.$tipoCont_Atual.'"
-											and saldo_Mes = "S" ORDER BY dataFin DESC LIMIT 1 ';		
-						$result_Saldo_Atual = mysqli_query($conex, $sql_Saldo_Atual );
-						
-                
-						while ($row_Saldo = mysqli_fetch_assoc($result_Saldo_Atual)) 
-						{//ID, valor do saldo e a data do registro com o ultimo saldo marcado
-							$id_Ultimo_Saldo = $row_Saldo['id_fin']; 
-							$saldo_Atual = $row_Saldo['saldo']; 	
-							$dataUlt_saldo = $row_Saldo['dataFin'];
-						}
- 
-    //******Verifica se existe  registro de cheque para este lançamento independente da informação em tipo_Pag***               
-                $querychek = mysqli_query($conex, 'SELECT id_aenp FROM reconc_bank 
-                                        WHERE id_aenp LIKE "'.$id_fin.'" LIMIT 1  ');
-    if (!$querychek) 
-            {
-                        die ("<center>Desculpe, erro na busca de saldo atual.:  " 
-                        . '<br>Linha: ' . __LINE__ . "<br>" . mysqli_error() . "<br>
-                            <a href='menu1.php'>Voltar ao Menu</a></center>");
-                            //exit;
-            }
-        if (mysqli_num_rows($querychek) == 0  ) 
-        {
-            echo "Nao existia lançamento de cheque. Linha " . __LINE__ . "</br>";
-           $chekk = 0; // Não há registro de cheque para este lançamento
-        }	else
-            if (mysqli_num_rows($querychek) > 0  ) 
-            {
-                echo "Existia lançamento de cheque. Linha " . __LINE__ . "</br>";
-               $chekk = 1; // Há registro de cheque para este lançamento
-            }
-
-        if($chekk == 1)
-        {
-            if($tipo_Pag == "cheq") 
-            { }else                            
-            if($tipo_Pag == "trans")
-              {
-                $sql = mysqli_query($conex, "DELETE FROM reconc_bank WHERE id_aenp = '$id_fin'");
-                $result = mysqli_query($conex, $sql);
-              }                            
-        }else                            
-        if($chekk == 0)
-        {
-            if($tipo_Pag == "trans")
-            { }else                            
-            if($tip_PagAnt == "cheq" )
-              {
-               $status = 0;                            
-                $datachq = array(
-                    'id_aenp'   => $id_fin,
-                    'data_Emissao'  => $dataF,
-                    'data_Pag'  => $dataF,
-                    'status'    => $status,
-                    'operador'  => $cadastrante
-                ); 
-                  if (is_numeric($id = $this->vendas_model->add('reconc_bank', $datachq, true)) ) 
-                {		
-                }
-              }                            
-        }
-
-
-            $dia_1_mes = primeiroDiaMes($dataF);
-        //	$saldo_mes_lancamento = "N";
-//******busca do ultimo registro, anterior ao mês do lançamento, que tenha o saldo do mês marcado *********						
-            $saldo_Penultimo = 'SELECT id_fin, saldo, dataFin FROM aenpfin 					
-                            WHERE dataFin > "'.$datainicioLimite.'" and dataFin < "'.$dia_1_mes.'" and
-                            conta = '.$conta.'  and tipo_Conta = "'.$tipoCont_Atual.'"
-                            and saldo_Mes = "S" ORDER BY dataFin DESC LIMIT 1 ';		
-        $result_saldo_Penultimo = mysqli_query($conex, $saldo_Penultimo);
-        if (!$result_saldo_Penultimo) 
-            {				die ("<center>Desculpe, erro na busca de saldo atual.:  " 
-                        . '<br>Linha: ' . __LINE__ . "<br>" . mysqli_error() . "<br>
-                            <a href='menu1.php'>Voltar ao Menu</a></center>");
-                            //exit;
-            }
-        if (mysqli_num_rows($result_saldo_Penultimo) == 0  ) 
-            {	echo "Nao existem lançamentos Linha " . __LINE__ . "</br>";}		
-        while ($row_saldo_Penultimo = mysqli_fetch_assoc($result_saldo_Penultimo)) 
-        {//ID, valor do saldo e a data do registro com o penultimo saldo marcado
-            $id_saldo_Penultimo = $row_saldo_Penultimo['id_fin']; 
-            $saldo_Penultimo = $row_saldo_Penultimo['saldo']; 	
-            $data_saldo_Penultimo = $row_saldo_Penultimo['dataFin'];
-
-        }
-        //******busca de todos registro, após o penultimo saldo Até 2 anos após*********	
-                
-                $data_2Anos = date('Y-m-d', strtotime("+18 month", strtotime( $data_saldo_Penultimo)));
-                    $maisRecentes = mysqli_query($conex, 'SELECT id_fin, conta, tipo_Conta, dataFin, ent_Sai, valorFin, saldo FROM aenpfin 
-                                            WHERE  dataFin > "'.$data_saldo_Penultimo.'" and 
-                                            dataFin < "'.$data_2Anos.'"
-                                            and conta like "'.$conta.'" and tipo_Conta like "'.$tipoCont_Atual.'" 
-                                            ORDER BY dataFin, id_fin ');
-                if (!$maisRecentes) 
-                {			die ("<center>Desculpe, Nao foi encontrado nenhum item com esse criterio. Tente novamente:  " 
-                        . '<br>Linha: ' . __LINE__ . "<br>" . mysqli_error() . "<br>
-                            <a href='menuF.php'>Voltar ao Menu</a></center>");
-                            //exit;
-                }
-                if (mysqli_num_rows($maisRecentes) == 0 ) 
-                {	echo $data_saldo_Penultimo." Nao foi encontrado nenhum registro após o penultimo saldo. Linha " . __LINE__ . "";
-                }								
-           //inicia variavel do dia final do mes do registro anterior com o dia fim do mês do lançamento								
-                $fim_mes = ultimoDiaMes($dataF);
-
-                $alterados = '';
-                $alteraV = '';     
-                $s_anterior =	$saldo_Penultimo;
-                while ($maisRecent = mysqli_fetch_assoc($maisRecentes)) 
-                {	
-
-                        $ent_Sai = $maisRecent['ent_Sai'];
-                        if ($ent_Sai == 0) {
-                        $s_Atual = $s_anterior - $maisRecent['valorFin'];//$valorFin;
-                        }else if ($ent_Sai == 1){
-                            $s_Atual = $s_anterior + $maisRecent['valorFin'];
-                        }										
-                            $upd = "UPDATE aenpfin SET saldo = ".$s_Atual." WHERE (id_fin =  ".$maisRecent['id_fin'].")";
-                            $atualiz = mysqli_query($conex, $upd);
-                            if ($atualiz) 
-                            {		
-                                $alteraV = 'Id:'.$maisRecent['id_fin'].'('.$maisRecent['dataFin'].') saldo:'.$s_Atual;															
-                            }else {
-                                die ("<center>Desculpe, Erro na atualização.:  " 
-                                . '<br>Linha: ' . __LINE__ . "<br>" . mysqli_error() . "<br>													
-                                <a href='menuF.php'>Voltar ao Menu</a></center>");	//exit;										
-                                }					
-                    //}
-                    $s_anterior =	$s_Atual;
-                    if(isset($dataX)) { $d_anterior = $dataX;} 
-                    $dataX = $maisRecent['dataFin'];
-                    $data_ultimo_dia = ultimoDiaMes($dataX);//inicia variavel do dia final do mes do registro atual
-                    $sMes = '';
-                    if(isset($id_anterior))									
-                    {					
-                        $sMes = 'N';		
-                        if($dataX > $fim_mes)
-                        {	$saldo_mes = "S";// Marca se for o ultimos registro de saldos de cada mes 
-                         $sMes = '<font color = blue ><strong> S </strong></font>';
-                        }else {$saldo_mes = "N";  $sMes = 'N';}
-
-                            $upd = "UPDATE aenpfin SET saldo_Mes = '".$saldo_mes."' WHERE (id_fin =  ".$id_anterior.")";
-                            $atualiz = mysqli_query($conex, $upd);
-                            if ($atualiz) {
-                                
-                            }else {
-                            die ("<center>Desculpe, Erro na atualizaÃ§Ã£o.:  " 
-                            . '<br>Linha: ' . __LINE__ . "<br>" . mysqli_error() . "<br>													
-                            <a href='menuF.php'>Voltar ao Menu</a></center>");	//exit;												
-                            }										
-                    }
-                    $alterados = $alterados.' -'.$sMes.'-, '.$alteraV;
-                    $iD_Fin = $maisRecent['id_fin'];
-
-                    //*****Para verificar lista com as alterações feitas e encontrar erros
-                    //  echo '<font color=red size="2"> Conta '.$maisRecent['conta'].' | Tipo '.$maisRecent['tipo_Conta'].' | Data '.$maisRecent['dataFin']. ' | Valor </font> <font color=green>'.$maisRecent['valorFin']. ' </font> <font color=red> | Registro '.$iD_Fin. ' | Saldo alterado para '.$s_Atual. ' </font><br />';	                                    
-                    $id_anterior = $maisRecent['id_fin'];
-                    $fim_mes = $data_ultimo_dia;
-
-                }
-                
-            
-                
-                
-            $alterados = ' Alterados:'.$alterados;
-                
-                $this->session->set_flashdata('success','Lançamento editado com sucesso!  Saldos alterados: '.$alterados);
-                redirect(base_url() . 'index.php/vendas/editar/'.$this->input->post('id_fin'));
+                       $this->session->set_flashdata('success','Lançamento Editado com sucesso! '.$descri.' - em '.$razaoSoc.' . | '.$data['num_Doc_Banco'].' <strong>Adicione o ANEXO do documento fiscal.</strong>');  
+                        redirect(base_url() . 'index.php/vendas/editar/'.$id_fin);
             } else {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocorreu um erro</p></div>';
                 $this->session->set_flashdata('error','Lançamento não efetuado.');
             }
+        }
         }
         $this->data['result'] = $this->vendas_model->getById($this->uri->segment(3));
         $this->data['result_caixas'] = $this->vendas_model->get2('caixas');

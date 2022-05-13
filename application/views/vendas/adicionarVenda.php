@@ -192,7 +192,7 @@ if (!$resultUltimo || $resultUltimo == null )
                                                   { ?>                                           
                                                     <option value = "<?php echo $rcodComp->cod_Comp ?>" <?php if( !empty($lancamento))if($rcodComp->cod_Comp == $cCustos){ echo 'selected';} ?>>
                                                     <?php echo ' '.$rcodComp->cod_Comp." |
-                                                    ".$rcodComp->descricao." | ".$rcodComp->area_Cod.' '?></option>
+                                                    ".$rcodComp->descricaoCod." | ".$rcodComp->area_Cod.' '?></option>
                                                <?php } else { } 
                                              }
                                            } else 
@@ -205,7 +205,7 @@ if (!$resultUltimo || $resultUltimo == null )
                                                   ?>                                        
                                                     <option value = "<?php echo $rcodComp->cod_Comp ?>" <?php if( !empty($lancamento))if($rcodComp->cod_Comp == $cCustos){ echo 'selected';} ?>>
                                                     <?php echo ' '.$rcodComp->cod_Comp." |
-                                                    ".$rcodComp->descricao." | ".$rcodComp->area_Cod.' '?></option>
+                                                    ".$rcodComp->descricaoCod." | ".$rcodComp->area_Cod.' '?></option>
                                                    <?php } else { }
                                                }
                                          } ?>
