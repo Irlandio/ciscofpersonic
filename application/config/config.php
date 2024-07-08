@@ -28,9 +28,9 @@ $config['app_version'] = '3.1.11';
 | a PHP script and you can easily do that on your own.
 |http://id-siscod.tk/sisgOs/
 */
-$config['base_url'] = 'http://127.0.0.1:80/ciscofpersonic/';//localhost
+// $config['base_url'] = 'http://127.0.0.1:80/ciscofpersonic/';//localhost
 
-//$config['base_url'] = 'http://ciscof-aenpazfin.net/';//HOSTINGER
+$config['base_url'] = 'http://gama.ciscof-aenpazfin.net/';//HOSTINGER
 
 /*
 |--------------------------------------------------------------------------

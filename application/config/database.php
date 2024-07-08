@@ -8,15 +8,15 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
     
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'u344891621_person',
+	// 'hostname' => 'localhost',
+	// 'username' => 'root',
+	// 'password' => '',
+	// 'database' => 'u344891621_person',
     
-//	'hostname' => 'mysql.hostinger.com.br',
-//	'username' => 'u344891621_tito',
-//	'password' => 'rebeca1980',
-//	'database' => 'u344891621_doar',
+	'hostname' => 'mysql.hostinger.com.br',
+	'username' => 'u344891621_tito',
+	'password' => 'rebeca1980',
+	'database' => 'u344891621_person',
     
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
