@@ -94,7 +94,7 @@ class Produtos extends CI_Controller {
                     case 8:	$contN      = "BR0579";             break;  
                     case 99:$contN      = 99;                   break; 	
                 } 
-	    $this->data['results'] = $this->produtos_model->get('presentes_especiais','*',$contN,$where_array,$config['per_page'],$this->uri->segment(3));
+	    $this->data['results'] = $this->produtos_model->get('combustivel','*',$contN,$where_array,$config['per_page'],$this->uri->segment(3));
 	    $this->data['contas'] = $this->produtos_model->get2('caixas');
 	    $this->data['beneficiarios'] = $this->produtos_model->getBeneficiarios('clientes',$contN);
        

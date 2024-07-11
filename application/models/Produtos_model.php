@@ -18,20 +18,17 @@ class Produtos_model extends CI_Model {
         $this->db->select($fields);
         $this->db->from($table);
         $this->db->limit($perpage,$start);
-        if($where){
-            if(isset($where['contas'])){
-                $this->db->like('n_beneficiario',$where['contas']);
-            }
-            if(isset($where['benef'])){
-                $this->db->where('n_beneficiario',$where['benef']);
-            }
-        }else 
-        if($contN != 99)
-            $this->db->like('n_beneficiario',$contN);
-        $this->db->order_by('id_entrada','desc');
-        $this->db->order_by('n_beneficiario','asc');
-        $this->db->order_by('n_protocolo','asc');
-        $this->db->order_by('id_presente','asc');
+        // if($where){
+        //     if(isset($where['contas'])){
+        //         $this->db->like('n_beneficiario',$where['contas']);
+        //     }
+        //     if(isset($where['benef'])){
+        //         $this->db->where('n_beneficiario',$where['benef']);
+        //     }
+        // }else 
+        // if($contN != 99)
+        //     $this->db->like('n_beneficiario',$contN);
+        $this->db->order_by('quilometragem','desc');
         
         $query = $this->db->get();
         

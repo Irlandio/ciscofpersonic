@@ -18,7 +18,7 @@
             <li class="bg_ls"> <a href="<?php echo base_url()?>index.php/clientes"> <i class="icon-group"></i> Beneficiários</a> </li>
         <?php } ?>
         <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vProduto')){  ?>
-            <li class="bg_ls"> <a href="<?php echo base_url()?>index.php/produtos"> <i class="icon-group"></i> Presentes Especiais <font color='#e6f805'> Novo</font></a></li>
+            <li class="bg_ls"> <a href="<?php echo base_url()?>index.php/produtos"> <i class="icon-group"></i> Abastecimentos</a></li>
         <?php  } ?>
         <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vServico')){ ?>
             <li class="bg_db"> <a href="<?php echo base_url()?>index.php/servicos"> <i class="icon-group"></i> Códigos</a> </li>
