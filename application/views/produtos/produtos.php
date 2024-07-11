@@ -10,7 +10,7 @@
 
 <div class="span3">
    <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'aProduto') && 1==2){ ?>
-    <a href="<?php echo base_url();?>index.php/produtos/adicionar" class="btn btn-success"><i class="icon-plus icon-white"></i> Adicionar Presentes Especiais</a>
+    <a href="<?php echo base_url();?>index.php/produtos/adicionar" class="btn btn-success"><i class="icon-plus icon-white"></i> Adicionar Abastecimento</a>
 <?php } 
 $contaUser = $this->session->userdata('contaUser'); ?>
 </div>
@@ -75,14 +75,14 @@ if(!$results){?>
 
 <table class="table table-bordered ">
     <thead>
-            <th>#</th>
+            <th>#id_comb </th>
             <th>Data</th>
-            <th>BR</th>
-            <th>Beneficiario</th>
-            <th>Protocolo</th>
-            <th>Entrada</th>
-            <th>Saida</th>
-            <th>Pendente</th>
+            <th>quilometragem</th>
+            <th>litros</th>
+            <th>valor</th>
+            <th>posto</th>
+            <th>veiculo</th>
+            <th></th>
             <th></th>
         
     </thead>
@@ -92,7 +92,7 @@ if(!$results){?>
            <?php if(isset($_SESSION['benef'])){ ?>    
             <td colspan="5">Nenhum Presentes Especiais Cadastrado para <strong><?php echo $_SESSION['benef'] ?> desde 2018.</strong></td>
     <?php } else { ?>    
-            <td colspan="5">Nenhum Presentes Especiais Cadastrado</td>
+            <td colspan="5">Nenhum Registro de abastecimento Cadastrado</td>
     <?php } ?>
         </tr>
     </tbody>
@@ -107,7 +107,7 @@ if(!$results){?>
         <span class="icon">
             <i class="icon-barcode"></i>
          </span>
-        <h5>Presentes Especiais</h5>
+        <h5>Aastecimentos</h5>
          
 
      </div>
@@ -118,20 +118,15 @@ if(!$results){?>
 <table class="table table-bordered ">
     <thead>
         <tr style="backgroud-color: #2D335B">
-            <th rowspan=2>#</th>
-            <th rowspan=2>Data</th>
-            <th colspan=2>Lançamentos</th>
-            <th rowspan=2>Beneficiario</th>
-            <th rowspan=2>Protocolo</th>
-            <th colspan=3>Valores</th>
-            <th rowspan=2></th>
-        </tr>
-        <tr style="backgroud-color: #2D335B">
-            <th>Entrada</th>
-            <th>Saída</th>
-            <th>Entrada</th>
-            <th>Saída</th>
-            <th>Pendente</th>
+            <th>#id_comb </th>
+            <th>Data</th>
+            <th>quilometragem</th>
+            <th>litros</th>
+            <th>valor</th>
+            <th>posto</th>
+            <th>veiculo</th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -141,57 +136,55 @@ if(!$results){?>
              foreach ($results as $r) {
             {   
                 
-                if($id_entradaAnterior != '' && $id_entradaAnterior != $r->id_entrada)
-                {                    
-                    $vEntradaTotal   = $vEntrada;
-                    $vSaidaTotal     = $vSaida;
-                    $vPendenteTotal  = $vPendente;
-                    $vEntrada = $vSaida = $vPendente = 0.0;
+                // if($id_entradaAnterior != '' && $id_entradaAnterior != $r->id_entrada)
+                // {                    
+                //     $vEntradaTotal   = $vEntrada;
+                //     $vSaidaTotal     = $vSaida;
+                //     $vPendenteTotal  = $vPendente;
+                //     $vEntrada = $vSaida = $vPendente = 0.0;
                 ?>
-                 <tr><td colspan=6><H4>TOTAL POR LOTE</H4></td>
-                 <td><H4><?php echo number_format($vEntradaTotal,2,',','.') ?></H4></td>
-                 <td><H4><?php echo number_format($vSaidaTotal,2,',','.') ?></H4></td>
-                 <td><H4><?php echo number_format($vPendenteTotal,2,',','.') ?></H4></td>
-                 <td></td></tr>
+                 <!-- <tr><td colspan=6><H4>TOTAL POR LOTE</H4></td>
+                 <td><H4><?php //echo number_format($vEntradaTotal,2,',','.') ?></H4></td>
+                 <td><H4><?php //echo number_format($vSaidaTotal,2,',','.') ?></H4></td>
+                 <td><H4><?php //echo number_format($vPendenteTotal,2,',','.') ?></H4></td>
+                 <td></td></tr> -->
                   <?php  
-                }
-                if($r->n_protocolo != $nProtocoloAnt)
-                    {
-                        $cor2 = '<font>';
-                        $vEntrada   += $r->valor_entrada;                     
-                    }else {
-                        $cor2 = '<font color = blue >';
-                        $vPendente  -= $vpend;
-                    }
-                $vSaida     += $r->valor_saida;
-                $vPendente  += $r->valor_pendente;
+                // }
+                // if($r->n_protocolo != $nProtocoloAnt)
+                //     {
+                //         $cor2 = '<font>';
+                //         $vEntrada   += $r->valor_entrada;                     
+                //     }else {
+                //         $cor2 = '<font color = blue >';
+                //         $vPendente  -= $vpend;
+                //     }
+                // $vSaida     += $r->valor_saida;
+                // $vPendente  += $r->valor_pendente;
                 
-                $vpend = $r->valor_pendente;
-                $cor1 = ($vpend >= 0.2) ? '<font color = red >' : ($vpend < -2) ? '<font color = #893306 >' : '<font color = blue >';
+                // $vpend = $r->valor_pendente;
+                // $cor1 = ($vpend >= 0.2) ? '<font color = red >' : ($vpend < -2) ? '<font color = #893306 >' : '<font color = blue >';
             echo '<tr>';
-            echo '<td>'.$r->id_presente.'</td>';
-            echo '<td>'.date('d/m/Y', strtotime($r->data_presente)).'</td>';
-            echo '<td>'.$r->id_entrada.'</td>';
-            echo '<td>'.$r->id_saida.'</td>';
-            echo '<td>'.$r->n_beneficiario.' - '.$r->nome_beneficiario.'</td>';
-            echo '<td>'.$cor2.$r->n_protocolo.'</font></td>';
-            echo '<td>R$ '.number_format($r->valor_entrada,2,',','.').'</td>';
-            echo '<td>R$ '.number_format($r->valor_saida,2,',','.').'</td>';
-            echo '<td>R$ '.$cor1.number_format($r->valor_pendente,2,',','.').'</font></td>';            
+            echo '<td>'.$r->id_comb.'</td>';
+            echo '<td>'.date('d/m/Y', strtotime($r->data_abast)).'</td>';
+            echo '<td>'.$r->quilometragem.'</td>';
+            echo '<td>'.$r->litros.'</td>';
+            echo '<td>R$ '.number_format($r->valor,2,',','.').'</td>';
+            echo '<td> '.$r->posto.'</td>';
+            echo '<td>'.$r->veiculo.'</font></td>';            
             echo '<td>';
             if($this->permission->checkPermission($this->session->userdata('permissao'),'vProduto')){
-                echo '<a style="margin-right: 1%" href="'.base_url().'index.php/produtos/visualizar/'.$r->id_presente.'" class="btn tip-top" title="Visualizar Presente"><i class="icon-eye-open"></i></a>  '; 
+                echo '<a style="margin-right: 1%" href="'.base_url().'index.php/produtos/visualizar/'.$r->id_comb.'" class="btn tip-top" title="Visualizar Presente"><i class="icon-eye-open"></i></a>  '; 
             }
             if($this->permission->checkPermission($this->session->userdata('permissao'),'eProduto') && 0 == $r->id_saida){
-                echo '<a style="margin-right: 1%" href="'.base_url().'index.php/produtos/editar/'.$r->id_presente.'" class="btn btn-info tip-top" title="Editar Presente"><i class="icon-pencil icon-white"></i></a>'; 
+                echo '<a style="margin-right: 1%" href="'.base_url().'index.php/produtos/editar/'.$r->id_comb.'" class="btn btn-info tip-top" title="Editar Presente"><i class="icon-pencil icon-white"></i></a>'; 
             }
             if($this->permission->checkPermission($this->session->userdata('permissao' && 1==2),'dProduto')){
-                echo '<a href="#modal-excluir" role="button" data-toggle="modal" produto="'.$r->id_presente.'" class="btn btn-danger tip-top" title="Excluir Presente"><i class="icon-remove icon-white"></i></a>'; 
+                echo '<a href="#modal-excluir" role="button" data-toggle="modal" produto="'.$r->id_comb.'" class="btn btn-danger tip-top" title="Excluir Presente"><i class="icon-remove icon-white"></i></a>'; 
             }                     
             echo '</td>';
             echo '</tr>';                
-                $nProtocoloAnt = $r->n_protocolo;
-                $id_entradaAnterior = $r->id_entrada;
+                // $nProtocoloAnt = $r->n_protocolo;
+                // $id_entradaAnterior = $r->id_entrada;
             }
         }?>
         <tr>
