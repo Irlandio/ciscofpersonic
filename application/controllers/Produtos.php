@@ -119,8 +119,10 @@ class Produtos extends CI_Controller {
         } else {
             $precoCompra = $this->input->post('precoCompra');
             $precoCompra = str_replace(",","", $precoCompra);
+            $dataCompra = date('Y-m-d', strtotime(set_value('dataCompra')));
             $data = array(
                 'quilometragem' => set_value('quilometragem'),
+                'data_abast' => $dataCompra,
                 'litros' => set_value('litros'),
                 'valor' => $precoCompra,
                 'posto' => set_value('posto'),

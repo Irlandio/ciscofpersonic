@@ -37,13 +37,18 @@ $config = array('clientes' => array(array(
                                 ))
                 ,
                 'produtos' => array(array(
-                                    'field'=>'descricao',
-                                    'label'=>'',
+                                    'field'=>'quilometragem',
+                                    'label'=>'Quilometragem',
                                     'rules'=>'required|trim'
                                 ),
                                 array(
                                     'field'=>'precoCompra',
                                     'label'=>'Preo de Compra',
+                                    'rules'=>'required|trim'
+                                ),
+                                array(
+                                    'field'=>'litros',
+                                    'label'=>'Litros',
                                     'rules'=>'required|trim'
                                 ))
                 ,

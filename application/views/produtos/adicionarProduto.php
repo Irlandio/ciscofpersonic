@@ -1,34 +1,10 @@
 <style>
-/* Hiding the checkbox, but allowing it to be focused */
-.badgebox
-{
-    opacity: 0;
-}
-
-.badgebox + .badge
-{
-    /* Move the check mark away when unchecked */
-    text-indent: -999999px;
-    /* Makes the badge's width stay the same checked and unchecked */
-	width: 27px;
-}
-
-.badgebox:focus + .badge
-{
-    /* Set something to make the badge looks focused */
-    /* This really depends on the application, in my case it was: */
-    
-    /* Adding a light border */
-    box-shadow: inset 0px 0px 5px;
-    /* Taking the difference out of the padding */
-}
-
-.badgebox:checked + .badge
-{
-    /* Move the check mark back when checked */
-	text-indent: 0;
-}
+.badgebox{ opacity: 0;}.badgebox + .badge{text-indent: -999999px;width: 27px;}
+.badgebox:focus + .badge{ box-shadow: inset 0px 0px 5px;}
+.badgebox:checked + .badge{text-indent: 0;}
 </style>
+<link rel="stylesheet" href="<?php echo base_url();?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" />
+<script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
         <div class="widget-box">
@@ -40,20 +16,26 @@
             </div>
             <div class="widget-content nopadding">
                 <?php echo $custom_error; ?>
-                <form action="<?php echo current_url(); ?>" id="formProduto" method="post" class="form-horizontal" >
-
+                <form action="<?php echo current_url(); ?>" id="formProduto" method="post" class="form-horizontal" >                
                 
-                <div class="control-group">
-                    <label for="unidade" class="control-label">Posto<span class="required">*</span></label>
-                    <div class="controls">
-                        <!--<input id="unidade" type="text" name="unidade" value="<?php echo set_value('unidade'); ?>"  />-->
-                        <select id="posto" name="posto">
-                            <?php
-                            foreach ($postos as $p) { ?>
-                                <option value = "<?php echo $p->id_posto  ?>"><?php echo $p->nome." | ".$p->cidade ?></option>
-                            <?php } ?>
-                        </select>
+                    <div class="control-group">
+                        <label for="data">Data do evento financeiro<span class="control-label required">*</span></label>
+                        <div class="controls">
+                            <input id="dataCompra" class="datepicker" type="Text" name="dataCompra" value="<?php echo date('d/m/Y')?>"/>
+                        </div>
                     </div>
+
+                    <div class="control-group">
+                        <label for="unidade" class="control-label">Posto<span class="required">*</span></label>
+                        <div class="controls">
+                            <!--<input id="unidade" type="text" name="unidade" value="<?php echo set_value('unidade'); ?>"  />-->
+                            <select id="posto" name="posto">
+                                <?php
+                                foreach ($postos as $p) { ?>
+                                    <option value = "<?php echo $p->id_posto  ?>"><?php echo $p->nome." | ".$p->cidade ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="control-group">
@@ -69,7 +51,7 @@
                      <div class="control-group">
                         <label for="quilometragem" class="control-label">Quilometragem<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="quilometragem" type="number" name="quilometragem" value="<?php echo set_value('quilometragem'); ?>"  />
+                            <input id="quilometragem" type="number" name="quilometragem" MIN='297000' value="<?php echo set_value('quilometragem'); ?>"  />
                         </div>
                     </div>
 
@@ -77,14 +59,11 @@
                     <div class="control-group">
                         <label class="control-label">Tipo de combustivel</label>
                         <div class="controls">
-                            <label for="entrada" class="btn btn-default" style="margin-top: 5px;">Gasolina 
-                                <input type="radio" id="tipo" name="tipo" class="badgebox" value="1" checked>
-                                <span class="badge" >&check;</span>
-                            </label>
-                            <label for="saida" class="btn btn-default" style="margin-top: 5px;">Etanol 
-                                <input type="radio" id="tipo" name="tipo" class="badgebox" value="2" checked>
-                                <span class="badge" >&check;</span>
-                            </label>
+
+                        <label  class="btn btn-default" submit><input  name="tipo" type="radio" value="1" Checked class="badgebox" style="margin-top:5px; margin-left: 0"/> <span class="badge" >&check;</span> Gasolina</label>
+
+                        <label  class="btn btn-default" submit><input  name="tipo" type="radio" value="2" class="badgebox" style="margin-top:5px; margin-left: 0"/> <span class="badge" >&check;</span> Etanol</label>
+
                         </div>
                     </div>
 
@@ -130,13 +109,11 @@
         $('#formProduto').validate({
             rules :{
                   quilometragem: { required: true},
-                  unidade: { required: true},
                   precoCompra: { required: true},
                   litros: { required: true}
             },
             messages:{
                   quilometragem: { required: 'Campo Requerido.'},
-                  unidade: {required: 'Campo Requerido.'},
                   precoCompra: { required: 'Campo Requerido.'},
                   litros: { required: 'Campo Requerido.'}
             },
@@ -150,7 +127,8 @@
                 $(element).parents('.control-group').removeClass('error');
                 $(element).parents('.control-group').addClass('success');
             }
-           });
+        });
+        $(".datepicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
     });
 </script>
 
