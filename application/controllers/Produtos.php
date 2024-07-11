@@ -16,7 +16,7 @@ class Produtos extends CI_Controller {
 
         $this->load->helper(array('form', 'codegen_helper'));
         $this->load->model('produtos_model', '', TRUE);
-        $this->data['menuProdutos'] = 'Produtos';
+        $this->data['menuProdutos'] = 'Combustivel';
     }
 
     function index(){
@@ -62,7 +62,7 @@ class Produtos extends CI_Controller {
         
         
         $config['base_url'] = base_url().'index.php/produtos/gerenciar/';
-        $config['total_rows'] = $this->produtos_model->count('presentes_especiais');
+        $config['total_rows'] = $this->produtos_model->count('combustivel');
         $config['per_page'] = 30;
         $config['next_link'] = 'Próxima';
         $config['prev_link'] = 'Anterior';
@@ -119,26 +119,23 @@ class Produtos extends CI_Controller {
         } else {
             $precoCompra = $this->input->post('precoCompra');
             $precoCompra = str_replace(",","", $precoCompra);
-            $precoVenda = $this->input->post('precoVenda');
-            $precoVenda = str_replace(",", "", $precoVenda);
             $data = array(
-                'descricao' => set_value('descricao'),
-                'unidade' => set_value('unidade'),
-                'precoCompra' => $precoCompra,
-                'precoVenda' => $precoVenda,
-                'estoque' => set_value('estoque'),
-                'estoqueMinimo' => set_value('estoqueMinimo'),
-                'saida' => set_value('saida'),
-                'entrada' => set_value('entrada'),
+                'quilometragem' => set_value('quilometragem'),
+                'litros' => set_value('litros'),
+                'valor' => $precoCompra,
+                'posto' => set_value('posto'),
+                'veiculo' => set_value('veiculo')
             );
 
-            if ($this->produtos_model->add('produtos', $data) == TRUE) {
-                $this->session->set_flashdata('success','Produto adicionado com sucesso!');
+            if ($this->produtos_model->add('combustivel', $data) == TRUE) {
+                $this->session->set_flashdata('success','Abastecimento adicionado com sucesso!');
                 redirect(base_url() . 'index.php/produtos/adicionar/');
             } else {
                 $this->data['custom_error'] = '<div class="form_error"><p>An Error Occured.</p></div>';
             }
         }
+        $this->data['postos'] = $this->produtos_model->get2('postos');
+
         $this->data['view'] = 'produtos/adicionarProduto';
         $this->load->view('tema/topo', $this->data);
      
