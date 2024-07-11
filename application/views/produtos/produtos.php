@@ -9,7 +9,7 @@
 <script type="text/javascript" src="<?php echo base_url();?>assets/js/dist/plugins/jqplot.donutRenderer.min.js"></script>
 
 <div class="span3">
-   <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'aProduto') && 1==2){ ?>
+   <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'aProduto')){ ?>
     <a href="<?php echo base_url();?>index.php/produtos/adicionar" class="btn btn-success"><i class="icon-plus icon-white"></i> Adicionar Abastecimento</a>
 <?php } 
 $contaUser = $this->session->userdata('contaUser'); ?>
@@ -175,7 +175,7 @@ if(!$results){?>
             if($this->permission->checkPermission($this->session->userdata('permissao'),'vProduto')){
                 echo '<a style="margin-right: 1%" href="'.base_url().'index.php/produtos/visualizar/'.$r->id_comb.'" class="btn tip-top" title="Visualizar Presente"><i class="icon-eye-open"></i></a>  '; 
             }
-            if($this->permission->checkPermission($this->session->userdata('permissao'),'eProduto') && 0 == $r->id_saida){
+            if($this->permission->checkPermission($this->session->userdata('permissao'),'eProduto')){
                 echo '<a style="margin-right: 1%" href="'.base_url().'index.php/produtos/editar/'.$r->id_comb.'" class="btn btn-info tip-top" title="Editar Presente"><i class="icon-pencil icon-white"></i></a>'; 
             }
             if($this->permission->checkPermission($this->session->userdata('permissao' && 1==2),'dProduto')){
