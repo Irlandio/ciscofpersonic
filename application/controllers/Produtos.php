@@ -94,35 +94,48 @@ class Produtos extends CI_Controller {
                     case 8:	$contN      = "BR0579";             break;  
                     case 99:$contN      = 99;                   break; 	
                 } 
-        $this->data['results'] = $this->produtos_model->get('combustivel','*',$contN,$where_array,$config['per_page'],$this->uri->segment(3),0);
-        $periodos = $this->produtos_model->get('combustivel','*',$contN,$where_array,$config['per_page'],$this->uri->segment(3),1);
+        $this->data['results'] = $this->produtos_model->get('combustivel','*',0,$contN,$where_array,$config['per_page']);
+        $periodos = $this->produtos_model->get('combustivel','*',1,$contN,$where_array,$config['per_page']);
         $mensal = $semanal = array();
         $mesAnterior = date('Y-m');
-        $semanaAnterior = date('W');
+        $semanaAnterior = '55';
         $i = 0;
+        
         foreach ($periodos as $p) {
             $semana = date('W', strtotime($p->data_abast));
-            if($semana != $semanaAnterior || $i == 0){
+            if($semana != $semanaAnterior){
+                
                 $quilometragemF = $i == 0 ? $p->quilometragem : $semanal[$i]['quilometragemI'];
-                // $i = $i != 0 ? $i++ : 0;
-                $i++ ;
+                if( $semanaAnterior != '55' ) {
+                    $semanal[$i]['quilometragemPercorrida'] = $semanal[$i]['$quilometragemF'] - $semanal[$i]['quilometragemI'];
+                    $semanal[$i]['consumo'] = $semanal[$i]['quilometragemPercorrida'] / $semanal[$i]['litros'];
+                    // $semanal[$i]['consumo'] = 0;
+                    ++$i;
+                    }
+                
+                $semanal[$i]['valor'] = 0;
+                $semanal[$i]['litros'] = 0;
                 $semanal[$i]['quilometragemF'] = $quilometragemF;
                 $semanal[$i]['dataF'] = $p->data_abast;
-            } 
-            {
+            }
+            
+                // var_dump($semana);
+            
                 $semanal[$i]['valor'] += $p->valor;
                 $semanal[$i]['litros'] += $p->litros;
                 $semanal[$i]['quilometragemI'] = $p->quilometragem;
                 $semanal[$i]['dataI'] = $p->data_abast;
-            }
+            
             if(date('Y-m', strtotime($p->data_abast)) != $mesAnterior){
                 
             }
             $semanaAnterior = $semana;
-
         }
         $this->data['semanal'] = $semanal;
 
+        // var_dump($semanal);
+        // var_dump($quilometragemF);
+        // die();
 
 	    
         $this->data['contas'] = $this->produtos_model->get2('caixas');

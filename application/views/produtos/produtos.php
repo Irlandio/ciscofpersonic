@@ -97,12 +97,12 @@ if(!$results){?>
     <?php } else{
         $stt = 'ultimos';
         $aba1 = ""; $aba2 = ""; $aba3 = ""; $aba11 = "";
-        switch ($stt) 
-          {
-              case 'ultimos':	    $sttN = 'Doados';	$aba1 = "active"; break;    
-              case 'semanal':	$sttN = 'Confirmados';	$aba2 = "active";	break;  
-              case 'mensal':	$sttN = 'Previstos';	$aba3 = "active";	break;
-                default: 	        $sttN = 'Estatus'; $aba1 = "active";
+        switch ($stt)
+            {
+              case 'ultimos':	    $sttN = 'ultimos';	$aba1 = "active"; break;    
+              case 'semanal':	$sttN = 'semanal';	$aba2 = "active";	break;  
+              case 'mensal':	$sttN = 'mensal';	$aba3 = "active";	break;
+                default: 	        $sttN = 'ultimos'; $aba1 = "active";
           }   
         ?>
 
@@ -110,8 +110,8 @@ if(!$results){?>
              <div class="widget-title"  style= "background:blue" >                         
                 <ul class="nav nav-tabs">
                     <li class="<?php echo  $aba1; ?>" id="divPrev"><a href="#tab1" data-toggle="tab"> ULTIMOS</a></li>
-                    <li  class="<?php echo  $aba2; ?>" id="divPrev"><a href="#tab11" data-toggle="tab"> <font  color = Red >SEMANAL</font></a></li>
-                    <li class="<?php echo  $aba3; ?>" id="divPrev"><a href="#tab2" data-toggle="tab"> MENSAL</a></li>
+                    <li  class="<?php echo  $aba2; ?>" id="divPrev"><a href="#tab2" data-toggle="tab"> <font  color = Red >SEMANAL</font></a></li>
+                    <li class="<?php echo  $aba3; ?>" id="divPrev"><a href="#tab3" data-toggle="tab"> MENSAL</a></li>
                     <li  id="divDoados"> - </li>
                     <li  id="divDoados" ><DIV>  <font  color = '#ffffff' ><h4><?php echo "<< DOAÇÕES >>" ?> </h4></font> </DIV></li>
 
@@ -238,15 +238,19 @@ if(!$results){?>
                                 <?php
                                 $nProtocoloAnt =  $id_entradaAnterior = '';
                                 $vEntrada = $vSaida = $vPendente = $vEntradaTotal = $vSaidaTotal = $vPendenteTotal = 0.0;
+                                // var_dump($semanal);
                                 foreach ($semanal as $s) {
                                 {
+                                    
+                                    // var_dump($s['quilometragemI']);
+                                    
                                     echo '<tr>';
                                     echo '<td></td>';
-                                    echo '<td>'.date('d/m/Y', strtotime($s->dataI)).' a '.date('d/m/Y', strtotime($s->dataF)).'</td>';
-                                    echo '<td>'.$s->quilometragemI.' a '.$s->quilometragemF.'</td>';
-                                    echo '<td>'.$s->litros.'</td>';
-                                    echo '<td>R$ '.number_format($s->valor,2,',','.').'</td>';
-                                    echo '<td> '.$s->quilometragemF - $s->quilometragemI / $r->litros.'km/l</td>';  
+                                    echo '<td>'.date('d/m/Y', strtotime($s['dataI'])).' a '.date('d/m/Y', strtotime($s['dataF'])).'</td>';
+                                    echo '<td>'.$s['quilometragemI'].' a '.$s['quilometragemF'].'</td>';
+                                    echo '<td>'.$s['litros'].'</td>';
+                                    echo '<td>R$ '.number_format($s['valor'],2,',','.').'</td>';
+                                    echo '<td> '.$s['consumo'].'km/l</td>';  
                                     echo '</tr>';
                                     }
                                 }?>
