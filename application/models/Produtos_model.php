@@ -13,7 +13,7 @@ class Produtos_model extends CI_Model {
 
     
     
-    function get($table,$fields,$contN,$where='',$perpage=0,$start=0,$one=false,$array='array',$tudo){
+    function get($table,$fields,$tudo,$contN,$where='',$perpage=0,$start=0,$one=false,$array='array'){
         
         $this->db->select($fields);
         $this->db->from($table);

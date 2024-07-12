@@ -129,7 +129,7 @@ if(!$results){?>
                     </div>
 
                     <div class="widget-content nopadding">
-                        <table class="table table-bordered ">
+                        <table class="table table-bordered span8">
                             <thead>
                                 <tr style="backgroud-color: #2D335B">
                                     <th>#id_comb </th>
@@ -222,7 +222,7 @@ if(!$results){?>
                         <h5>SEMANAIS</h5>
                     </div>
 
-                    <div class="widget-content nopadding">
+                    <div class="widget-content nopadding span8">
                         <table class="table table-bordered ">
                             <thead>
                                 <tr style="backgroud-color: #2D335B">
@@ -272,41 +272,38 @@ if(!$results){?>
                     </div>
 
                     <div class="widget-content nopadding">
-                        <table class="table table-bordered ">
+                        <table class="table table-bordered span8">
                             <thead>
                                 <tr style="backgroud-color: #2D335B">
-                                    <th>#id_comb </th>
-                                    <th>Data</th>
-                                    <th>quilometragem</th>
-                                    <th>litros</th>
-                                    <th>valor</th>
-                                    <th>posto</th>
-                                    <th>veiculo</th>
-                                    <th></th>
-                                    <th></th>
+                                    <th>#</th>
+                                    <th>Período</th>
+                                    <th>Quilometragem</th>
+                                    <th>Litros</th>
+                                    <th>Valor</th>
+                                    <th>Consumo</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 $nProtocoloAnt =  $id_entradaAnterior = '';
                                 $vEntrada = $vSaida = $vPendente = $vEntradaTotal = $vSaidaTotal = $vPendenteTotal = 0.0;
-                                foreach ($results as $r) {
-                                {   
+                                // var_dump($semanal);
+                                foreach ($mensal as $s) {
+                                {
+                                    
+                                    // var_dump($s['quilometragemI']);
                                     
                                     echo '<tr>';
-                                    echo '<td>'.$r->id_comb.'</td>';
-                                    echo '<td>'.date('d/m/Y', strtotime($r->data_abast)).'</td>';
-                                    echo '<td>'.$r->quilometragem.'</td>';
-                                    echo '<td>'.$r->litros.'</td>';
-                                    echo '<td>R$ '.number_format($r->valor,2,',','.').'</td>';
-                                    echo '<td> '.$r->posto.'</td>';
-                                    echo '<td>'.$r->veiculo.'</font></td>';            
-                                    echo '<td>';
-                                    echo '</td>';
+                                    echo '<td></td>';
+                                    echo '<td>'.date('d/m/Y', strtotime($s['dataI'])).' a '.date('d/m/Y', strtotime($s['dataF'])).'</td>';
+                                    echo '<td>'.$s['quilometragemI'].' a '.$s['quilometragemF'].'</td>';
+                                    echo '<td>'.$s['litros'].'</td>';
+                                    echo '<td>R$ '.number_format($s['valor'],2,',','.').'</td>';
+                                    echo '<td> '.$s['consumo'].'km/l</td>';  
                                     echo '</tr>';
                                     }
                                 }?>
-                                <tr>                    
+                                <tr>
                                 </tr>
                             </tbody>
                         </table>

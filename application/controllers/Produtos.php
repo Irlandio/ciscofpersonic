@@ -94,44 +94,63 @@ class Produtos extends CI_Controller {
                     case 8:	$contN      = "BR0579";             break;  
                     case 99:$contN      = 99;                   break; 	
                 } 
-        $this->data['results'] = $this->produtos_model->get('combustivel','*',0,$contN,$where_array,$config['per_page']);
-        $periodos = $this->produtos_model->get('combustivel','*',1,$contN,$where_array,$config['per_page']);
+        $this->data['results'] = $this->produtos_model->get('combustivel','*',0,$contN,$where_array,$config['per_page'],$this->uri->segment(3));
+        $periodos = $this->produtos_model->get('combustivel','*',1,$contN,$where_array,$config['per_page'],$this->uri->segment(3));
         $mensal = $semanal = array();
         $mesAnterior = date('Y-m');
-        $semanaAnterior = '55';
-        $i = 0;
+        $mesAnterior = $semanaAnterior = '55';
+        $i = $m = 0;
         
         foreach ($periodos as $p) {
             $semana = date('W', strtotime($p->data_abast));
+            $mesAtual = date('Y-m', strtotime($p->data_abast));
             if($semana != $semanaAnterior){
-                
-                $quilometragemF = $i == 0 ? $p->quilometragem : $semanal[$i]['quilometragemI'];
+
+                $quilometragemF = $semanaAnterior != '55' ? $semanal[$i]['quilometragemI'] : $p->quilometragem;
                 if( $semanaAnterior != '55' ) {
-                    $semanal[$i]['quilometragemPercorrida'] = $semanal[$i]['$quilometragemF'] - $semanal[$i]['quilometragemI'];
-                    $semanal[$i]['consumo'] = $semanal[$i]['quilometragemPercorrida'] / $semanal[$i]['litros'];
-                    // $semanal[$i]['consumo'] = 0;
+                    $semanal[$i]['quilometragemPercorrida'] = $semanal[$i]['quilometragemF'] - $semanal[$i]['quilometragemI'] ;
+                    $semanal[$i]['consumo'] = number_format($semanal[$i]['quilometragemPercorrida'] / $semanal[$i]['litros'],2,',','.');
                     ++$i;
                     }
-                
+                $semanal[$i]['consumo'] = 0;
+                $semanal[$i]['quilometragemPercorrida'] = 0;
                 $semanal[$i]['valor'] = 0;
                 $semanal[$i]['litros'] = 0;
                 $semanal[$i]['quilometragemF'] = $quilometragemF;
                 $semanal[$i]['dataF'] = $p->data_abast;
             }
-            
-                // var_dump($semana);
-            
-                $semanal[$i]['valor'] += $p->valor;
-                $semanal[$i]['litros'] += $p->litros;
-                $semanal[$i]['quilometragemI'] = $p->quilometragem;
-                $semanal[$i]['dataI'] = $p->data_abast;
-            
-            if(date('Y-m', strtotime($p->data_abast)) != $mesAnterior){
+            if($mesAtual != $mesAnterior){
+
+                $quilometragemF = $mesAnterior != '55' ? $mensal[$m]['quilometragemI'] : $p->quilometragem;
+                if( $mesAnterior != '55' ) {
+                    $mensal[$m]['quilometragemPercorrida'] = $mensal[$m]['quilometragemF'] - $mensal[$m]['quilometragemI'] ;
+                    $mensal[$m]['consumo'] = number_format($mensal[$m]['quilometragemPercorrida'] / $mensal[$m]['litros'],2,',','.');
+                    ++$m;
+                    }
+                $mensal[$m]['consumo'] = 0;
+                $mensal[$m]['quilometragemPercorrida'] = 0;
+                $mensal[$m]['valor'] = 0;
+                $mensal[$m]['litros'] = 0;
+                $mensal[$m]['quilometragemF'] = $quilometragemF;
+                $mensal[$m]['dataF'] = $p->data_abast;
                 
             }
+            
+            $semanal[$i]['valor'] += $p->valor;
+            $semanal[$i]['litros'] += $p->litros;
+            $semanal[$i]['quilometragemI'] = $p->quilometragem;
+            $semanal[$i]['dataI'] = $p->data_abast;
+        
+            $mensal[$m]['valor'] += $p->valor;
+            $mensal[$m]['litros'] += $p->litros;
+            $mensal[$m]['quilometragemI'] = $p->quilometragem;
+            $mensal[$m]['dataI'] = $p->data_abast;
+        
             $semanaAnterior = $semana;
+            $mesAnterior = $mesAtual;
         }
         $this->data['semanal'] = $semanal;
+        $this->data['mensal'] = $mensal;
 
         // var_dump($semanal);
         // var_dump($quilometragemF);
