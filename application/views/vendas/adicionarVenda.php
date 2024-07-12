@@ -1397,22 +1397,22 @@ if (!$resultUltimo || $resultUltimo == null )
 <script src="<?php echo base_url();?>assets/js/maskmoney.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
- $(".money").maskMoney();
-      $("#cliente").autocomplete({
-            source: "<?php echo base_url(); ?>index.php/vendas/autoCompleteCliente",
-            minLength: 1,
-            select: function( event, ui ) {
-                 $("#clientes_id").val(ui.item.id);    
-            }
-      });
-      $("#tecnico").autocomplete({
-            source: "<?php echo base_url(); ?>index.php/vendas/autoCompleteUsuario",
-            minLength: 1,
-            select: function( event, ui ) {
-                 $("#usuarios_id").val(ui.item.id);
-            }
-      });
-      $("#formVendas").validate({
+    $(".money").maskMoney();
+    $("#cliente").autocomplete({
+        source: "<?php echo base_url(); ?>index.php/vendas/autoCompleteCliente",
+        minLength: 1,
+        select: function( event, ui ) {
+                $("#clientes_id").val(ui.item.id);    
+        }
+    });
+    $("#tecnico").autocomplete({
+        source: "<?php echo base_url(); ?>index.php/vendas/autoCompleteUsuario",
+        minLength: 1,
+        select: function( event, ui ) {
+                $("#usuarios_id").val(ui.item.id);
+        }
+    });
+    $("#formVendas").validate({
           rules:{
           },
           messages:{

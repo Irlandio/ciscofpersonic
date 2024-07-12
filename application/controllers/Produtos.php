@@ -104,7 +104,8 @@ class Produtos extends CI_Controller {
             $semana = date('W', strtotime($p->data_abast));
             if($semana != $semanaAnterior || $i == 0){
                 $quilometragemF = $i == 0 ? $p->quilometragem : $semanal[$i]['quilometragemI'];
-                $i = $i != 0 ? $i++ : 0;
+                // $i = $i != 0 ? $i++ : 0;
+                $i++ ;
                 $semanal[$i]['quilometragemF'] = $quilometragemF;
                 $semanal[$i]['dataF'] = $p->data_abast;
             } 

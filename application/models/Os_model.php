@@ -10,7 +10,6 @@ class Os_model extends CI_Model {
     function __construct() {
         parent::__construct();
     }
-
     
     function get($table,$fields,$where='',$perpage=0,$start=0,$one=false,$array='array'){
         

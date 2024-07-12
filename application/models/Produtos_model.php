@@ -29,6 +29,7 @@ class Produtos_model extends CI_Model {
         // }else 
         // if($contN != 99)
         //     $this->db->like('n_beneficiario',$contN);
+        $this->db->order_by('data_abast','desc');
         $this->db->order_by('quilometragem','desc');
         
         $query = $this->db->get();
