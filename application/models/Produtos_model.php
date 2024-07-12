@@ -13,10 +13,11 @@ class Produtos_model extends CI_Model {
 
     
     
-    function get($table,$fields,$contN,$where='',$perpage=0,$start=0,$one=false,$array='array'){
+    function get($table,$fields,$contN,$where='',$perpage=0,$start=0,$one=false,$array='array',$tudo){
         
         $this->db->select($fields);
         $this->db->from($table);
+        if($tudo == 0)
         $this->db->limit($perpage,$start);
         // if($where){
         //     if(isset($where['contas'])){
