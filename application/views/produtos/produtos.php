@@ -113,7 +113,6 @@ if(!$results){?>
                     <li  class="<?php echo  $aba2; ?>" id="divPrev"><a href="#tab2" data-toggle="tab"> <font  color = Red >SEMANAL</font></a></li>
                     <li class="<?php echo  $aba3; ?>" id="divPrev"><a href="#tab3" data-toggle="tab"> MENSAL</a></li>
                     <li  id="divDoados"> - </li>
-                    <li  id="divDoados" ><DIV>  <font  color = '#ffffff' ><h4><?php echo "<< DOAÇÕES >>" ?> </h4></font> </DIV></li>
 
                 </ul>
             </div>
@@ -129,7 +128,7 @@ if(!$results){?>
                     </div>
 
                     <div class="widget-content nopadding">
-                        <table class="table table-bordered span8">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr style="backgroud-color: #2D335B">
                                     <th>#id_comb </th>
@@ -229,6 +228,7 @@ if(!$results){?>
                                     <th>#</th>
                                     <th>Período</th>
                                     <th>Quilometragem</th>
+                                    <th>Percorrido</th>
                                     <th>Litros</th>
                                     <th>Valor</th>
                                     <th>Consumo</th>
@@ -248,6 +248,7 @@ if(!$results){?>
                                     echo '<td></td>';
                                     echo '<td>'.date('d/m/Y', strtotime($s['dataI'])).' a '.date('d/m/Y', strtotime($s['dataF'])).'</td>';
                                     echo '<td>'.$s['quilometragemI'].' a '.$s['quilometragemF'].'</td>';
+                                    echo '<td>'.$s['quilometragemPercorrida'].'</td>';
                                     echo '<td>'.$s['litros'].'</td>';
                                     echo '<td>R$ '.number_format($s['valor'],2,',','.').'</td>';
                                     echo '<td> '.$s['consumo'].'km/l</td>';  
@@ -278,6 +279,7 @@ if(!$results){?>
                                     <th>#</th>
                                     <th>Período</th>
                                     <th>Quilometragem</th>
+                                    <th>Percorrido</th>
                                     <th>Litros</th>
                                     <th>Valor</th>
                                     <th>Consumo</th>
@@ -297,6 +299,7 @@ if(!$results){?>
                                     echo '<td></td>';
                                     echo '<td>'.date('d/m/Y', strtotime($s['dataI'])).' a '.date('d/m/Y', strtotime($s['dataF'])).'</td>';
                                     echo '<td>'.$s['quilometragemI'].' a '.$s['quilometragemF'].'</td>';
+                                    echo '<td>'.$s['quilometragemPercorrida'].'</td>';
                                     echo '<td>'.$s['litros'].'</td>';
                                     echo '<td>R$ '.number_format($s['valor'],2,',','.').'</td>';
                                     echo '<td> '.$s['consumo'].'km/l</td>';  

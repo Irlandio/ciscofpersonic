@@ -136,13 +136,17 @@ class Produtos extends CI_Controller {
                 
             }
             
-            $semanal[$i]['valor'] += $p->valor;
-            $semanal[$i]['litros'] += $p->litros;
+            if( $semanaAnterior != '55' ) {
+                $semanal[$i]['valor'] += $p->valor;
+                $semanal[$i]['litros'] += $p->litros;
+            }
             $semanal[$i]['quilometragemI'] = $p->quilometragem;
             $semanal[$i]['dataI'] = $p->data_abast;
-        
-            $mensal[$m]['valor'] += $p->valor;
-            $mensal[$m]['litros'] += $p->litros;
+            
+            if( $mesAnterior != '55' ) {
+                $mensal[$m]['valor'] += $p->valor;
+                $mensal[$m]['litros'] += $p->litros;
+            }
             $mensal[$m]['quilometragemI'] = $p->quilometragem;
             $mensal[$m]['dataI'] = $p->data_abast;
         
@@ -181,7 +185,12 @@ class Produtos extends CI_Controller {
         } else {
             $precoCompra = $this->input->post('precoCompra');
             $precoCompra = str_replace(",","", $precoCompra);
-            $dataCompra = date('Y-m-d', strtotime(set_value('dataCompra')));
+            
+            $dataC = explode('/', set_value('dataCompra'));
+            $dataCompra = $dataC[2].'-'.$dataC[1].'-'.$dataC[0];
+            
+            // $dataCompra = date('Y-m-d', strtotime(set_value('dataCompra')));
+            
             $data = array(
                 'quilometragem' => set_value('quilometragem'),
                 'data_abast' => $dataCompra,
