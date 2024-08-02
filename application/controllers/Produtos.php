@@ -124,6 +124,9 @@ class Produtos extends CI_Controller {
                 $quilometragemF = $mesAnterior != '55' ? $mensal[$m]['quilometragemI'] : $p->quilometragem;
                 if( $mesAnterior != '55' ) {
                     $mensal[$m]['quilometragemPercorrida'] = $mensal[$m]['quilometragemF'] - $mensal[$m]['quilometragemI'] ;
+                    if($mensal[$m]['litros'] == 0){
+                        $mensal[$m]['consumo'] = 10.00;
+                    } else
                     $mensal[$m]['consumo'] = number_format($mensal[$m]['quilometragemPercorrida'] / $mensal[$m]['litros'],2,',','.');
                     ++$m;
                     }
