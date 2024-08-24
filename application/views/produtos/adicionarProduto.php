@@ -47,7 +47,7 @@
                         </select>
                     </div>
                     </div>
-
+<?php var_dump($resultUltimo)?>
                      <div class="control-group">
                         <label for="quilometragem" class="control-label">Quilometragem<span class="required">*</span></label>
                         <div class="controls">

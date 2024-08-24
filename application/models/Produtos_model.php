@@ -100,6 +100,14 @@ class Produtos_model extends CI_Model {
 		return FALSE;        
     }   
 	
+    public function getIdultimo($conta,$field){
+        $this->db->select('*');
+        $this->db->from($conta);
+        $this->db->order_by($field,'desc');         
+        $this->db->limit(1);
+        return $this->db->get()->row();
+    }
+
 	function count($table){
 		return $this->db->count_all($table);
 	}

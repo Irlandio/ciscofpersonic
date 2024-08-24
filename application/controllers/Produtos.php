@@ -210,6 +210,7 @@ class Produtos extends CI_Controller {
                 $this->data['custom_error'] = '<div class="form_error"><p>An Error Occured.</p></div>';
             }
         }
+        $this->data['resultUltimo']     = $this->produtos_model->getIdultimo('aenpfin','data_abast');
         $this->data['postos'] = $this->produtos_model->get2('postos');
 
         $this->data['view'] = 'produtos/adicionarProduto';
