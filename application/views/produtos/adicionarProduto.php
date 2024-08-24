@@ -47,11 +47,11 @@
                         </select>
                     </div>
                     </div>
-                    
+
                      <div class="control-group">
                         <label for="quilometragem" class="control-label">Quilometragem<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="quilometragem" type="number" name="quilometragem" MIN='297000' value="<?php echo $resultUltimo['quilometragem']; ?>"  />
+                            <input id="quilometragem" type="number" name="quilometragem" MIN='297000' value="<?php echo $resultUltimo->quilometragem; ?>"  />
                         </div>
                     </div>
 
