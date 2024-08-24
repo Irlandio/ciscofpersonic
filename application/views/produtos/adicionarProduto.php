@@ -47,11 +47,11 @@
                         </select>
                     </div>
                     </div>
-<?php var_dump($resultUltimo)?>
+                    
                      <div class="control-group">
                         <label for="quilometragem" class="control-label">Quilometragem<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="quilometragem" type="number" name="quilometragem" MIN='297000' value="<?php echo set_value('quilometragem'); ?>"  />
+                            <input id="quilometragem" type="number" name="quilometragem" MIN='297000' value="<?php echo $resultUltimo['quilometragem']; ?>"  />
                         </div>
                     </div>
 
@@ -70,14 +70,14 @@
                     <div class="control-group">
                         <label for="precoCompra" class="control-label">Valor<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="precoCompra" class="money" type="text" name="precoCompra" value="<?php echo set_value('precoCompra'); ?>"  />
+                            <input id="precoCompra" class="money" type="number" name="precoCompra" value="<?php echo set_value('precoCompra'); ?>"  />
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label for="precoCompra" class="control-label">Litros<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="litros" class="money" type="text" name="litros" value="<?php echo set_value('litros'); ?>"  />
+                            <input id="litros" class="money" type="number" name="litros" value="<?php echo set_value('litros'); ?>"  />
                         </div>
                     </div>
 

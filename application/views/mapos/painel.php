@@ -12,16 +12,16 @@
     <div class="quick-actions_homepage">
         <ul class="quick-actions">
             <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vVenda')) { ?>
-                <li class="bg_db"> <a href="<?php echo base_url() ?>index.php/vendas"><i class="icon-folder-open"></i> Lançamentos</a></li>
+                <!-- <li class="bg_db"> <a href="<?php echo base_url() ?>index.php/vendas"><i class="icon-folder-open"></i> Lançamentos</a></li> -->
             <?php } ?>
             <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vCliente')) { ?>
-                <li class="bg_ls"> <a href="<?php echo base_url() ?>index.php/clientes"> <i class="icon-group"></i> Beneficiários</a> </li>
+                <!-- <li class="bg_ls"> <a href="<?php echo base_url() ?>index.php/clientes"> <i class="icon-group"></i> Beneficiários</a> </li> -->
             <?php } ?>
             <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vProduto')) {  ?>
                 <li class="bg_ls"> <a href="<?php echo base_url() ?>index.php/produtos"> <i class="icon-group"></i> Abastecimentos</a></li>
             <?php  } ?>
             <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vServico')) { ?>
-                <li class="bg_db"> <a href="<?php echo base_url() ?>index.php/servicos"> <i class="icon-group"></i> Códigos</a> </li>
+                <!-- <li class="bg_db"> <a href="<?php echo base_url() ?>index.php/servicos"> <i class="icon-group"></i> Códigos</a> </li> -->
             <?php } ?>
             <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')) { ?>
                 <li class="bg_ls"> <a href="<?php echo base_url() ?>index.php/financeiro/lancamentos?periodo=todos&situacao=todos"> <i class="icon-tags"></i> R. Bancária</a> </li>
