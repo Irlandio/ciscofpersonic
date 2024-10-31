@@ -205,7 +205,7 @@ class Produtos extends CI_Controller {
 
             if ($this->produtos_model->add('combustivel', $data) == TRUE) {
                 $this->session->set_flashdata('success','Abastecimento adicionado com sucesso!');
-                redirect(base_url() . 'index.php/produtos/adicionar/');
+                redirect(base_url() . 'index.php/produtos/produtos/');
             } else {
                 $this->data['custom_error'] = '<div class="form_error"><p>An Error Occured.</p></div>';
             }
@@ -213,7 +213,7 @@ class Produtos extends CI_Controller {
         $this->data['resultUltimo']     = $this->produtos_model->getIdultimo('combustivel','data_abast');
         $this->data['postos'] = $this->produtos_model->get2('postos');
 
-        $this->data['view'] = 'produtos/produtos';
+        $this->data['view'] = 'produtos/adicionarProduto';
         $this->load->view('tema/topo', $this->data);
      
     }
