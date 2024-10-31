@@ -189,8 +189,9 @@ class Produtos extends CI_Controller {
             $precoCompra = $this->input->post('precoCompra');
             $precoCompra = str_replace(",","", $precoCompra);
             
-            $dataC = explode('/', set_value('dataCompra'));
-            $dataCompra = $dataC[2].'-'.$dataC[1].'-'.$dataC[0];
+            $dataCH = explode(' ', set_value('dataCompra'));
+            $dataC = explode('/', $dataCH[0]);
+            $dataCompra = $dataC[2].'-'.$dataC[1].'-'.$dataC[0].' '.$dataCH[1];
             
             // $dataCompra = date('Y-m-d', strtotime(set_value('dataCompra')));
             
