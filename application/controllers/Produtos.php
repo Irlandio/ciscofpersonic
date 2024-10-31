@@ -205,7 +205,7 @@ class Produtos extends CI_Controller {
 
             if ($this->produtos_model->add('combustivel', $data) == TRUE) {
                 $this->session->set_flashdata('success','Abastecimento adicionado com sucesso!');
-                redirect(base_url() . 'index.php/produtos/produtos/');
+                redirect(base_url() . 'index.php/produtos/');
             } else {
                 $this->data['custom_error'] = '<div class="form_error"><p>An Error Occured.</p></div>';
             }
