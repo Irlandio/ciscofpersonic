@@ -182,7 +182,7 @@
                                 echo '<td>'.$r->quilometragem.'</td>';
                                 echo '<td>'.$r->litros.'</td>';
                                 echo '<td>R$ '.number_format($r->valor,2,',','.').'</td>';
-                                echo '<td> '.$r->nome.'</td>';
+                                echo '<td> '.$r->nPosto.'</td>';
                                 echo '<td>'.$r->veiculo.'</font></td>';
                                 echo '</td>';
                                 echo '</tr>';
