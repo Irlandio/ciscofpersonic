@@ -213,7 +213,7 @@ class Produtos extends CI_Controller {
         $this->data['resultUltimo']     = $this->produtos_model->getIdultimo('combustivel','data_abast');
         $this->data['postos'] = $this->produtos_model->get2('postos');
 
-        $this->data['view'] = 'produtos/adicionarProduto';
+        $this->data['view'] = 'produtos/produtos';
         $this->load->view('tema/topo', $this->data);
      
     }

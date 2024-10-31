@@ -21,7 +21,7 @@
                     <div class="control-group">
                         <label for="data">Data do evento financeiro<span class="control-label required">*</span></label>
                         <div class="controls">
-                            <input id="dataCompra" class="datepicker" type="Text" name="dataCompra" value="<?php echo date('d/m/Y')?>"/>
+                            <input id="dataCompra" class="datepicker" type="Text" name="dataCompra" value="<?php echo date('d/m/Y H:i')?>"/>
                         </div>
                     </div>
 

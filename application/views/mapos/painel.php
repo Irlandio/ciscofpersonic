@@ -24,7 +24,7 @@
                 <!-- <li class="bg_db"> <a href="<?php echo base_url() ?>index.php/servicos"> <i class="icon-group"></i> Códigos</a> </li> -->
             <?php } ?>
             <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')) { ?>
-                <li class="bg_ls"> <a href="<?php echo base_url() ?>index.php/financeiro/lancamentos?periodo=todos&situacao=todos"> <i class="icon-tags"></i> R. Bancária</a> </li>
+                <!-- <li class="bg_ls"> <a href="<?php echo base_url() ?>index.php/financeiro/lancamentos?periodo=todos&situacao=todos"> <i class="icon-tags"></i> R. Bancária</a> </li> -->
             <?php } ?>
 
 

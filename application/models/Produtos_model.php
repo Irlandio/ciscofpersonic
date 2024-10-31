@@ -19,6 +19,7 @@ class Produtos_model extends CI_Model {
         $this->db->from($table);
         if($tudo == 0)
         $this->db->limit($perpage,$start);
+        $this->db->join('postos p','p.id_posto  = '.$table.'.posto');
         // if($where){
         //     if(isset($where['contas'])){
         //         $this->db->like('n_beneficiario',$where['contas']);
