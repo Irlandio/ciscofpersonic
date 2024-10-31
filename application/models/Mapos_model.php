@@ -131,15 +131,13 @@ class Mapos_model extends CI_Model {
     }
 
     function getLancamentos($table){
-
         
-        $this->db->select($table.'.*, caixas.nome_caixa, caixas.id_caixa, usuarios.nome');
+        $this->db->select($table.'.*, p.nome AS nPosto');
         $this->db->from($table);
-        $this->db->limit(5);
-        $this->db->join('caixas', 'caixas.id_caixa = '.$table.'.conta');
-        $this->db->join('usuarios',' usuarios.idUsuarios = aenpfin.cadastrante');
-     //   $this->db->join('caixas', 'usuarios.conta_Usuario = caixas.id_caixa', 'left');
-        $this->db->order_by('id_fin','desc');
+        $this->db->limit(10);
+        $this->db->join('postos p','p.id_posto  = '.$table.'.posto');
+        $this->db->order_by('data_abast','desc');
+        $this->db->order_by('quilometragem','desc');
         return $this->db->get()->result();
 
     }

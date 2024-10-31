@@ -162,11 +162,13 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Conta</th>
-                            <th>Data</th>
-                            <th>Valor</th>
-                            <th>Usuário</th>
+                                    <th>#id_comb </th>
+                                    <th>Data</th>
+                                    <th>quilometragem</th>
+                                    <th>litros</th>
+                                    <th>valor</th>
+                                    <th>posto</th>
+                                    <th>veiculo</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -174,26 +176,14 @@
                         <?php
                         if ($lancamentos != null) {
                             foreach ($lancamentos as $rl) {
-                                if ($rl->ent_Sai == 1) {
-                                    $sinal = " ";
-                                    $corV = "#130be0";
-                                } else {
-                                    $sinal = "-";
-                                    $corV = "#fa0606";
-                                }
-                                $valorFinExibe  =    number_format(str_replace(",", ".", $rl->valorFin), 2, ',', '.');
-                                $dataVenda = explode('-', $rl->dataFin);
-                                $dataF = $dataVenda[2] . '/' . $dataVenda[1] . '/' . $dataVenda[0];
                                 echo '<tr>';
-                                echo '<td>' . $rl->nome_caixa . '</td>';
-                                echo '<td>' . $rl->historico . '</td>';
-                                echo '<td>' . $dataF . '</td>';
-                                echo '<td  style="text-align:right;">R$ <font color=' . $corV . '>' . $sinal . '  ' . $valorFinExibe . '</font></td>';
-                                echo '<td>' . $rl->nome . '</td>';
-                                echo '<td>';
-                                if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eUsuario')) {
-                                    echo '<a href="' . base_url() . 'index.php/produtos/editar/' . $rl->id_fin . '" class="btn btn-info"> <i class="icon-pencil" ></i> </a>  ';
-                                }
+                                echo '<td>'.$r->id_comb.'</td>';
+                                echo '<td>'.date('d/m/Y H:i', strtotime($r->data_abast)).'</td>';
+                                echo '<td>'.$r->quilometragem.'</td>';
+                                echo '<td>'.$r->litros.'</td>';
+                                echo '<td>R$ '.number_format($r->valor,2,',','.').'</td>';
+                                echo '<td> '.$r->nome.'</td>';
+                                echo '<td>'.$r->veiculo.'</font></td>';
                                 echo '</td>';
                                 echo '</tr>';
                             }
