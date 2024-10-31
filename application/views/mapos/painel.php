@@ -175,7 +175,7 @@
                     <tbody>
                         <?php
                         if ($lancamentos != null) {
-                            foreach ($lancamentos as $rl) {
+                            foreach ($lancamentos as $r) {
                                 echo '<tr>';
                                 echo '<td>'.$r->id_comb.'</td>';
                                 echo '<td>'.date('d/m/Y H:i', strtotime($r->data_abast)).'</td>';
