@@ -166,11 +166,67 @@ class Relatorios_model extends CI_Model {
         return $this->db->get()->row();
         
     } 
-    /*
-					$sql_Saldo_Ant = 'SELECT * FROM aenpfin 					
-						WHERE dataFin >= "'.$data_mes_Anterior.'" and dataFin < "'.$data1.'" and 
-						conta = "'.$caixa.'"  and "'.$adm.'" is Not Null and saldo_Mes = "S" ORDER BY dataFin ';
-*/
+    
+
+    public function getEstatisticaSomaMes($dia0, $dia1){
+       
+        $whereText = "";
+        $whereText .= "SUM(CASE WHEN  (cod_assoc = 'D-BT' OR num_Doc_Banco = '0/0' OR cod_assoc = 'C-ALT') AND ent_Sai = 1 AND dataFin BETWEEN '".$dia0."' AND '".$dia1."' THEN valorFin END) as tr, ";//tr ( Total receita)
+        $whereText .= "SUM(CASE WHEN  num_Doc_Banco = '0/0'  AND ent_Sai = 0 AND dataFin BETWEEN '".$dia0."' AND '".$dia1."' THEN valorFin END) as tdC, ";//td ( Total despesa)      
+        $whereText .= "SUM(CASE WHEN  (cod_assoc = 'D-BT' OR cod_assoc = 'C-ALT' ) AND ent_Sai = 0 AND dataFin BETWEEN '".$dia0."' AND '".$dia1."' THEN valorFin END) as tdD, ";//td ( Total despesa)           
+        $whereText .= "MIN(CASE WHEN  dataFin BETWEEN '".$dia0."' AND '".$dia1."' THEN dataFin END) as dataI";//td ( Total despesa)
+           
+        $sql = "SELECT ".$whereText." FROM aenpfin ";
+        return $this->db->query($sql)->row();
+    }
+
+
+    function getLanceCredito($table,$fatura=0,$dataFatura=0,$fundoFinanceiro=0){
+        $menos2Meses = date('Y-m-d', strtotime("-2 month", strtotime(date('Y-m-d')))); //DA final DO MÊS (FINAL)
+        $this->db->select($table.'.*');
+        $this->db->from($table);
+        if($fatura == 0){
+            $this->db->where('cod_compassion !=','D10-01');
+            $this->db->where('num_Doc_Fiscal','Previsto');
+        $this->db->order_by('cod_assoc');
+                $this->db->order_by('dataEvento');
+        }else
+        if($fatura == 1)// Somente faturas
+        {
+            if($dataFatura == 1)// Somente fundo expecifico e mês
+            {
+                $this->db->where('cod_compassion','D10-01');
+                $this->db->where('dataFin > ',$menos2Meses);
+                $this->db->order_by('cod_assoc');
+                $this->db->order_by('dataFin');
+            }else
+            if($dataFatura != 0)// Somente fundo expecifico e mês
+            {
+                $this->db->where('cod_compassion !=','D10-01');
+                $this->db->where('dataFin',$dataFatura);
+                $this->db->where('cod_assoc',$fundoFinanceiro);
+        $this->db->order_by('cod_assoc');
+                $this->db->order_by('dataEvento');
+            }else{
+                $this->db->where('cod_compassion','D10-01');
+                $this->db->where('num_Doc_Fiscal','Previsto');
+        $this->db->order_by('cod_assoc');
+                $this->db->order_by('dataEvento');
+                }
+        }
+        return $this->db->get()->result();
+    }
+    function getLancamentosFuturos($table,$dataInicial, $dataFinal){
+        $this->db->select($table.'.*, cc.descricaoCod, ca.descricao_Ass');
+        $this->db->from($table);
+        $this->db->where('dataFin >= ',$dataInicial);
+        $this->db->where('dataFin <= ',$dataFinal);
+        $this->db->join('cod_compassion cc', 'cc.cod_Comp = '.$table.'.cod_compassion');
+        $this->db->join('cod_assoc ca', 'ca.cod_Ass = '.$table.'.cod_assoc');
+        $this->db->order_by('num_Doc_Fiscal');
+        $this->db->order_by('dataFin');
+        return $this->db->get()->result();
+    }
 
     function getSaldo_Ant($conta,$dataInicial){
         /*$dataInicial = date('Y-m-01');

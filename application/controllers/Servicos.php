@@ -65,50 +65,10 @@ class Servicos extends CI_Controller {
         
         $contaU = $user->conta_Usuario;
         
-        
-        
         {
            $this->data['results'] = $this->servicos_model->get('cod_compassion','*','',$config['per_page'],$this->uri->segment(3));
        	
         }
-            $texto = '';
-            $inicio = '';
-        
-        $altera = $this->input->post('altera');
-        if($altera == 'tito')
-        {
-            
-            $inicio = $this->input->post('inicio');
-            $resultsVendas = $this->servicos_model->get22('aenpfin','id_fin',$inicio);
-          //  $resultsCod = $this->servicos_model->get2('cod_compassion','cod_Comp');
-
-             foreach ($resultsVendas as $r) {
-                if (strlen($r->cod_compassion) == 8 && substr($r->cod_compassion, 3,1) == '-') 
-                {
-                    $codN = substr($r->cod_compassion, 0,3).' - '.substr($r->cod_compassion, -4);
-                    
-                        $texto .= $r->id_fin.': '.$r->cod_compassion.' ->'.$codN.' |';
-
-                        $data = array(
-                            'cod_compassion' => $codN
-                        );
-
-                    //    if ($this->servicos_model->edit('aenpfin', $data, 'id_fin', $r->id_fin) == TRUE) 
-                        {
-                        }
-
-                        }   
-                    
-                    
-                }
-                    
-
-
-        }
-        
-      //   $this->session->set_flashdata('success','Altera '.$altera.', Inicio '.$inicio.' | '.$texto);
-            
-         
 	    
 	    $this->data['view'] = 'servicos/servicos';
        	$this->load->view('tema/topo',$this->data);
@@ -127,26 +87,57 @@ class Servicos extends CI_Controller {
         $this->load->library('form_validation');
         $this->data['custom_error'] = '';
 
+        $grupos = $this->servicos_model->get2('cod_compassion','cod_Comp');
+        
         if ($this->form_validation->run('servicos') == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
         } else {
-            $data = array(
-                'nomeI' => set_value('nomeCliente'),
-                'data_Nasc' => set_value('data_Nasc'),
-                'data_entrada' => set_value('data_entrada'),
-                'cpf_I' => set_value('documento'),
-                'rg_I' => set_value('rg'),
-                'sexo' => $this->input->post('sexo'),
-                'status' => $this->input->post('status')
-            );
-
-            if ($this->servicos_model->add('idosos', $data) == TRUE) {
-                $this->session->set_flashdata('success','idoso adicionado com sucesso!');
-                redirect(base_url() . 'index.php/servicos/adicionar/');
-            } else {
-                $this->data['custom_error'] = '<div class="form_error"><p>Ocorreu um erro.</p></div>';
+            $gupoES = explode(",", set_value('area_Cod'));
+            $grupo = $gupoES[0]; $codG = $gupoES[1]; $eS = $gupoES[2];
+            $codigo = $codG."-".set_value('codigo');
+            
+             $jaTem = false;
+             $n = false;
+            $i=0;
+            while($n == false )
+            {
+                $i++;
+                $codGN = $codG.$i;
+                $n = true;
+                foreach ($grupos as $rg)
+                    {
+                    $grup = explode("-", $rg->cod_Comp);
+                    if($grup[0] == $codGN) $n = false;
+                    if($rg->cod_Comp == $codigo) $jaTem = true;
+                }
+                 if($i > 20) $n = true;
             }
+            
+            if($grupo == "new")
+            {$grupo = set_value('new');
+            $codigo = $codGN."-00";                               
+            }
+            $data = array(
+                'cod_Comp' => $codigo,
+                'codigoNovo' => 1,
+                'area_Cod' => $grupo,
+                'descricaoCod' => set_value('descricaoCod'),
+                'ent_SaiComp' => $eS
+            );
+            //var_dump($data, $jaTem); exit;
+            if ($jaTem == false)
+                {
+                if ($this->servicos_model->add('cod_compassion', $data) == TRUE) {
+                    $this->session->set_flashdata('success','Código adicionado com sucesso!');
+                    redirect(base_url() . 'index.php/servicos/adicionar/');
+                } else {
+                    $this->data['custom_error'] = '<div class="form_error"><p>Ocorreu um erro.</p></div>';
+                }
+            }else {
+                    $this->data['custom_error'] = '<div class="form_error"><p>Ocorreu um erro. Código já Existente</p></div>';
+                }
         }
+        $this->data['grupos'] = $this->servicos_model->get2group('cod_compassion','area_Cod');
         $this->data['view'] = 'servicos/adicionarServico';
         $this->load->view('tema/topo', $this->data);
 

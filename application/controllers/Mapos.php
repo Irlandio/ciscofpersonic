@@ -19,11 +19,91 @@ class Mapos extends CI_Controller {
         if( (!session_id()) || (!$this->session->userdata('logado'))){
             redirect('mapos/login');
         }
+        
+        $cFundos = $this->mapos_model->get3('cod_assoc','cod_Ass','descricao_Ass');
+        $dia1Atual = date('Y-m-01');            
+            $dia0 = $dia1Atual; //DIA 01 DO MÊS (INICIO)
+            $dia2 = date('Y-m-d', strtotime("+ 1 month", strtotime($dia1Atual))); //DA 01 DO MÊS seguinte (FINAL)
+            $dia1 = date('Y-m-d', strtotime("-1 day", strtotime($dia2))); //DA final DO MÊS (FINAL)
+            $i=0;
+          foreach ($cFundos as $cF)
+            {
+               $dataprxFatura = $this->mapos_model->getMindataFatura($cF->cod_Ass)->dataProxFatura;
+             
+                $cartoes[$cF->cod_Ass] = $this->mapos_model->getEstatisticaPrevistaMes($dataprxFatura,$dataprxFatura,0,$cF->cod_Ass)->soma;
+              if($dataprxFatura > 1) {
+                  $dataprxF[$cF->cod_Ass] =  date('Y-m-d', strtotime($dataprxFatura));
+                }else{
+                  $diaF = $cF->cont_Contabil > 9 ? $cF->cont_Contabil : '0'.$cF->cont_Contabil;
+                  $dataFat = date('Y-m-'.$diaF);
+                  
+                     $dataprxF[$cF->cod_Ass] = $cF->cont_Contabil > date('d') ? $dataFat : date('Y-m-d', strtotime("+ 1 month", strtotime($dataFat)));
+             // var_dump($dataFat); 
+              }
+            }//die;
+        
+        for( $i=0 ; $i < 6; $i++){
+            $dia0 = date('Y-m-d', strtotime("+1 month", strtotime($dia0))); //DIA 01 DO MÊS (INICIO)
+            $dia1 = date('Y-m-d', strtotime("+1 month", strtotime($dia1)));  //DA 01 DO MÊS seguinte (FINAL)
+            $dia1 = date('Y-m-d', strtotime("-1 day", strtotime($dia1))); //DA final DO MÊS (FINAL)
+            $dia0 = $i==0 ? $dia1Atual : $dia0;
+            $dia1 = $i==0 ? date('Y-m-d', strtotime("+1 month", strtotime($dia0))) : $dia1;
+            $somaMes[$i] =  $this->mapos_model->getEstatisticaSomaMes($dia0, $dia1);
+              
+        }
+        $this->data['lancFuturos'] =  $this->mapos_model->getLancamentosFuturos('aenpfin');
+        $this->data['fundosCred'] =  $this->mapos_model->get2('cod_assoc','cont_Contabil');
+        
+        $lanceCredFaturas = $this->mapos_model->getLanceCredito('aenpfin',1);
+        $this->data['lanceCredFaturas'] = $lanceCredFaturas;
+        
+        $this->data['lanceCredFaturass'] = $this->mapos_model->getLanceCredito('aenpfin',1,1);
+        
+        {
+        $fatur = ''; $datamax = '2022-01-01';
+          foreach ($lanceCredFaturas as $cF)
+            {               
+              if($cF->par_ES == null) 
+                  { $somaFatura = 0.00;
+                    $dt  = $this->mapos_model->getLanceCredito('aenpfin',1,$cF->dataFin,$cF->cod_assoc);                 
+                    $fatur .= '<p><STRONG>('.$cF->id_fin.' '.$cF->cod_assoc.' '.$cF->descricao.')</STRONG><br>';  
+                  foreach ($dt as $d)
+                    {
+                      $fatur .= $d->id_fin.', '.$d->cod_assoc.', '.$d->descricao.', '.$d->num_Doc_Banco.', '.$d->dataEvento.', '.$d->valorFin.'<br>';
+                      $somaFatura += $d->valorFin;
+                    }                   
+                        $dataUp = array( 'valorFin' => $somaFatura ); 
+                        if ($this->mapos_model->edit('aenpfin', $dataUp, 'id_fin', $cF->id_fin) == TRUE) 
+                        {                 
+                        $fatur .= '('.$cF->id_fin.' '.$cF->descricao.' '.$cF->valorFin.')</p>';                
+                        }
+             // var_dump($dataFat); 
+              }
+              $datamax = $datamax < $cF->dataFin ? $cF->dataFin : $datamax;
+              
+            }//die;
+            
+        }
+        
+        $this->data['datamax'] = $datamax;
+        $this->data['fatur'] = $fatur;
+        
+        
+                
+        $this->data['somaMeses'] = $somaMes;
+        
+        
+        
+        $this->data['lanceCredito'] = $this->mapos_model->getLanceCredito('aenpfin');
+        $this->data['cFundos'] = $cFundos;
+        $this->data['cartoes'] = $cartoes;
+        $this->data['dataprxFatura'] = $dataprxF;
         $this->data['usuario'] = $this->mapos_model->getById($this->session->userdata('id'));
         $this->data['ordens'] = $this->mapos_model->getOsAbertas();
-        $this->data['lancamentos'] = $this->mapos_model->getLancamentos('combustivel');
+        $this->data['lancamentos'] = $this->mapos_model->getLancamentos('aenpfin');
         $this->data['os'] = $this->mapos_model->getOsEstatisticas();
         $this->data['estatisticas_financeiro'] = $this->mapos_model->getEstatisticasFinanceiro();
+        $this->data['c_Custos'] = $this->mapos_model->get3('cod_compassion','cod_Comp','descricaoCod');
         $this->data['menuPainel'] = 'Painel';
         $this->data['view'] = 'mapos/painel';
         $this->load->view('tema/topo',  $this->data);

@@ -17,28 +17,34 @@ class Vendas_model extends CI_Model {
         
         $lista_clientes = array();
         if($where){
-            if(array_key_exists('pesquisa',$where)){ $this->db->select('historico');
-               $this->db->like('historico',$where['pesquisa']);
-                $this->db->order_by('dataFin','desc');
-                $this->db->limit(40);
-                $clientes = $this->db->get('aenpfin')->result();
+            if(array_key_exists('pesquisa',$where)){ 
+                    $this->db->select('id_fin');
+                   $this->db->or_like('historico',$where['pesquisa']);
+                   $this->db->or_like('descricao',$where['pesquisa']);
+                   $this->db->or_like('num_Doc_Banco',$where['pesquisa']);
+                   $this->db->or_like('valorFin',$where['pesquisa']);
+//                    $this->db->order_by('dataFin','desc');
+                    $this->db->limit(100);
+                    $clientes = $this->db->get('aenpfin')->result();
 
-                foreach ($clientes as $c) {
-                    array_push($lista_clientes,$c->historico);
-                }
+                    foreach ($clientes as $c) {
+                        array_push($lista_clientes,$c->id_fin);
+                    }
             }
         }
-        $this->db->select($fields.', caixas.nome_caixa, caixas.id_caixa');
+        $this->db->select($fields.', caixas.nome_caixa, caixas.id_caixa, cod_assoc.descricao_Ass, cc.descricaoCod');
         $this->db->from($table);
         $this->db->limit($perpage,$start);
         $this->db->join('caixas', 'caixas.id_caixa = '.$table.'.conta');
-        $this->db->order_by('id_fin','desc');
+        $this->db->join('cod_compassion cc', 'cc.cod_Comp = '.$table.'.cod_compassion');
+        $this->db->join('cod_assoc', 'cod_assoc.cod_Ass = '.$table.'.cod_assoc');
+        $this->db->order_by('dataEvento','desc');
       //  if($where){ $this->db->where($where);   }
 // condicionais da pesquisa
         // condicional de clientes
         if(array_key_exists('pesquisa',$where)){
             if($lista_clientes != null){
-                $this->db->where_in('aenpfin.historico',$lista_clientes);
+                $this->db->where_in('aenpfin.id_fin',$lista_clientes);
             }
         }        
         // condicional de Cod
@@ -48,7 +54,7 @@ class Vendas_model extends CI_Model {
         
         // condicional de Conta
         if(array_key_exists('status',$where)){
-            $this->db->where('conta',$where['status']);
+            $this->db->where('cod_assoc',$where['status']);
         }
 
         // condicional data inicial
@@ -67,17 +73,18 @@ class Vendas_model extends CI_Model {
         return $result;
     }
     
-    function get0($table,$fields,$contaU,$where='',$perpage=0,$start=0,$one=false,$array='array'){
+    function get0($table,$fields,$one=false,$array='array'){
         
-        $this->db->select($fields.', caixas.nome_caixa, caixas.id_caixa');
+        $this->db->select($fields);
         $this->db->from($table);
-        $this->db->limit($perpage,$start);
-        $this->db->join('caixas', 'caixas.id_caixa = '.$table.'.conta');
-        $this->db->order_by('id_fin','desc');
-        $this->db->where('aenpfin.conta',$contaU);
-        if($where){
-            $this->db->where($where);
-        }
+        //$this->db->limit($perpage,$start);
+       // $this->db->join('caixas', 'caixas.id_caixa = '.$table.'.conta');
+      //  $this->db->order_by('id_fin','desc');
+//        $this->db->where('aenpfin.conta',$contaU);
+        $this->db->where('aenpfin.num_Doc_Banco','0/0');
+//        if($where){
+//            $this->db->where($where);
+//        }
         
         $query = $this->db->get();
         
@@ -102,8 +109,8 @@ class Vendas_model extends CI_Model {
         return $result;
     }
 
-    function get3($table,$fields,$fields2){
-        
+    function get3($table,$fields,$fields2=NULL){
+        if($fields2 != null)
         $this->db->order_by($fields2,'desc');
         $this->db->order_by($fields);
         return $this->db->get($table)->result();
@@ -142,7 +149,40 @@ class Vendas_model extends CI_Model {
         return $this->db->get()->row();
    
     }
+    function getByIdComplemento($id){	  
+        $this->db->select('aenpfin.*');
+        $this->db->from('aenpfin');
+        $this->db->where('aenpfin.par_ES',$id);
+        $this->db->where('aenpfin.cod_compassion','D10-02');
+        $this->db->limit(1);
+        return $this->db->get()->row();
+    }
 
+    function getMaxId($table,$field){
+        $this->db->select('MAX('.$field.') AS maxId');
+        $this->db->from($table);
+        return $this->db->get()->row();
+   
+    }
+    function getFaturaMes($table,$cartao,$field,$mes,$ano){
+        $this->db->select($field);
+        $this->db->from($table);
+        $this->db->where('num_Doc_Banco',"0/0");
+        $this->db->where('cod_assoc',$cartao);
+        $this->db->where('YEAR(dataFin)',$ano);
+        $this->db->where('MONTH(dataFin)',$mes);
+        return $this->db->get()->row();   
+    }
+    //Todos lançamentos deste cartão no mês
+    function getFaturaLancamentosMes($table,$cartao,$field,$mes,$ano){
+        $this->db->select($field);
+        $this->db->from($table);
+        $this->db->where('num_Doc_Banco !=',"0/0");//Indicador de fatura mensal
+        $this->db->where('cod_assoc',$cartao);
+        $this->db->where('YEAR(dataFin)',$ano);
+        $this->db->where('MONTH(dataFin)',$mes);
+        return $this->db->get()->result();
+    }
     function getProtocPres($protoc){
         $this->db->select('presentes_especiais.*');
         $this->db->from('presentes_especiais');
@@ -210,10 +250,10 @@ class Vendas_model extends CI_Model {
         return $this->db->get()->row();
     }
 
-    function getByIdChek($id){
-	    $this->db->select('reconc_bank.* ');
-        $this->db->from('reconc_bank');
-        $this->db->where('reconc_bank.id_aenp',$id);
+    function getByIdChek($table,$field,$id){
+	    $this->db->select('*');
+        $this->db->from($table);
+        $this->db->where($field,$id);
         $this->db->limit(1);
         return $this->db->get()->row();
     }

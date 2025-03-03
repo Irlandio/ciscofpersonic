@@ -124,9 +124,6 @@ class Produtos extends CI_Controller {
                 $quilometragemF = $mesAnterior != '55' ? $mensal[$m]['quilometragemI'] : $p->quilometragem;
                 if( $mesAnterior != '55' ) {
                     $mensal[$m]['quilometragemPercorrida'] = $mensal[$m]['quilometragemF'] - $mensal[$m]['quilometragemI'] ;
-                    if($mensal[$m]['litros'] == 0){
-                        $mensal[$m]['consumo'] = 10.00;
-                    } else
                     $mensal[$m]['consumo'] = number_format($mensal[$m]['quilometragemPercorrida'] / $mensal[$m]['litros'],2,',','.');
                     ++$m;
                     }
@@ -189,9 +186,8 @@ class Produtos extends CI_Controller {
             $precoCompra = $this->input->post('precoCompra');
             $precoCompra = str_replace(",","", $precoCompra);
             
-            $dataCH = explode(' ', set_value('dataCompra'));
-            $dataC = explode('/', $dataCH[0]);
-            $dataCompra = $dataC[2].'-'.$dataC[1].'-'.$dataC[0].' '.$dataCH[1];
+            $dataC = explode('/', set_value('dataCompra'));
+            $dataCompra = $dataC[2].'-'.$dataC[1].'-'.$dataC[0];
             
             // $dataCompra = date('Y-m-d', strtotime(set_value('dataCompra')));
             
@@ -206,12 +202,11 @@ class Produtos extends CI_Controller {
 
             if ($this->produtos_model->add('combustivel', $data) == TRUE) {
                 $this->session->set_flashdata('success','Abastecimento adicionado com sucesso!');
-                redirect(base_url() . 'index.php/produtos/');
+                redirect(base_url() . 'index.php/produtos/adicionar/');
             } else {
                 $this->data['custom_error'] = '<div class="form_error"><p>An Error Occured.</p></div>';
             }
         }
-        $this->data['resultUltimo']     = $this->produtos_model->getIdultimo('combustivel','data_abast');
         $this->data['postos'] = $this->produtos_model->get2('postos');
 
         $this->data['view'] = 'produtos/adicionarProduto';

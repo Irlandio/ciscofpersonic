@@ -55,7 +55,7 @@
                                              if(NULL !== $result->cod_compassion){
                                              foreach ($result_codComp as $rcodComp)
                                              {if ($result->cod_compassion == $rcodComp->cod_Comp) 
-                                                    $descri_Comp = $rcodComp->descricao;                                                 
+                                                    $descri_Comp = $rcodComp->descricaoCod;                                                 
                                                     $area_Comp = $rcodComp->area_Cod;                                        
                                              }}                                       
                                        
@@ -71,16 +71,16 @@
                                                 <span>Conta:</span>
                                                  <label for="nome_caixa"><h5><?php echo $result->nome_caixa .' - '.$result->tipo_Conta ?></h5></label>
                                                     
-                                                <span>  Código Compassion:</span><br/>
+                                                <span>  Centro de Custo:</span><br/>
                                                  <label for="cod_compassion"><h5><?php echo $result->cod_compassion." | ".$descri_Comp." | ".$area_Comp ?></h5></label>
                                                     
-                                                <span>Código Associação: </span><br/>
+                                                <span>Fundo Financeiro: </span><br/>
                                                  <label for="cod_assoc"><h5><?php echo $result->cod_assoc." | ".$descri_Asso ?></h5></label>
                                                 
-                                                <span>Número do Documento Bancário: </span><br/>
+                                                <span>Parcela: </span><br/>
                                                 <label for="num_Doc_Banco"><h5><?php echo $result->num_Doc_Banco?> </h5></label>
                                                     
-                                                <span>Número do Documento Fiscal:</span><br/>                  
+                                                <span>Status:</span><br/>                  
                                                  <label for="num_Doc_Fiscal"><h5><?php echo $result->num_Doc_Fiscal?></h5></label>               
                                                 
                                                 <span>Razão social:</span> <br/>
@@ -97,6 +97,9 @@
                                         <ul>
                                             <li>
                                                 <span>Data do evento:</span>
+                                                <label for="dataFin"><h5> <?php echo date('d/m/Y', strtotime($result->dataEvento)) ?></h5></label>
+                                                
+                                                <span>Data da parcela:</span>
                                                 <label for="dataFin"><h5> <?php echo date('d/m/Y', strtotime($result->dataFin)) ?></h5></label>
                                                 
                                                 <span>Forma de saida:</span><br/>
@@ -108,27 +111,11 @@
                                                 
                                                 <label for="ent_Sai"><h5>Lançamento de <?php echo  $e_S ?></h5></label>
                                                 <?php 
-             if(($result->conta_Destino) == null) $cDestinoNome = "A mesma";
+                                                if(($result->conta_Destino) == null) $cDestinoNome = "A mesma";
                                                     else{
-                    switch ($result->conta_Destino) 
-					{						    
-						case 1:	$cDestinoNome = "IEADALPE - 1444-3";	break;    
-						case 2:	$cDestinoNome = "22360-3";	break;  
-						case 3:	$cDestinoNome = "ILPI";	break;  
-						case 4:	$cDestinoNome = "BR214";	break;  
-						case 5:	$cDestinoNome = "BR518";	break;  
-						case 6:	$cDestinoNome = "BR542";	break;  
-						case 7:	$cDestinoNome = "BR549";	break;  
-						case 8:	$cDestinoNome = "BR579";	break;  
-						case 9:	$cDestinoNome = "BB 28965-5";	break;  
-						case 10:$cDestinoNome = "CEF 1948-4";	break; 				
-					}   
+                     
                                                     }
                                    ?>
-                                                <span>Conta beneficiaria:</span><br/>
-                                                <label for="numeroDocFiscal"><h5><?php echo $cDestinoNome; ?></h5></label>
-                                                
-                                                
                         <div class="span12" id="divAnexos" style="margin-left: 0">
                             <?php 
                             $cont = 1;

@@ -62,5 +62,29 @@ function ultimoDiaMes($newData){
 			return false;
 		}
 	}
-	
+
+
+    function formatoValor($valorPre) {                                
+         if(formatoRealPntVrg($valorPre) == true) 
+           {//Verific se o numero digitado é com (.) milhar e (,) decimal
+               //serve pra validar  valores acima e abaixo de 1000
+                //      echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
+                $valorPre  =    ((float)str_replace("," , "." , (str_replace("." , "" , $valorPre)) ));
+           }else if(formatoRealInt($valorPre) == true)
+           {//Verific se o numero digitado é inteiro sem ponto nem virgula
+               //serve pra validar  valores acima e abaixo de 1000
+              //        echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
+                $valorPre  =    number_format(str_replace("." , "" ,$valorPre), 2, '.', '');
+           }else if(formatoRealPnt($valorPre) == true)
+           { 
+               //      echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
+               $valorPre  =    $valorPre;
+         }else if(formatoRealVrg($valorPre) == true)
+           { 
+             //        echo "ERRO!  - <strong><td> ;Linha: ". __LINE__ . ", tente novamente!</td></strong><br/>"; 
+               $valorPre  =   ((float)str_replace("," , "." , (str_replace("." , "" , $valorPre)) ));
+           }
+        return $valorPre;
+    }
+                                
 ?>

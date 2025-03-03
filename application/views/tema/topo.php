@@ -60,26 +60,33 @@
     <?php } ?>
       
     <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vCliente')){ ?>
-     <!--<li class="<?php if(isset($menuClientes)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/clientes"><i class="icon icon-group"></i> <span>Fornecedores</span></a></li>-->
+     <li class="<?php if(isset($menuClientes)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/clientes"><i class="icon icon-group"></i> <span>Fornecedores</span></a></li>
     <?php } ?>
     
+<!--
     <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vProduto')){ ?>
-      <li class="<?php if(isset($menuProdutos)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/produtos"><i class="icon icon-group"></i> <span>Abastecimento</span></a></li>
+      <li class="<?php if(isset($menuProdutos)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/produtos"><i class="icon icon-group"></i> <span>Presentes Especiais</span></a></li>
     <?php } ?>
-    <!--
+-->
+    
+<!--
     <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vServico')){ ?>
         <li class="<?php if(isset($menuServicos)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/servicos"><i class="icon icon-wrench"></i> <span>Serviços</span></a></li>
     <?php } ?>
+-->
 
     <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vOs')){ ?>
         <li class="<?php if(isset($menuOs)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/os"><i class="icon icon-tags"></i> <span>Ordens de Serviço</span></a></li>
     <?php } ?>
 
     
+<!--
     <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vArquivo')){ ?>
-        <li class="<?php if(isset($menuArquivos)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/arquivos"><i class="icon icon-hdd"></i> <span>Arquivos</span></a></li>-->
+        <li class="<?php if(isset($menuArquivos)){echo 'active';};?>"><a href="<?php echo base_url()?>index.php/arquivos"><i class="icon icon-hdd"></i> <span>Arquivos</span></a></li>
     <?php } ?>
+-->
 
+<!--
     <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vLancamento')){ ?>
         <li class="submenu <?php if(isset($menuFinanceiro)){echo 'active open';};?>">
           <a href="#"><i class="icon icon-money"></i> <span>Cheques</span> <span class="label"><i class="icon-chevron-down"></i></span></a>
@@ -88,6 +95,7 @@
           </ul>
         </li>
     <?php } ?>
+-->
 
     <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'rCliente') || $this->permission->checkPermission($this->session->userdata('permissao'),'rProduto') || $this->permission->checkPermission($this->session->userdata('permissao'),'rServico') || $this->permission->checkPermission($this->session->userdata('permissao'),'rOs') || $this->permission->checkPermission($this->session->userdata('permissao'),'rFinanceiro') || $this->permission->checkPermission($this->session->userdata('permissao'),'rVenda')){ ?>
         
@@ -120,7 +128,7 @@
                 <li><a href="<?php echo base_url()?>index.php/clientes">Beneficiários</a></li>
             <?php } ?>
             <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'eProduto')){ ?>
-                <li><a href="<?php echo base_url()?>index.php/produtos">Abastecimento</a></li>
+                <li><a href="<?php echo base_url()?>index.php/produtos">Presentes Especiais</a></li>
             <?php } ?>
             <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'eServico')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/servicos">Códigos</a></li>
@@ -161,9 +169,9 @@
         case "os": $seg ="Solicitação"; break;
         case 'vendas': $seg ='Lançamento'; break;               
         case 'clientes': $seg ='Beneficiário'; break;              
-        case 'produtos': $seg ='Abastecimento'; break;               
+        case 'produtos': $seg ='Presentes Especiais'; break;               
         case 'servicos': $seg ='Servicos'; break;                   
-        case 'mapos': $seg ='CiscoF'; break; 
+        case 'mapos': $seg ='CiscoFiP'; break; 
             default: $seg = $segmento1;
     }
     ?>

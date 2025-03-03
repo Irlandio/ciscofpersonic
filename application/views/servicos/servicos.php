@@ -134,11 +134,11 @@ if(!$results){?>
             if($r->codigoNovo != 1) {$fonti = '<font  color = #9f9ff5 >'; $fontf = '</font> (Inativo)';}else {$fonti = ''; $fontf = '';}
             echo '<tr>'; 
             echo '<td>'.$fonti.$r->cod_Comp.$fontf.'</font></td>';
-            echo '<td>'.$fonti.$r->descricao.$fontf.'</td>';
+            echo '<td>'.$fonti.$r->descricaoCod.$fontf.'</td>';
             echo '<td>'.$fonti.$r->area_Cod.$fontf.'</td>';
             echo '<td>'.$fonti.$r->ent_SaiComp.$fontf.'</td>';
             echo '<td>';
-            if(1==2){
+            if(1==1){
             if($this->permission->checkPermission($this->session->userdata('permissao'),'vServico')){
                 echo '<a href="'.base_url().'index.php/servicos/visualizar/'.$r->cod_Comp.'" style="margin-right: 1%" class="btn tip-top" title="Ver mais detalhes"><i class="icon-eye-open"></i></a>'; 
             }
@@ -158,16 +158,15 @@ if(!$results){?>
     </tbody>
 </table>
 </div>
-<?php }
-echo $this->pagination->create_links();
-?>
+
+     <?php echo $this->pagination->create_links();}?>
 
         <div class="widget-box">        
-    <form method="post" action="<?php echo base_url(); ?>index.php/servicos/gerenciar"> 
+    <form method="post" action="<?php echo base_url(); ?>index.php/servicos/adicionar"> 
         <div class="span6">
             
-            <input  class="span2" type="text" name="inicio"  id="inicio"  placeholder="Registro Inicial" value="114950">
-            <input  class="span2" type="text" name="altera"  id="altera"    value="1" >
+            <input  class="span2" type="hidden" name="inicio"  id="inicio"  placeholder="Registro Inicial" value="114950">
+            <input  class="span2" type="hidden" name="altera"  id="altera"    value="1" >
                 <div class="span6 offset3">
                     <button type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> Adicionar</button>
                 </div>
@@ -184,15 +183,15 @@ echo $this->pagination->create_links();
   <form action="<?php echo base_url() ?>index.php/servicos/excluir" method="post" >
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h5 id="myModalLabel">Excluir Idoso</h5>
+    <h5 id="myModalLabel">Excluir Código</h5>
   </div>
   <div class="modal-body">
     <input type="hidden" id="idIdoso" name="id" value="" />
-    <h5 style="text-align: center">Deseja realmente excluir este cliente e os dados associados a ele (OS, Vendas, Receitas)?</h5>
+    <h5 style="text-align: center">Deseja realmente excluir este Código e os dados associados a ele ?</h5>
   </div>
   <div class="modal-footer">
     <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
-    <button class="btn btn-danger">Excluir</button>
+<!--    <button class="btn btn-danger">Excluir</button>-->
   </div>
   </form>
 </div>

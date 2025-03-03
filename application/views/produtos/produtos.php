@@ -178,11 +178,11 @@ if(!$results){?>
                                     // $cor1 = ($vpend >= 0.2) ? '<font color = red >' : ($vpend < -2) ? '<font color = #893306 >' : '<font color = blue >';
                                     echo '<tr>';
                                     echo '<td>'.$r->id_comb.'</td>';
-                                    echo '<td>'.date('d/m/Y H:i', strtotime($r->data_abast)).'</td>';
+                                    echo '<td>'.date('d/m/Y', strtotime($r->data_abast)).'</td>';
                                     echo '<td>'.$r->quilometragem.'</td>';
                                     echo '<td>'.$r->litros.'</td>';
                                     echo '<td>R$ '.number_format($r->valor,2,',','.').'</td>';
-                                    echo '<td> '.$r->nome.'</td>';
+                                    echo '<td> '.$r->posto.'</td>';
                                     echo '<td>'.$r->veiculo.'</font></td>';            
                                     echo '<td>';
                                     if($this->permission->checkPermission($this->session->userdata('permissao'),'vProduto')){

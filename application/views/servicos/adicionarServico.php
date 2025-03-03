@@ -18,67 +18,43 @@
                 } ?>
                 <form action="<?php echo current_url(); ?>" id="formCliente" method="post" class="form-horizontal" >
                     <div class="control-group">
-                        <label for="nomeCliente" class="control-label">Nome<span class="required">*</span></label>
+                        <label for="codigo" class="control-label">Código<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="nomeCliente" type="text" name="nomeCliente" value="<?php echo set_value('nomeCliente'); ?>"  />
+                            <input id="codigo" type="text" name="codigo" value="<?php echo set_value('nomeCliente'); ?>"  maxlength="2" />
                         </div>
                     </div>
                     
+                                    
+                                
                     <div class="control-group">
-                        <label for="documento" class="control-label">CPF<span class="required">*</span></label>
+                        <label for="area_Cod" class="control-label">Grupo<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="documento" type="text" name="documento" value="<?php echo set_value('documento'); ?>"  />
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-                        <label for="celular" class="control-label">Data de Nascimento</label>
-                        <div class="controls">
-                            <input id="data_Nasc" class="span3 datepicker" type="Text" name="data_Nasc" value="<?php echo date('d/m/Y'); ?>"  />
-                            <!--<input id="data_Nasc" type="text" name="data_Nasc" value="<?php echo set_value('data_Nasc'); ?>"  />-->
-                        </div>
-                    </div>
-
-                    <div class="control-group">
-                        <label for="email" class="control-label">RG<span class="required">*</span></label>
-                        <div class="controls">
-                            <input id="rg" type="text" name="rg" value="<?php echo set_value('rg'); ?>"  />
-                        </div>
-                    </div>
-
-                    <div class="control-group" class="control-label">
-                        <label for="rua" class="control-label">sexo<span class="required">*</span></label>
-                        <div class="controls">
-                            <select id="sexo" name="sexo">   
-                                        <option value = "">Selecione </option> 
-                                        <option value = "m">Masculino</option>  
-                                        <option value = "f">Feminino</option>
-                                        </select>
-                        
-                           <!-- <input id="sexo" type="text" name="sexo" value="<?php echo set_value('sexo'); ?>"  />-->
+                             <select id="area_Cod" name="area_Cod">
+                                <option value = ""> Selecione o Grupo</option>
+                             <?php { 
+                                foreach ($grupos as $rg)
+                                    { 
+                                        $codG = explode("-", $rg->cod_Comp);
+                                        $codGrup = $codG[0];
+                                 ?>                                           
+                                        <option value = "<?php echo $rg->area_Cod.','.$codGrup.','.$rg->ent_SaiComp ?>" <?php if($rg->area_Cod.','.$codGrup.','.$rg->ent_SaiComp == set_value('documento')){ echo 'selected';} ?>>
+                                        <?php echo $codGrup.' - '.$rg->area_Cod.' - '; ?> <?php if($rg->ent_SaiComp == 1){ echo 'Entrada';}else { echo 'Saída';}?></option>
+                                       <?php                                                       
+                                     }
+                                 } 
+                                ?>	
+                                <option value = "new,D,0" > Novo Grupo SAÍDA</option>	
+                                <option value = "new,C,1" > Novo Grupo ENTRADA</option>													
+                            </select>
                         </div>
                     </div>
 
                     <div class="control-group">
-                        <label for="celular" class="control-label">Data de Admissao</label>
+                        <label for="descricaoCod" class="control-label">Descrição do Código<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="data_Admc" class="span3 datepicker" type="Text" name="data_Admc" value="<?php echo date('d/m/Y'); ?>"  />
-                            <!--<input id="data_Nasc" type="text" name="data_Nasc" value="<?php echo set_value('data_Admc'); ?>"  />-->
+                            <input id="descricaoCod" type="text" name="descricaoCod" value="<?php echo set_value('descricao'); ?>"  />
                         </div>
                     </div>
-
-                    <div class="control-group">
-                        <label for="numero" class="control-label">status<span class="required">*</span></label>
-                        <div class="controls">
-                            <select id="status" name="status">   
-                                        <option value = "">Selecione </option> 
-                                        <option value = "ativo">Ativo</option>  
-                                        <option value = "inativo">Inativo</option>
-                                        </select>
-                            <!--<input id="status" type="text" name="status" value="<?php echo set_value('status'); ?>"  />-->
-                        </div>
-                    </div>
-
 
                     <div class="form-actions">
                         <div class="span12">
@@ -88,6 +64,13 @@
                             </div>
                         </div>
                     </div>
+                    <div class="control-group">
+                        <label for="new" class="control-label">Só se Novo Grupo<span class="required"></span></label>
+                        <div class="controls">
+                            <input id="new" type="text" name="new" value="<?php echo set_value('new'); ?>"  />
+                        </div>
+                    </div>
+
                 </form>
             </div>
         </div>
@@ -100,16 +83,16 @@
       $(document).ready(function(){
            $('#formCliente').validate({
             rules :{
-                  nomeCliente:{ required: true},
-                  documento:{ required: true},
-                  rg:{ required: true},
+                  codigo:{ required: true},
+                  descricaoCod:{ required: true},
+                  area_Cod:{ required: true},
                 
                  
             },
             messages:{
-                  nomeCliente :{ required: 'Campo Requerido.'},
-                  documento :{ required: 'Campo Requerido.'},
-                  rg:{ required: 'Campo Requerido.'},
+                  codigo :{ required: 'Campo Requerido.'},
+                  descricaoCod :{ required: 'Campo Requerido.'},
+                  area_Cod:{ required: 'Campo Requerido.'},
                   
                   
 

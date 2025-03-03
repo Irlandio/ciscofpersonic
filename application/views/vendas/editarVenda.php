@@ -29,7 +29,7 @@
                     <i class="icon-folder-open"></i>
                 </span>
                 <h5>Editar Lançamento</h5>
-                                        <h4>#Lançamento: <?php echo $result->id_fin ?></h4>
+                <h4>#Lançamento: <?php echo $result->id_fin ?></h4>
             </div>
             <div class="widget-content nopadding">
                 
@@ -41,7 +41,28 @@
                     </ul>
                     <div class="tab-content">
                     <?php
-                      //  if($usuario->conta_Usuario == 99) 
+                            $lancamento = array();
+                            if( isset($_SESSION['lancamento']))
+                            {
+                    //var_dump($_SESSION['lancamento']);
+                                $lancamento     = $_SESSION['lancamento'];
+                                $conta          = $lancamento['conta'];        
+                                $tipCont        = $lancamento['tipo_Conta'];
+                                $fundoF         = $lancamento['fundoF'];
+                                $cCustos        = $lancamento['cCustos'] ;
+                                $num_Doc        = $lancamento['num_Doc_Banco'];
+                                $numDocFiscal   = $lancamento['num_Doc_Fiscal'];
+                                $razaoSoc       = $lancamento['historico'];
+                                $dataFin        = $lancamento['dataFin'];
+                                $descri         = $lancamento['descricao'];	
+                                $valorFin       = $lancamento['valorFin'];
+                                $conta_Destino  = $lancamento['conta_Destino'];
+                                $tipo_Pag       = $lancamento['tipo_Pag'];
+                                $tipoES         = $lancamento['ent_Sai'] ; 
+                                $cadastrante    = $lancamento['cadastrante'];
+                                $adm            = $lancamento['adm'];
+                            }else $adm   = '';
+                            unset($_SESSION['lancamento']);
                         {
                                 
                     ?>
@@ -49,27 +70,24 @@
 
                             <div class="span12" id="divEditarVenda">
                                 
-                                <form action="<?php echo current_url(); ?>" method="post" id="formVendas">
-                                    <?php echo form_hidden('id_fin',$result->id_fin) ?>
-                                    <input id="id_fin" name="id_fin"  type="hidden" value="<?php echo $result->id_fin ?>"/>
-                                    <div class="span6" style="padding: 1%; margin-left: 0">
-                                       <!--
-                                        <div class="span5" >
-                                            <label for="cliente">Cliente<span class="required">*</span></label>
-                                            <input id="cliente" class="span12" type="text" name="cliente" value="<?php echo $result->historico ?>"  />
-                                            <input id="clientes_id" class="span12" type="hidden" name="clientes_id" value="<?php echo $result->clientes_id ?>"  />
-
-                                            <input id="valorTotal" type="hidden" name="valorTotal" value=""  />
-
-                                        </div> -->
-                                        <div class="span6">
+                    <form action="<?php echo current_url(); ?>" method="post" id="formVendas">
+                                    
+                        <?php if ($custom_error != '') {
+                            echo '<div class="alert alert-danger">'.$custom_error.'</div>';
+                        } ?>
+                                    <?php // echo form_hidden('id_fin',$result->id_fin) ?>
+                                    <input id="id_fin" name="id_fin"  type="hidden" value="<?php echo $result->id_fin ?>">
+                                    <input id="saldo" name="saldo"  type="hidden" value="<?php echo $result->saldo ?>"/>
+                                    <div class="span12" style="padding: 1%; margin-left: 0">
+                                       
+                                        <div class="span12">
                                             <label for="tecnico">Lançado por <?php echo $result->nome." em ".date('d/m/Y', strtotime($result->dataFin)) ?><span class="required">*</span></label>
                                             
                                         </div>
                                         
                                     </div>
                                                                           
-                                    <div class="span6">         
+                            <div class="span4">         
                                         <?php $conta = $result->id_caixa ?>
                                     <p class="conta">
                                         <label for="conta">Conta de lançamento</label>
@@ -87,10 +105,7 @@
                                           ?>														
                                         </select>
                                      <font color=red><span class="style1"> * </span></font>	
-                                    </p>  
-                                    </div>
-                                    
-                                    <div class="span6"> 
+                                    </p>   
                                                               
                                         <?php 
                                        
@@ -104,15 +119,7 @@
                                     <p class="ent_Sai">
                                         <label for="ent_Sai">Tipo de movimentação</label>
                                         <select id="ent_Sai" name="ent_Sai">                                              
-                                        <option value = "<?php echo $result->ent_Sai ?>"><?php echo $ent_Sai; ?></option>
-                                         <?php               
-                                          if($usuario->conta_Usuario == 99)
-                                              {?>                                               
-                                            <option value = '0'> Saida</option>                
-                                            <option value = '1'> Entrada</option>
-                                                    <?php
-                                            }    
-                                            ?>														
+                                        <option value = "<?php echo $result->ent_Sai ?>"><?php echo $ent_Sai; ?></option>                                         													
                                         </select>
                                      <font color=red><span class="style1"> * </span></font>	
                                     </p>
@@ -124,202 +131,153 @@
                                          <?php                                                            
                                           if($usuario->conta_Usuario == 99)
                                               {?>                                               
-                                            <option value = "Suporte">Suporte</option>          
-                                            <option value = "Corrente">Corrente</option>          
-                                            <option value = "Investimento">Investimento</option>          
-                                            <option value = "Poupança">Poupança</option>
+                                            <option value = "Suporte">Suporte</option>    
                                           <?php
                                             } else {?>
-                                            <option value = "Suporte">Suporte</option>          
-                                            <option value = "Corrente">Corrente</option>  
+                                            <option value = "Suporte">Suporte</option> 
                                               <?php 
                                             } ?>														
                                         </select>
                                      <font color=red><span class="style1"> * </span></font>	
                                     </p> 
-                            
                                     <?php 
     
                                     {
-    
                                         $conta = $result->conta;
                                         $tipCont = $result->tipo_Conta;
-    
-    
-                                         if( $conta <  4 || $conta >  8 )
-                                        { ?>
-                                           <input name ="cod_Comp"  type=hidden value="III-III" />
-                                             <?php 
-                                          
-                                        }else{
+                                        {
                                         ?>
-                                    <p class="cod_Comp">
-                                        <label for="compassion">Código Compassion *</label>
+                                <div class="control-group">
+                                    <label for="cCustos" class="control-label">Centro de Custo<span class="required">*</span></label>
+                                    <div class="controls">
                                         <?php 
                                           
-                                                    $descri_Comp = "Indefinido";                                                 
-                                                    $area_Comp = "Indefinido";
-                                             if(NULL !== $result->cod_compassion){
-                                             foreach ($result_codComp as $rcodComp)
-                                             {if ($result->cod_compassion == $rcodComp->cod_Comp) 
-                                                    $descri_Comp = $rcodComp->descricao;                                                 
-                                                    $area_Comp = $rcodComp->area_Cod;                                        
-                                             }}?>
-                                          <select id="cod_Comp" name="cod_Comp" >
-                                            <option value = 
-                                            "<?php echo $result->cod_compassion ?>"><?php echo $result->cod_compassion." | ".$descri_Comp." | ".$area_Comp ?></option>
-
+                                            $descri_Comp = "Indefinido";                                                 
+                                            $area_Comp = "Indefinido";
+                                            ?>
+                                          <select id="cCustos" name="cCustos" >
                                             <?php 
-                                          //  while($cod_Comp = mysqli_fetch_array($query)) 
                                              foreach ($result_codComp as $rcodComp)
                                              {
-                                              if( $rcodComp->codigoNovo == 1 ){?>
-                                            <!--  -->
-                                                <option value = "<?php echo $rcodComp->cod_Comp ?>">
+                                              ?>
+                                                <option value = "<?php echo $rcodComp->cod_Comp ?>"
+                                                     <?php if($result->cod_compassion == $rcodComp->cod_Comp){ echo 'selected';} ?>>
                                                 <?php echo ' '.$rcodComp->cod_Comp." |
-                                                ".$rcodComp->descricao." | ".$rcodComp->area_Cod.' '?></option>
-                                            <?php }} ?>
+                                                ".$rcodComp->descricaoCod." | ".$rcodComp->area_Cod.' '?></option>
+                                            <?php } ?>
                                               </select>
                                     <?php }    ?>
-                                </p>
-                                <p class="cod_ass">						
-                                    <label for="cod_ass">Código Associação *</label>
-                                    <?php 
-
-                                        $descri_Asso = "Indefinido"; 
-                                         if(NULL !== $result->cod_assoc){
-                                         foreach ($result_codIead as $rcodIead)
-                                         {if ($result->cod_assoc == $rcodIead->cod_Ass) 
-                                                $descri_Asso = $rcodIead->descricao_Ass;
-                                         }}?>
-                                     <select id="cod_Ass" name="cod_Ass">
-                                        <option value = "<?php echo $result->cod_assoc ?>"><?php echo $result->cod_assoc." | ".$descri_Asso ?> </option>
-                                        <?php //while($cod_Ass = mysqli_fetch_array($queryA)) 
-                                        foreach ($result_codIead as $rcodIead)
-                                        {?>
-                                        <option value = "<?php echo $rcodIead->cod_Ass ?>">
-                                        <?php echo $rcodIead->cod_Ass." | ".$rcodIead->descricao_Ass ?></option>
-                                        <?php } //$con->disconnect();
-                                        ?>														
-                                          </select>
-                                </p>
-                          <?php  }?>
-                                <p class="numeroDocBancario">
-                                    <?php                                  					
-                                            if($conta <> 3)
-                                            {?>
-                                        <label for="numeroDocBanco">Número do Documento Bancário</label>
-                                        <input id="numeroDoc" name="numeroDoc" value="<?php echo $result->num_Doc_Banco ?>" />
-                                    <?php }	
-                                        ?>
-                                    <span class="style1">*</span>
-                                </p> 
-                                <p class="docFiscal">
-                                        <label for="numeroDocFiscal">Número do Documento Fiscal</label>
-                                      <td>
-                                        <input id="numDocFiscal" name="numDocFiscal" value="<?php echo $result->num_Doc_Fiscal ?>" />
-                                    <font color=red> *</font></td>
-                                </p>
-                                <div class="span6">
-                                                <label for="dataInicial">Data do evento financeiro<span class="required">*</span></label>
-                                                <input id="dataVenda" class="span12 datepicker" type="Text" name="dataVenda" value="<?php echo date('d/m/Y', strtotime($result->dataFin)); ?>"  />
-                                </div> 
-                                <div class="span6">
-                                    <?php
-//********* Insere "70_porcento" ou "30_porcento" para identificar de onde é o valor
-                                        if($conta == 3)
-                                        {	?>	
-                                            <label><input  checked="checked"  name="numeroDoc" type="radio" value= "70_porcento" />
-                            Pertence aos 70% </label>                                           
-                                            <label><input name="numeroDoc" type="radio" value= "30_porcento" />Pertence aos 30%</label><br><br>	
-                                      
-                                    <?php  }?>	
-
-                              
-                                </div> 
-                        
-                    </div>
-                                
-                           
-                                                
-                                   
-                                <div class="span5" >
-                                       
-                                        
+                                    </div>
+                                </div>
                                     
-                                            <p class="VALOR">
-                                            <label for="valor">Valor do lançamento</label>
+                                <div class="control-group">
+                                    <label for="fundoF" class="control-label">Fundo Financeiro<span class="required">*</span></label>
+                                    <div class="controls">                                  
+                                     <select id="fundoF" name="fundoF">                                       
+                                        <?php
+                                        foreach ($result_codIead as $rcodIead)
+                                        { 
+                                            $codigoFundo = $rcodIead->cod_Ass;
+                                            $dataVenc   = $rcodIead->cont_Contabil;
+                                            $dataMelhor = $rcodIead->ent_SaiAss;
+                                            
+                                         ?>
+                                            <option value ="<?=$codigoFundo?>"
+                                            <?php if($result->cod_assoc == $rcodIead->cod_Ass){ echo 'selected'; $cred_deb = $rcodIead->area;} ?>>
+                                            <?php echo $rcodIead->cod_Ass." | ".$rcodIead->descricao_Ass ?></option>
+                                        <?php }
+                                        ?>														
+                                    </select>
+                                    </div>
+                                </div>
+                          <?php  }?>
+                                <p class="docFiscal">
+                                    <?php  $numDocFiscal = $result->num_Doc_Fiscal;
+                                           $chekFisc0 = $numDocFiscal == "Previsto" ? "checked" : "";
+                                           $chekFisc1 = $numDocFiscal == "Efetuado" ? "checked" : ""; 
+                                        $exibeP = $exibeE = "true";
+                                    ?>
+                                    <label for="tiposaida">Situação <?=$adm?></label>
+                                    <?php if($result->num_Doc_Banco != "0/0" && $cred_deb == 'CRÉDITO' && $result->cod_assoc != 'C-EMP' && $adm != 'admin')
+                                          { $exibeP = $numDocFiscal == "Previsto" ? "true" : "false";
+                                           $exibeE = $numDocFiscal == "Efetuado" ? "true" : "false";}
+                                    if($exibeP == "true"){
+                                  ?>
+                                    <label class="btn btn-default" submit>
+                                        <input name="numDocFiscal" type="radio" value="Previsto" <?php echo $chekFisc0 ?> class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Previsto</label> 
+                                    <?php } 
+                                    if($exibeE == "true"){?>
+                                    <label class="btn btn-default" submit>
+                                        <input name="numDocFiscal" type="radio"  value="Efetuado" <?php echo $chekFisc1 ?> class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Efetuado</label>  
+                                    <?php } ?>
+                                </p>
+                                
+                                <div class="control-group">
+                                    <label for="dataInicial" class="control-label">Data do evento financeiro<span class="required">*</span></label>
+                                    <div class="controls">
+                                                <input id="dataEvento" class="span3 datepicker" type="Text" name="dataEvento" value="<?php echo date('d/m/Y', strtotime($result->dataEvento)); ?>" <?php if($result->num_Doc_Banco == '0/0') echo 'readonly';  ?> /> / 
+                                        <input id="dataVenda" class="span3 datepicker" type="Text" name="dataVenda" value="<?php echo date('d/m/Y', strtotime($result->dataFin)); ?>" <?php if($result->num_Doc_Banco == '0/0') echo 'readonly';  ?> />
+                                </div> 
+                                </div>                               
+                        
+                        </div>
+                                   
+                         <div class="span4" > 
+                                <p>
+                                <?php
+                                    if($result->num_Doc_Banco == '0/0')
+                                    {
+                                           $chekFat0 = $result->par_ES == $result->id_fin  ? "" : "checked";
+                                           $chekFat1 = $result->par_ES == $result->id_fin ? "checked" : ""; 
+                                          ?>
+                                            <label class="btn btn-default" submit>
+                                                <input name="fatura" type="radio" value="0" <?php echo $chekFat0 ?> class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Fatura Aberta</label> 
+                                            <label class="btn btn-default" submit>
+                                                <input name="fatura" type="radio"  value="1" <?php echo $chekFat1 ?> class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> Fatura Fechada</label>  
+                                <?php }else{ ?> 
+                                    <label for="valorFin" class="control-label">Vinculado ao Lançamento <?=$result->par_ES ?></label>                                    
+                                <?php } $ver_Par_ES =  $adm == 'admin' ? 'text' : 'hidden'; ?>
+                                    <input name="faturapar_ES" type="<?=$ver_Par_ES?>" value="<?php echo $result->par_ES ?>"  />
+                                    
+                                </p>
+                                <div class="control-group">
+                                    <label for="valorFin" class="control-label">Valor do lançamento<span class="required">*</span></label>
+                                    <div class="controls">
                                             <span class="style1">* R$ </span><input text-align="right" name="valorFin"  class="money"   value="<?php echo number_format($result->valorFin, 2, ',', '.') ?>" ><font color=red> **</font>
-                                            </p>
-                                         
-                                            <p class="Historico">
-                                                <label for="razao"><font color=red>Histórico</font></label>
+                                    </div>                                 
+                                </div>
+                                    
+                                <div class="control-group">
+                                            <label for="razaoSoc" class="control-label">Histórico<span class="required">*</span></label>
                                                 <input class="span11"  name ="razaoSoc" type="text"  value="<?php echo $result->historico ?>"  maxlength=60><font color=red> *</font>
 
-                                            </p>
-                                         
-                                            <p class="descri">
-                                                <label for="descri">Descrição</label>
-                                                <textarea name ="descri" type="text"  maxlength=100><?php echo $result->finDescricao ?></textarea><font color=red> *</font>
-                                            </p> 
+                                </div>                                        
+                                    
+                                <div class="control-group">
+                                        <label for="descricao" class="control-label">Descrição<span class="required">*</span></label>
+                                    <div class="controls">
+                                    <textarea name ="descricao" type="text"  maxlength=100><?php echo $result->finDescricao ?></textarea><font color=red> *</font>
+                                </div>
+                                </div>
                                                
-                                        <?php 
-                                        $tipo_Pagamento = "Indefinido";
-                                        if($result->tipo_Pag == "cheq") {
-                                             $tipo_Pagamento = "Cheque";}
-                                        else if($result->tipo_Pag == "trans") {
-                                            $tipo_Pagamento = "Transferência";}
-                                        
-                                        ?>
                                      <input  name ="cadastrante" type="hidden"  value="<?php echo $usuario->idUsuarios ?>" >
                                     <p class="tipo_Pag">
-                                       <input  name ="tip_PagAnt" type="hidden"  value="<?php echo $result->tipo_Pag ?>" >
-                                       <label for="tipo_Pag">Tipo de movimentação</label>
-                                       <select id="tipo_Pag" name="tipo_Pag">                                              
-                                       <option value = "<?php echo $result->tipo_Pag ?>"><?php echo $tipo_Pagamento; ?></option>
-                                       <?php               
-                                          if($usuario->conta_Usuario == 99)
-                                              {?>                                               
-                                       <option value = "trans"> Transferência</option>                
-                                       <option value = "cheq"> Cheque</option>
-                                                    <?php
-                                            }    
-                                            ?>														
-                                       </select>
-                                     <font color=red><span class="style1"> * </span></font>	
+                                        <label for="tiposaida">Tipo de Lançamento</label>
+                                        
+                                        <label class="btn btn-default" submit><input name="tipoPag" id="rd-time" type="radio" checked  value="<?=$result->tipo_Pag ?>" class="badgebox" style="margin-top:5px;"/><span class="badge" >&check;</span> <?=$result->tipo_Pag ?></label>
+
                                     </p>
-                                                                     
-                               
-                            <?php 
-                                     
-                           $conta_DestinoNome = "A mesma";
-                                foreach ($result_caixas as $rcix) 
-                                {                   
-                              if($result->conta_Destino != null && $result->conta_Destino == $rcix->id_caixa)
-                                  {
-                                  $conta_DestinoNome = $rcix->nome_caixa;
-                              }}                                    
-                                    ?>                                               
-                                     
-                        <p class="conta">
-                            <label for="conta">à beneficio da conta</label>
-                            <select id="conta_Destino" name="conta_Destino">                                              
-                            <option value = "<?php echo $result->conta_Destino ?>"><?php echo $result->conta_Destino.' | '.$conta_DestinoNome ; ?></option>
-                             <?php
-                                foreach ($result_caixas as $rcx) 
-                                {                   
-                             // if($usuario->conta_Usuario == 99)
-                                //   if(($conta < 4) || ($conta > 8))
-                                  {?>                                               
-                                <option value = "<?php echo $rcx->id_caixa ?>"><?php echo $rcx->id_caixa." | ".$rcx->nome_caixa ?></option>
-                                        <?php
-                                }    
-                               }
-                              ?>														
-                            </select>
-                         <font color=red><span class="style1"> * </span></font>	
-                        </p>
-                       
+
+                                <div id = "palco">
+                                 <div id = "Periodico">
+                                    <label for="conta_Destino">Parcelas</label>
+                                    <td>
+                                        <input  name="numeroDoc"  id="numeroDoc" type="text" readonly value="<?php echo $result->num_Doc_Banco ?>"  >
+                                        <font color=red> *</font>
+                                    <input id="conta_Destino" name="conta_Destino" type="hidden" value = "<?php echo $conta_Desti = !empty($lancamento) ? $conta_Destino : $result->conta_Destino ?>" />
+                                    </td>
+                                 </div>
+                                </div>
                               
                             <p class="senhaAdm">
                                 <label for="senhaAdm"><font color=red>senha Administrador</font></label>
@@ -328,11 +286,10 @@
                             </p>
                                                
                         </div>
-                                          
-                                   
-                                    
-
-                                   
+                                <input name ="fundoFAnterior" type="hidden"  value="<?php echo $result->cod_assoc ?>">
+                                <input name ="numDocFiscalAnterior" type="hidden"  value="<?php echo $result->num_Doc_Fiscal ?>"> 
+                                <input name ="dataVendaAnterior" type="hidden"  value="<?php echo $result->dataFin ?>"> 
+                                <input name ="valorFinAnterior" type="hidden"  value="<?php echo $result->valorFin ?>">                                                   
                                     <div class="span12" style="padding: 1%; margin-left: 0">
            
                                         <div class="span8 offset2" style="text-align: center">
@@ -436,7 +393,7 @@
     <div class="span12 alert alert-info" style="margin-left: 0"> Obrigatório o preenchimento dos campos com asterisco.</div>
     <div class="span12" style="margin-left: 0"> 
       <label for="descricao">Descrição</label>
-      <input class="span12" id="descricao" type="text" name="descricao" value="Fatura de Venda - #<?php echo $result->id_fin; ?> "  />
+      <input class="span12" id="descricao" type="text" name="descricao" value="<?php echo $result->descricao; ?> "  />
       
     </div>  
     <div class="span12" style="margin-left: 0"> 
@@ -623,12 +580,18 @@ $(document).ready(function(){
           rules:{
              descricao: {required:true},
              razaoSoc: {required:true},
-             dataFin: {required:true}
+             dataVenda: {required:true},
+             valorFin: {required:true},
+             cCustos: {required:true},
+             fundoF: {required:true}
           },
           messages:{
              descricao: {required: 'Campo Requerido.'},
              razaoSoc: {required: 'Campo Requerido.'},
-             dataFin: {required: 'Campo Requerido.'}
+             dataVenda: {required: 'Campo Requerido.'},
+             valorFin: {required: 'Campo Requerido.'},
+             cCustos: {required: 'Campo Requerido.'},
+             fundoF: {required: 'Campo Requerido.'}
           },
 
             errorClass: "help-inline",

@@ -23,11 +23,11 @@
             <li class="bg_ls"> <a href="<?php echo base_url()?>index.php/clientes"> <i class="icon-group"></i> Beneficiários</a> </li>
         <?php } ?>
 -->
-
+<!--
         <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vProduto')){  ?>
-            <li class="bg_ls"> <a href="<?php echo base_url()?>index.php/produtos"> <i class="icon-group"></i> Abastecimento <font color='#e6f805'> Novo</font></a></li>
+            <li class="bg_ls"> <a href="<?php echo base_url()?>index.php/produtos"> <i class="icon-group"></i> Presentes Especiais <font color='#e6f805'> Novo</font></a></li>
         <?php  } ?>
-
+-->
         <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'vServico')){ ?>
             <li class="bg_db"> <a href="<?php echo base_url()?>index.php/servicos"> <i class="icon-group"></i> Códigos</a> </li>
         <?php } ?>
@@ -244,50 +244,53 @@
                         $dif = strtotime($datamax) - strtotime(date('Y-m-d'));
 
                         $meses = floor($dif / (60 * 60 * 24 * 30)) + 2;
-                                echo '<tr><th>DIA</th><th><H4>CARTÃO</H4></th>';
+                                echo '<tr><th>DIA</th><th>CARTÃO</th>';
                                 $cFundoAnterior = ''; 
                        for ($i = 0; $i <  $meses; $i++ )
                         {
                            $j = $i-2;
-                           $mes[$i] = date('m/y', strtotime("+".$j." month", strtotime(date('Y-m-d'))));
+                           $mes[$i] = date('y-m', strtotime("+".$j." month", strtotime(date('Y-m-d'))));
                            echo '<th><H4>'.date('M/y', strtotime("+".$j." month", strtotime(date('Y-m-d')))).'</H4></th>';          $mesSoma[$i] = 0;               
                         }
                                 echo '</tr>';
                     foreach($lanceCredFaturass AS $lcF)
                         {
                             if($lcF->cod_assoc != $cFundoAnterior ){
+                                $j = 0;
                                 echo '<tr><td><H4>'.date('d', strtotime($lcF->dataFin)).'</H4></td>';
                                 echo '<td><H4>'.$lcF->cod_assoc.'</H4></td>';
-                                $j = 0;
-                                $col = 0;
+//                                echo '<td><H4>'.$lcF->cod_assoc.'</H4>'.date('y-m', strtotime($lcF->dataFin)).' $meses'.$meses.' $j='.$j.'</td>';
                             
                             }
                             for($l = $j; $l < $meses; $l++ )
-                              {
-                                if( date('m/y', strtotime($lcF->dataFin)) < $mes[$l] && $col == 1) $l = $meses; 
+                              {  
+//                                    echo '<td> $j='.$j.' $l='.$l.' $mes[$l]='.$mes[$l].' m/Y='.date('y-m', strtotime($lcF->dataFin)).' Linha'.__LINE__.'</td>';
+                                if( date('y-m', strtotime($lcF->dataFin)) < $mes[$l])
+                                  {  
+//                                   echo '<td> $j='.$j.' $l='.$l.' $mes[$l]='.$mes[$l].' m/Y='.date('y-m', strtotime($lcF->dataFin)).' Linha'.__LINE__.'</td>';
+                                     $l = $meses;
+                                  }
                                 else
-                                if( date('m/y', strtotime($lcF->dataFin)) == $mes[$l])
+                                if( date('y-m', strtotime($lcF->dataFin)) == $mes[$l])
                                 {
                                     $corFat = $lcF->num_Doc_Fiscal == 'Previsto' ?  "#d65b5b" : "#3252db";
-                                    echo '<td><font color='.$corFat.'><H4>'.number_format($lcF->valorFin, 2, ',', '.').
-//                                        '</H4>'.$mesSoma[$j].' '.$lcF->valorFin.' '.$l.' '.$mes[$l].' '.$lcF->dataFin.
-                                        '</font>'
+                                    echo '<td><font color='.$corFat.'><H4>'.number_format($lcF->valorFin, 2, ',', '.').'</H4></font>'
 //                                    echo '<td><font color='.$corFat.'><H4>'.number_format($lcF->valorFin, 2, ',', '.').'</H4>'.date('d/m', strtotime($lcF->dataFin)).'</font>'
 //                                        .$lcF->cod_assoc.' '.date('m/y', strtotime($lcF->dataFin))
                                         .'</td>';
-                                    $mesSoma[$j] += $lcF->valorFin;
                                     $l = $meses;
-                                    $col = 1;
+                                    $mesSoma[$j] += $lcF->valorFin;
                                 }else 
                                 {
                                     echo '<td></td>'; 
+//                                    echo '<td> $j='.$j.' $l='.$l.' $mes[$l]='.$mes[$l].' Linha'.__LINE__.'</td>'; 
                                     $j++;
-                                    $col = 0;}
+                                }
                               }
                                 $cFundoAnterior = $lcF->cod_assoc;
                                 $j++;
                             }
-                                echo '</tr><tr><th><h4>Totais</H4></th><th></th>';
+                                echo '</tr><tr><th><h4>Totais</H4>';
                         
                            for ($i = 0; $i <  $meses; $i++ )
                             {
@@ -298,7 +301,13 @@
                         ?>
                     </tbody>
                 </table>
-                 
+                 <?php
+//                 
+//                    foreach($lanceCredFaturass AS $lcF)
+//                        {
+//                            echo $lcF->cod_assoc.' '.$lcF->dataFin.' '.$lcF->id_fin.' '.$lcF->valorFin.'<br>';
+//                    }
+                 ?>
                  
             </div>
         </div>
@@ -373,7 +382,7 @@
                               <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Dta</th>
+                                                <th>DtaS</th>
                                                 <th>Fundo Financeiro</th>
                                                 <th>Descrição</th>
                                                 <th>ENTRADAS</th>
@@ -384,7 +393,9 @@
                                  <?php       
                                 foreach ($lancFuturos as $rF) 
                                 { 
-                                    if(($rF->cod_assoc != 'D-BT' && $rF->num_Doc_Banco == '0/0' && $rF->cod_assoc != 'C-EMP') || ($rF->cod_assoc == 'C-EMP' && $rF->num_Doc_Banco != '0/0') || $rF->cod_assoc == 'D-BT'  || $rF->cod_assoc == 'C-ALT' )
+                                    if(($rF->cod_assoc != 'D-BT' && $rF->num_Doc_Banco == '0/0' && $rF->cod_assoc != 'C-EMP') 
+                                        || ($rF->cod_assoc == 'C-EMP' && $rF->num_Doc_Banco != '0/0') 
+                                       || $rF->cod_assoc == 'D-BT' || $rF->cod_assoc == 'C-ALT' )
                                     {
                                        $status = $rF->num_Doc_Fiscal;
                                        $corStatus = $status == 'Previsto' ? "#d15609" : "#10a527";
@@ -432,7 +443,8 @@
                         </div>
 
                         <?php 
-                    }  ?> 
+                    }  
+                     ?> 
                 </div>
             </div>
         </div>

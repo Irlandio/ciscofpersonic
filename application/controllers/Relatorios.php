@@ -350,32 +350,13 @@ class Relatorios extends CI_Controller{
         //    $dataFinal = date('Y-m-t');
             $_SESSION['tipoPesquisa'] = 0;
          
-        $result_caixas = $this->Relatorios_model->get2('caixas');   
-           foreach ($result_caixas as $rC) 
-                    {	
-                      if($rC->id_caixa == $conta) $n_Conta = $rC->nome_caixa;
-           }
-             switch ($conta) 
-					{			
-						    
-				        case 1: $cdiNome = "IEADALPE-1444-3";  $_SESSION['admini'] = "cod_assoc"; break;  
-						case 2:	$cdiNome = "IEADALPE-22360-3"; $_SESSION['admini'] = "cod_assoc";   break;    
-						case 3:	$cdiNome = "ILPI";  $_SESSION['admini'] = "cod_assoc";  break;  
-						case 4: $cdiNome = "BR0214";   break;  
-						case 5:	$cdiNome = "BR0518";  break;  
-						case 6:	$cdiNome = "BR0542";  break;  
-						case 7:	$cdiNome = "BR0549";   break;  
-						case 8:	$cdiNome = "BR0579";  break; 
-						case 9:	$cdiNome = "BB-28965-5"; $_SESSION['admini'] = "cod_assoc";   break;  
-						case 10:$cdiNome = "CEF-1948-4"; $_SESSION['admini'] = "cod_assoc";  break; 		
-					}
+         $data['somaMeses'] =  $this->Relatorios_model->getEstatisticaSomaMes($dataInicial, $dataFinal);
+            
+        $data['lanc'] =  $this->Relatorios_model->getLancamentosFuturos('aenpfin',$dataInicial, $dataFinal);
+            
         $data['res_CodComp'] = $this->Relatorios_model->get2('cod_compassion');
             $status = '0';
-        $data['res_Concilio'] = $this->Relatorios_model->getChekPend($conta,$status);
-        $data['saldo_Ant'] = $this->Relatorios_model->getSaldo_Ant($this->input->post('conta'),$dataInicial);
-        $data['lancamentos'] = $this->Relatorios_model->financeiroRapid($conta,$dataInicial,$dataFinal);
-        $data['presentes_pagos'] = $this->Relatorios_model->presentes_pagos($conta,$cdiNome,$dataInicial,$dataFinal);
-        $this->session->set_flashdata('success','<strong> Relatório gerado com sucesso!</strong> Conta  '.$conta.' - '.$cdiNome.' Periodo (de  <strong> '.$dataIniciale.'</strong>  à <strong> '.$dataFinale.'</strong>  )');  
+        $this->session->set_flashdata('success','<strong> Relatório gerado com sucesso!</strong> Conta  '.' Periodo (de  <strong> '.$dataIniciale.'</strong>  à <strong> '.$dataFinale.'</strong>  )');  
         $this->load->view('relatorios/imprimir/imprimirFinanceiro', $data);
         }else
         {

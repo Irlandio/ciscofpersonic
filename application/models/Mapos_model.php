@@ -83,6 +83,18 @@ class Mapos_model extends CI_Model {
 
     }
 
+    function get3($table,$fields,$fields2){
+        
+        $this->db->order_by($fields2,'desc');
+        $this->db->order_by($fields);
+        return $this->db->get($table)->result();
+    }
+
+    function get2($table,$fields){
+        
+        $this->db->order_by($fields);
+        return $this->db->get($table)->result();
+    }
     
     function add($table,$data){
         $this->db->insert($table, $data);         
@@ -131,15 +143,70 @@ class Mapos_model extends CI_Model {
     }
 
     function getLancamentos($table){
-        
-        $this->db->select($table.'.*, p.nome AS nPosto');
+        $this->db->select($table.'.*, caixas.nome_caixa, caixas.id_caixa, usuarios.nome');
         $this->db->from($table);
-        $this->db->limit(10);
-        $this->db->join('postos p','p.id_posto  = '.$table.'.posto');
-        $this->db->order_by('data_abast','desc');
-        $this->db->order_by('quilometragem','desc');
+        $this->db->limit(5);
+        $this->db->join('caixas', 'caixas.id_caixa = '.$table.'.conta');
+        $this->db->join('usuarios',' usuarios.idUsuarios = aenpfin.cadastrante');
+        $this->db->order_by('id_fin','desc');
         return $this->db->get()->result();
+    }
 
+    function getLanceCredito($table,$fatura=0,$dataFatura=0,$fundoFinanceiro=0){
+        $menos2Meses = date('Y-m-d', strtotime("-2 month", strtotime(date('Y-m-d')))); //DA final DO MÊS (FINAL)
+        $this->db->select($table.'.*, cont_Contabil');
+        $this->db->join('cod_assoc', 'cod_assoc.cod_Ass = '.$table.'.cod_assoc');
+        $this->db->from($table);
+        
+        if($fatura == 0){
+            $this->db->where('cod_compassion !=','D10-01');
+            $this->db->where('num_Doc_Fiscal','Previsto');
+        $this->db->order_by('cod_assoc');
+                $this->db->order_by('dataEvento');
+        }else
+        if($fatura == 1)// Somente faturas
+        {
+            if($dataFatura == 1)// Somente fundo expecifico e mês
+            {
+                $faturas = array('D10-01','D10-07');
+                $this->db->where_in('cod_compassion',$faturas);
+                $this->db->where('dataFin > ',$menos2Meses);
+                $this->db->order_by('cont_Contabil');
+                $this->db->order_by('cod_assoc');
+                $this->db->order_by('dataFin');
+            }else
+            if($dataFatura != 0)// Somente fundo expecifico e mês
+            {
+                $this->db->where('cod_compassion !=','D10-01');
+                $this->db->where('cod_compassion !=','D10-07');
+                if($fundoFinanceiro != "C-EMP")
+                    $this->db->where('dataFin',$dataFatura);
+                else{
+                    $this->db->where('YEAR(dataFin)',date('Y', strtotime($dataFatura)));
+                    $this->db->where('MONTH(dataFin)',date('m', strtotime($dataFatura)));
+                }
+                $this->db->where('cod_assoc',$fundoFinanceiro);
+        $this->db->order_by('cod_assoc');
+                $this->db->order_by('dataEvento');
+            }else{
+                $faturas = array('D10-01','D10-07');
+                $this->db->where_in('cod_compassion',$faturas);
+                $this->db->where('num_Doc_Fiscal','Previsto');
+        $this->db->order_by('cod_assoc');
+                $this->db->order_by('dataEvento');
+                }
+        }
+        return $this->db->get()->result();
+    }
+    function getLancamentosFuturos($table){
+        $this->db->select($table.'.*, cc.descricaoCod, ca.descricao_Ass');
+        $this->db->from($table);
+        $this->db->where('dataFin >= ',date('Y-m-01'));
+        $this->db->join('cod_compassion cc', 'cc.cod_Comp = '.$table.'.cod_compassion');
+        $this->db->join('cod_assoc ca', 'ca.cod_Ass = '.$table.'.cod_assoc');
+        $this->db->order_by('num_Doc_Fiscal');
+        $this->db->order_by('dataFin');
+        return $this->db->get()->result();
     }
     function getProdutosMinimo(){
 
@@ -150,65 +217,52 @@ class Mapos_model extends CI_Model {
 
     function getOsEstatisticas(){
         $dataInicial = date('Y-m-01');
+        $dataFim = date('Y-m-d', strtotime("+1 month", strtotime($dataInicial)));
+       // $dataFim = date('2022-06-01');
        // $sql = "SELECT conta, COUNT(conta) as total FROM aenpfin  WHERE dataFin >= ".$dataInicial." GROUP BY conta ORDER BY conta";
-        $sql = "SELECT conta FROM aenpfin  WHERE dataFin >= '".$dataInicial."'  ORDER BY conta";
+        $sql = "SELECT * FROM aenpfin  WHERE dataFin >= '".$dataInicial."' AND dataFin < '".$dataFim."' AND num_Doc_Banco != '0/0'  ORDER BY conta";
         return $this->db->query($sql)->result();
     }
 
     public function getEstatisticasFinanceiro(){
-        $sql = "SELECT SUM(CASE WHEN conta = 1 AND tipo_Conta = 'Corrente'  AND ent_Sai = '1' THEN valorFin END) as total_receita1C, 
-                       SUM(CASE WHEN conta = 1 AND tipo_Conta = 'Corrente'  AND ent_Sai = '0' THEN valorFin END) as total_despesa1C,
-                       SUM(CASE WHEN conta = 1 AND tipo_Conta = 'Suporte'  AND ent_Sai = '1' THEN valorFin END) as total_receita1S,
-                       SUM(CASE WHEN conta = 1 AND tipo_Conta = 'Suporte'  AND ent_Sai = '0' THEN valorFin END) as total_despesa1S,
-                       
-                       SUM(CASE WHEN conta = 2 AND tipo_Conta = 'Corrente'  AND ent_Sai = '1' THEN valorFin END) as total_receita2C, 
-                       SUM(CASE WHEN conta = 2 AND tipo_Conta = 'Corrente'  AND ent_Sai = '0' THEN valorFin END) as total_despesa2C,
-                       SUM(CASE WHEN conta = 2 AND tipo_Conta = 'Suporte'  AND ent_Sai = '1' THEN valorFin END) as total_receita2S,
-                       SUM(CASE WHEN conta = 2 AND tipo_Conta = 'Suporte'  AND ent_Sai = '0' THEN valorFin END) as total_despesa2S,
-                       
-                       SUM(CASE WHEN conta = 3 AND tipo_Conta = 'Suporte'  AND ent_Sai = '1' THEN valorFin END) as total_receita3S,
-                       SUM(CASE WHEN conta = 3 AND tipo_Conta = 'Suporte'  AND ent_Sai = '0' THEN valorFin END) as total_despesa3S,
-                       
-                       SUM(CASE WHEN conta = 4 AND tipo_Conta = 'Corrente'  AND ent_Sai = '1' THEN valorFin END) as total_receita4C, 
-                       SUM(CASE WHEN conta = 4 AND tipo_Conta = 'Corrente'  AND ent_Sai = '0' THEN valorFin END) as total_despesa4C,
-                       SUM(CASE WHEN conta = 4 AND tipo_Conta = 'Suporte'  AND ent_Sai = '1' THEN valorFin END) as total_receita4S,
-                       SUM(CASE WHEN conta = 4 AND tipo_Conta = 'Suporte'  AND ent_Sai = '0' THEN valorFin END) as total_despesa4S,
-                       
-                       SUM(CASE WHEN conta = 5 AND tipo_Conta = 'Corrente'  AND ent_Sai = '1' THEN valorFin END) as total_receita5C, 
-                       SUM(CASE WHEN conta = 5 AND tipo_Conta = 'Corrente'  AND ent_Sai = '0' THEN valorFin END) as total_despesa5C,
-                       SUM(CASE WHEN conta = 5 AND tipo_Conta = 'Suporte'  AND ent_Sai = '1' THEN valorFin END) as total_receita5S,
-                       SUM(CASE WHEN conta = 5 AND tipo_Conta = 'Suporte'  AND ent_Sai = '0' THEN valorFin END) as total_despesa5S,
-                       
-                       SUM(CASE WHEN conta = 6 AND tipo_Conta = 'Corrente'  AND ent_Sai = '1' THEN valorFin END) as total_receita6C, 
-                       SUM(CASE WHEN conta = 6 AND tipo_Conta = 'Corrente'  AND ent_Sai = '0' THEN valorFin END) as total_despesa6C,
-                       SUM(CASE WHEN conta = 6 AND tipo_Conta = 'Suporte'  AND ent_Sai = '1' THEN valorFin END) as total_receita6S,
-                       SUM(CASE WHEN conta = 6 AND tipo_Conta = 'Suporte'  AND ent_Sai = '0' THEN valorFin END) as total_despesa6S,
-                       
-                       SUM(CASE WHEN conta = 7 AND tipo_Conta = 'Corrente'  AND ent_Sai = '1' THEN valorFin END) as total_receita7C, 
-                       SUM(CASE WHEN conta = 7 AND tipo_Conta = 'Corrente'  AND ent_Sai = '0' THEN valorFin END) as total_despesa7C,
-                       SUM(CASE WHEN conta = 7 AND tipo_Conta = 'Suporte'  AND ent_Sai = '1' THEN valorFin END) as total_receita7S,
-                       SUM(CASE WHEN conta = 7 AND tipo_Conta = 'Suporte'  AND ent_Sai = '0' THEN valorFin END) as total_despesa7S,
-                       
-                       
-                       SUM(CASE WHEN conta = 8 AND tipo_Conta = 'Corrente'  AND ent_Sai = '1' THEN valorFin END) as total_receita8C, 
-                       SUM(CASE WHEN conta = 8 AND tipo_Conta = 'Corrente'  AND ent_Sai = '0' THEN valorFin END) as total_despesa8C,
-                       SUM(CASE WHEN conta = 8 AND tipo_Conta = 'Suporte'  AND ent_Sai = '1' THEN valorFin END) as total_receita8S,
-                       SUM(CASE WHEN conta = 8 AND tipo_Conta = 'Suporte'  AND ent_Sai = '0' THEN valorFin END) as total_despesa8S,
-                       
-                       
-                       SUM(CASE WHEN conta = 9 AND tipo_Conta = 'Corrente'  AND ent_Sai = '1' THEN valorFin END) as total_receita9C, 
-                       SUM(CASE WHEN conta = 9 AND tipo_Conta = 'Corrente'  AND ent_Sai = '0' THEN valorFin END) as total_despesa9C,
-                       SUM(CASE WHEN conta = 6 AND tipo_Conta = 'Suporte'  AND ent_Sai = '1' THEN valorFin END) as total_receita9S,
-                       SUM(CASE WHEN conta = 9 AND tipo_Conta = 'Suporte'  AND ent_Sai = '0' THEN valorFin END) as total_despesa9S,
-                       
-                       
-                       SUM(CASE WHEN conta = 10 AND tipo_Conta = 'Corrente'  AND ent_Sai = '1' THEN valorFin END) as total_receita10C, 
-                       SUM(CASE WHEN conta = 10 AND tipo_Conta = 'Corrente'  AND ent_Sai = '0' THEN valorFin END) as total_despesa10C,
-                       SUM(CASE WHEN conta = 10 AND tipo_Conta = 'Suporte'  AND ent_Sai = '1' THEN valorFin END) as total_receita10S,
-                       SUM(CASE WHEN conta = 10 AND tipo_Conta = 'Suporte'  AND ent_Sai = '0' THEN valorFin END) as total_despesa10S
+        $sql = "SELECT SUM(CASE WHEN  ent_Sai = '1' THEN valorFin END) as total_receita1C, 
+                       SUM(CASE WHEN  ent_Sai = '0' THEN valorFin END) as total_despesa1C,
+                       SUM(CASE WHEN  ent_Sai = '1' THEN valorFin END) as total_receita1S,
+                       SUM(CASE WHEN  ent_Sai = '0' THEN valorFin END) as total_despesa1S
                        FROM aenpfin  ";
         return $this->db->query($sql)->row();
     }
+
+
+    public function getMindataFatura($fundo){
+        $hoje = date('Y-m-01');
+        $sql = "SELECT MIN(CASE WHEN  cod_assoc = '".$fundo ."' AND num_Doc_Fiscal = 'Previsto' AND dataFin > '".$hoje."'  THEN dataFin END) as dataProxFatura FROM aenpfin  ";
+        return $this->db->query($sql)->row();
+    }
+
+    public function getEstatisticaPrevistaMes($dia0,$dia1,$eS,$fundo){
+      // $dia0 = '2022-06-01'; $dia1 = '2022-06-30';
+        $whereText = "WHERE dataFin BETWEEN ".$dia0." AND ".$dia1." AND num_Doc_Banco != '0/0' AND num_Doc_Fiscal = 'Previsto' AND ent_Sai = ".$eS."  AND cod_assoc = '".$fundo."'";
+        $whereText = "WHERE dataFin BETWEEN '".$dia0."' AND '".$dia1."' AND num_Doc_Banco != '0/0' AND num_Doc_Fiscal = 'Previsto' AND ent_Sai = ".$eS."  AND cod_assoc = '".$fundo."'";
+        
+       // $sql = "SELECT SUM(valorFin) AS soma FROM aenpfin ".$whereText." ";
+        $sql = "SELECT SUM(valorFin) AS soma FROM aenpfin ".$whereText." ";
+        return $this->db->query($sql)->row();
+    }
+
+    public function getEstatisticaSomaMes($dia0, $dia1){
+       
+        $whereText = "";
+        $whereText .= "SUM(CASE WHEN  (cod_assoc = 'D-BT' OR num_Doc_Banco = '0/0' OR cod_assoc = 'C-ALT') AND ent_Sai = 1 AND dataFin BETWEEN '".$dia0."' AND '".$dia1."' THEN valorFin END) as tr, ";//tr ( Total receita)
+        $whereText .= "SUM(CASE WHEN  num_Doc_Banco = '0/0'  AND ent_Sai = 0 AND dataFin BETWEEN '".$dia0."' AND '".$dia1."' THEN valorFin END) as tdC, ";//td ( Total despesa)      
+        $whereText .= "SUM(CASE WHEN  (cod_assoc = 'D-BT' OR cod_assoc = 'C-ALT' ) AND ent_Sai = 0 AND dataFin BETWEEN '".$dia0."' AND '".$dia1."' THEN valorFin END) as tdD, ";//td ( Total despesa)           
+        $whereText .= "MIN(CASE WHEN  dataFin BETWEEN '".$dia0."' AND '".$dia1."' THEN dataFin END) as dataI";//td ( Total despesa)
+           
+        $sql = "SELECT ".$whereText." FROM aenpfin ";
+        return $this->db->query($sql)->row();
+    }
+
+
 
 
     public function getEmitente()

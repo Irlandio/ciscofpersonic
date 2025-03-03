@@ -108,6 +108,13 @@ class Servicos_model extends CI_Model {
         return $this->db->get('idosos')->row();
     }
     
+
+    function get2group($table,$fields){
+        
+        $this->db->group_by($fields);
+        $this->db->order_by($fields);
+        return $this->db->get($table)->result();
+    }
     
     function getByIdUser($id){
         $this->db->from('usuarios');

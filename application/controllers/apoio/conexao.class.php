@@ -6,19 +6,19 @@ class Conexao
 /*********************************
 Atributos da Classe (CONEXAO)
 **********************************/
-    
+    /*
     private $db_host = 'mysql.hostinger.com.br'; // servidor
     private $db_user = 'u344891621_tito'; // usuario do banco
     private $db_pass = 'rebeca1980'; // senha do usuario do banco
     private $db_name = 'u344891621_doar'; // nome do banco
     private $con = false;
-    /*
+    */
     private $db_host = 'localhost'; // servidor
     private $db_user = 'root'; // usuario do banco
     private $db_pass = ''; // senha do usuario do banco
-    private $db_name = 'u739483627_doar2'; // nome do banco
+    private $db_name = 'u344891621_person'; // nome do banco
     private $con = false;
-    */
+    
     
 /*********************************
 Funcoes da Classe (CONEXAO)
