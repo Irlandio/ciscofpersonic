@@ -1,0 +1,3 @@
+# Ignorar arquivos de configuração e banco de dados
+application/config/config.php
+application/config/database.php
