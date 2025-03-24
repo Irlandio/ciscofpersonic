@@ -149,40 +149,13 @@ if(!$results){?>
                                 foreach ($results as $r) {
                                 {   
                                     
-                                    // if($id_entradaAnterior != '' && $id_entradaAnterior != $r->id_entrada)
-                                    // {                    
-                                    //     $vEntradaTotal   = $vEntrada;
-                                    //     $vSaidaTotal     = $vSaida;
-                                    //     $vPendenteTotal  = $vPendente;
-                                    //     $vEntrada = $vSaida = $vPendente = 0.0;
-                                    ?>
-                                    <!-- <tr><td colspan=6><H4>TOTAL POR LOTE</H4></td>
-                                    <td><H4><?php //echo number_format($vEntradaTotal,2,',','.') ?></H4></td>
-                                    <td><H4><?php //echo number_format($vSaidaTotal,2,',','.') ?></H4></td>
-                                    <td><H4><?php //echo number_format($vPendenteTotal,2,',','.') ?></H4></td>
-                                    <td></td></tr> -->
-                                    <?php  
-                                    // }
-                                    // if($r->n_protocolo != $nProtocoloAnt)
-                                    //     {
-                                    //         $cor2 = '<font>';
-                                    //         $vEntrada   += $r->valor_entrada;                     
-                                    //     }else {
-                                    //         $cor2 = '<font color = blue >';
-                                    //         $vPendente  -= $vpend;
-                                    //     }
-                                    // $vSaida     += $r->valor_saida;
-                                    // $vPendente  += $r->valor_pendente;
-                                    
-                                    // $vpend = $r->valor_pendente;
-                                    // $cor1 = ($vpend >= 0.2) ? '<font color = red >' : ($vpend < -2) ? '<font color = #893306 >' : '<font color = blue >';
                                     echo '<tr>';
                                     echo '<td>'.$r->id_comb.'</td>';
-                                    echo '<td>'.date('d/m/Y', strtotime($r->data_abast)).'</td>';
+                                    echo '<td>'.date('d/m/Y H:i', strtotime($r->data_abast)).'</td>';
                                     echo '<td>'.$r->quilometragem.'</td>';
                                     echo '<td>'.$r->litros.'</td>';
                                     echo '<td>R$ '.number_format($r->valor,2,',','.').'</td>';
-                                    echo '<td> '.$r->posto.'</td>';
+                                    echo '<td> '.$r->nome_posto. ", " .$r->end_posto . " | " . $r->nome_cidade . '</td>';
                                     echo '<td>'.$r->veiculo.'</font></td>';            
                                     echo '<td>';
                                     if($this->permission->checkPermission($this->session->userdata('permissao'),'vProduto')){

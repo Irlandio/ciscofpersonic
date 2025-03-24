@@ -1,33 +1,18 @@
 <style>
-/* Hiding the checkbox, but allowing it to be focused */
-.badgebox
-{
-    opacity: 0;
-}
+    .badgebox {
+        opacity: 0;
+    }
+    .badgebox+.badge {
+        text-indent: -999999px;
+        width: 27px;
+    }
+    .badgebox:focus+.badge {
 
-.badgebox + .badge
-{
-    /* Move the check mark away when unchecked */
-    text-indent: -999999px;
-    /* Makes the badge's width stay the same checked and unchecked */
-	width: 27px;
-}
-
-.badgebox:focus + .badge
-{
-    /* Set something to make the badge looks focused */
-    /* This really depends on the application, in my case it was: */
-    
-    /* Adding a light border */
-    box-shadow: inset 0px 0px 5px;
-    /* Taking the difference out of the padding */
-}
-
-.badgebox:checked + .badge
-{
-    /* Move the check mark back when checked */
-	text-indent: 0;
-}
+        box-shadow: inset 0px 0px 5px;
+    }
+    .badgebox:checked+.badge {
+        text-indent: 0;
+    }
 </style>
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
@@ -36,67 +21,113 @@
                 <span class="icon">
                     <i class="icon-align-justify"></i>
                 </span>
-                <h5>Editar Presente do <?php echo $contBR; ?></h5>
+                <h5>ABASTECER</h5>
             </div>
+
             <div class="widget-content nopadding">
                 <?php echo $custom_error; ?>
-                <form action="<?php echo current_url(); ?>" id="formProduto" method="post" class="form-horizontal " >
-                     <div class="control-group">
-                        <?php echo form_hidden('idProdutos',$result->id_presente) ?>
-                        <label for="descricao" class="control-label">Beneficiário<span class="required">*</span></label>
-                        <div class="controls">
-                            <input id="descricao" type="text" name="descricao" value="<?php echo $result->n_beneficiario.'- '.$result->nome_beneficiario; ?>"  style="width: 310px"  />
-                            <input id="id_presente" type="hidden" name="id_presente" value="<?php echo $result->id_presente; ?>"  />
-                        </div>
+                <form action="<?php echo current_url(); ?>" id="formProduto" method="post" class="form-horizontal">
+
+                    <div class="control-group">
+                        <?php echo form_hidden('id_comb', $result->id_comb) ?>
                     </div>
 
                     <div class="control-group">
-                        <label class="control-label">Alterar Beneficiario para</label>
+
+                        <label for="descricao" class="control-label">Abastecimento <span class="required">*</span></label>
                         <div class="controls">
-                            <div class="span2">
-                                <select id="benef" name="benef"  style="width: 320px" >
-                                    <option value = "BR051800058"><?php echo $result->n_beneficiario.'- '.$result->nome_beneficiario; ?></option>
-                                 <?php
-                                    foreach ($beneficiarios as $rbn) { ?>
-                                        <option value = "<?php echo $rbn->documento ?>"><?php echo $rbn->documento." | ".$rbn->nomeCliente ?></option>
-                                    <?php
-                                   }  ?>														
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label for="precoCompra" class="control-label" >Valor Entrada R$<span class="required">*</span></label>
-                        <div class="controls">
-                            <input id="precoCompra" class="money" type="text" name="precoCompra" value="<?php echo $result->valor_entrada; ?>" readonly />
+                            <h4><?php echo $result->id_comb; ?><input id="id_comb" type="hidden" name="id_comb" value="<?php echo $result->id_comb; ?>" /></h4>
                         </div>
                     </div>
 
+                    <!-- Campo Data do Evento Financeiro -->
                     <div class="control-group">
-                        <label for="precoVenda" class="control-label">Valor Saída R$<span class="required">*</span></label>
+                        <label for="dataCompra" class="control-label">Data do evento financeiro<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="precoVenda" class="money" type="text" name="precoVenda" value="<?php echo $result->valor_saida; ?>" readonly />
+                            <input id="dataCompra" class="datepicker" type="text" name="dataCompra"
+                                value="<?php echo set_value('dataCompra', date('d/m/Y H:i', strtotime($result->data_abast))); ?>" />
                         </div>
                     </div>
 
+                    <!-- Campo Posto -->
                     <div class="control-group">
-                        <label for="precoPendente" class="control-label">Valor Pendente R$<span class="required">*</span></label>
+                        <label for="posto" class="control-label">Posto<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="precoPendente" class="money" type="text" name="precoPendente" value="<?php echo $result->valor_pendente; ?>" readonly />
+                            <select id="posto" name="posto">
+                                <?php foreach ($postos as $p) { ?>
+                                    <option value="<?php echo $p->id_posto; ?>"
+                                        <?php echo set_select('posto', $p->id_posto, ($p->id_posto == $result->posto)); ?>>
+                                        <?php echo $p->nome . " | " . $p->cidade_nome ; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
                         </div>
                     </div>
 
+                    <!-- Campo Veículo -->
                     <div class="control-group">
-                        <label for="protocolo" class="control-label">Protocolo<span class="required">*</span></label>
+                        <label for="veiculo" class="control-label">Veículo<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="protocolo"  type="text" name="protocolo" value="<?php echo $result->n_protocolo; ?>" readonly />
+                            <select id="veiculo" name="veiculo">
+                                <option value="1" <?php echo set_select('veiculo', '1', ($result->veiculo == '1')); ?>>HONDA FIT</option>
+                            </select>
                         </div>
                     </div>
+
+                    <!-- Campo Quilometragem -->
+                    <div class="control-group">
+                        <label for="quilometragem" class="control-label">Quilometragem<span class="required">*</span></label>
+                        <div class="controls">
+                            <input id="quilometragem" type="number" name="quilometragem" min="297000"
+                                value="<?php echo set_value('quilometragem', $result->quilometragem); ?>" />
+                        </div>
+                    </div>
+                    
+                    <!-- Campo Tipo de Combustível -->
+                    <div class="control-group">
+                        <label class="control-label">Tipo de combustível</label>
+                        <div class="controls">
+                            <label class="btn btn-default" submit>
+                                <input name="tipo" type="radio" class="badgebox" value="1"
+                                    <?php echo set_radio('tipo', '1', ($result->tipo_combustivel == '1' || $result->tipo_combustivel == 'gasolina')); ?> />
+                                <span class="badge" >&check;</span> 
+                                Gasolina
+                            </label>
+
+                            <label class="btn btn-default">
+                                <input name="tipo" type="radio" class="badgebox" value="2"
+                                    <?php echo set_radio('tipo', '2', ($result->tipo_combustivel == '2' || $result->tipo_combustivel == 'etanol')); ?> />
+                                <span class="badge" >&check;</span> 
+                                Etanol
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Campo Valor -->
+                    <div class="control-group">
+                        <label for="precoCompra" class="control-label">Valor<span class="required">*</span></label>
+                        <div class="controls">
+                            <input id="precoCompra" class="money" type="number" name="precoCompra"
+                                value="<?php echo set_value('precoCompra', $result->valor); ?>" />
+                        </div>
+                    </div>
+
+                    <!-- Campo Litros -->
+                    <div class="control-group">
+                        <label for="litros" class="control-label">Litros<span class="required">*</span></label>
+                        <div class="controls">
+                            <input id="litros" class="money" type="number" name="litros"
+                                value="<?php echo set_value('litros', $result->litros); ?>" />
+                        </div>
+                    </div>
+
+
+
 
                     <div class="form-actions">
                         <div class="span12">
                             <div class="span6 offset3">
-                                <button type="submit" class="btn btn-primary"><i class="icon-ok icon-white"></i> Alterar</button>
+                                <button type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> Adicionar</button>
                                 <a href="<?php echo base_url() ?>index.php/produtos" id="" class="btn"><i class="icon-arrow-left"></i> Voltar</a>
                             </div>
                         </div>
@@ -106,40 +137,45 @@
                 </form>
             </div>
 
-         </div>
-     </div>
+        </div>
+    </div>
 </div>
 
 
-<script src="<?php echo base_url()?>assets/js/jquery.validate.js"></script>
-<script src="<?php echo base_url();?>assets/js/maskmoney.js"></script>
+<!-- 'quilometragem'  'data_abast' 'litros' 'valor' 'posto'  'veiculo' => set_value('veiculo') -->
+<script src="<?php echo base_url() ?>assets/js/jquery.validate.js"></script>
+<script src="<?php echo base_url(); ?>assets/js/maskmoney.js"></script>
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function() {
         $(".money").maskMoney();
 
         $('#formProduto').validate({
-            rules :{
-                  descricao: { required: true},
-                  precoCompra: { required: true}
+            rules: {
+                descricao: {
+                    required: true
+                },
+                precoCompra: {
+                    required: true
+                }
             },
-            messages:{
-                  descricao: { required: 'Campo Requerido.'},
-                  precoCompra: { required: 'Campo Requerido.'}
+            messages: {
+                descricao: {
+                    required: 'Campo Requerido.'
+                },
+                precoCompra: {
+                    required: 'Campo Requerido.'
+                }
             },
 
             errorClass: "help-inline",
             errorElement: "span",
-            highlight:function(element, errorClass, validClass) {
+            highlight: function(element, errorClass, validClass) {
                 $(element).parents('.control-group').addClass('error');
             },
             unhighlight: function(element, errorClass, validClass) {
                 $(element).parents('.control-group').removeClass('error');
                 $(element).parents('.control-group').addClass('success');
             }
-           });
+        });
     });
 </script>
-
-
-
-

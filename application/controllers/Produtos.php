@@ -124,6 +124,9 @@ class Produtos extends CI_Controller {
                 $quilometragemF = $mesAnterior != '55' ? $mensal[$m]['quilometragemI'] : $p->quilometragem;
                 if( $mesAnterior != '55' ) {
                     $mensal[$m]['quilometragemPercorrida'] = $mensal[$m]['quilometragemF'] - $mensal[$m]['quilometragemI'] ;
+                    if($mensal[$m]['litros'] == 0){
+                        $mensal[$m]['consumo'] = 10.00;
+                    } else
                     $mensal[$m]['consumo'] = number_format($mensal[$m]['quilometragemPercorrida'] / $mensal[$m]['litros'],2,',','.');
                     ++$m;
                     }
@@ -186,11 +189,12 @@ class Produtos extends CI_Controller {
             $precoCompra = $this->input->post('precoCompra');
             $precoCompra = str_replace(",","", $precoCompra);
             
-            $dataC = explode('/', set_value('dataCompra'));
-            $dataCompra = $dataC[2].'-'.$dataC[1].'-'.$dataC[0];
+            $dataCH = explode(' ', set_value('dataCompra'));
+            $dataC = explode('/', $dataCH[0]);
+            $dataCompra = $dataC[2].'-'.$dataC[1].'-'.$dataC[0].' '.$dataCH[1];
             
             // $dataCompra = date('Y-m-d', strtotime(set_value('dataCompra')));
-            
+            // 'quilometragem'  'data_abast' 'litros' 'valor' 'posto'  'veiculo' => set_value('veiculo')
             $data = array(
                 'quilometragem' => set_value('quilometragem'),
                 'data_abast' => $dataCompra,
@@ -202,12 +206,14 @@ class Produtos extends CI_Controller {
 
             if ($this->produtos_model->add('combustivel', $data) == TRUE) {
                 $this->session->set_flashdata('success','Abastecimento adicionado com sucesso!');
-                redirect(base_url() . 'index.php/produtos/adicionar/');
+                redirect(base_url() . 'index.php/produtos/');
             } else {
                 $this->data['custom_error'] = '<div class="form_error"><p>An Error Occured.</p></div>';
             }
         }
-        $this->data['postos'] = $this->produtos_model->get2('postos');
+        $this->data['resultUltimo']     = $this->produtos_model->getIdultimo('combustivel','data_abast');
+        $this->data['postos'] = $this->produtos_model->get2Join('postos', 'cidade', 'cidade', 'idC', 'postos.*, cidade.nome AS cidade_nome, cidade.estado');
+        
 
         $this->data['view'] = 'produtos/adicionarProduto';
         $this->load->view('tema/topo', $this->data);
@@ -228,38 +234,56 @@ class Produtos extends CI_Controller {
         $this->data['custom_error'] = '';
 
         if ($this->form_validation->run('produtos') == false) {
-            $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
+            $this->data['custom_error'] = validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false;
         } else {
-            $result = $this->produtos_model->getById('clientes','documento',$this->input->post('benef'));          
-            $data = array(
-                'nome_beneficiario' => $result->nomeCliente,
-                'n_beneficiario'    => $result->documento,
-                'n_protocolo'       => $this->input->post('protocolo')   
-            );
-            
-            if ($this->produtos_model->edit('presentes_especiais', $data, 'id_presente', $this->input->post('id_presente')) == TRUE) {
-                $this->session->set_flashdata('success','Presente editado com sucesso!');
-                redirect(base_url() . 'index.php/produtos/editar/'.$this->input->post('idProdutos'));
+            $precoCompra = $this->input->post('precoCompra');
+            $precoCompra = str_replace(",", "", $precoCompra);
+        
+            // Valida se a data está definida antes de processá-la
+            $dataCH = explode(' ', $this->input->post('dataCompra'));
+            if (isset($dataCH[0])) {
+                $dataC = explode('/', $dataCH[0]);
+                if (count($dataC) == 3) {
+                    $dataCompra = $dataC[2] . '-' . $dataC[1] . '-' . $dataC[0] . (isset($dataCH[1]) ? ' ' . $dataCH[1] : '');
+                } else {
+                    $dataCompra = null;
+                }
             } else {
-                $this->data['custom_error'] = '<div class="form_error"><p>Um Erro ocorreu!</p></div>';
+                $dataCompra = null;
+            }
+        
+            $data = array(
+                'quilometragem' => $this->input->post('quilometragem'),
+                'data_abast' => $dataCompra,
+                'litros' => $this->input->post('litros'),
+                'valor' => $precoCompra,
+                'posto' => $this->input->post('posto'),
+                'veiculo' => $this->input->post('veiculo'),
+                'tipo_combustivel' => $this->input->post('tipo')
+            );
+        
+            if ($this->produtos_model->edit('combustivel', $data, 'id_comb', $this->input->post('id_comb'))) {
+                $this->session->set_flashdata('success', 'Abastecimento atualizado com sucesso!');
+                redirect(base_url() . 'index.php/produtos/editar/' . $this->input->post('id_comb'));
+            } else {
+                $this->data['custom_error'] = '<div class="form_error"><p>Ocorreu um erro ao atualizar!</p></div>';
             }
         }
-        $result = $this->produtos_model->getById('presentes_especiais','id_presente',$this->uri->segment(3));
-        $contBR = substr($result->n_beneficiario,-11,6); 
-             switch ($contBR) 
-                    {	        
-                        case "BR0214":  $contN     = 4; break;  
-                        case "BR0518":	$contN     = 5; break;  
-                        case "BR0542":	$contN     = 6; break;  
-                        case "BR0549":	$contN     = 7; break;  
-                        case "BR0579":	$contN     = 8; break;  
-                    } 
-        $this->data['contBR'] = $contBR;
-        $this->data['result'] = $this->produtos_model->getById('presentes_especiais','id_presente',$this->uri->segment(3));
-	    $this->data['beneficiarios'] = $this->produtos_model->getBeneficiarios('clientes',$contN);
-
+        
+        // Obtém os dados atualizados para exibição
+        $this->data['resultUltimo'] = $this->produtos_model->getIdultimo('combustivel', 'data_abast');
+        $this->data['result'] = $this->produtos_model->getById('combustivel', 'id_comb', $this->uri->segment(3));
+        $this->data['postos'] = $this->produtos_model->get2Join(
+            'postos',       // Tabela 1 (postos)
+            'cidade',       // Campo da Tabela 1 (código da cidade)
+            'cidade',       // Tabela 2 (cidade)
+            'idC',          // Campo da Tabela 2 (ID da cidade)
+            'postos.*, cidade.nome AS cidade_nome, cidade.estado' // Campos desejados
+        );
+                
         $this->data['view'] = 'produtos/editarProduto';
-        $this->load->view('tema/topo', $this->data);     
+        $this->load->view('tema/topo', $this->data);
+          
     }
     
     function visualizar() {

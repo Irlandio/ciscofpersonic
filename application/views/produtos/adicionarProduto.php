@@ -21,7 +21,7 @@
                     <div class="control-group">
                         <label for="data">Data do evento financeiro<span class="control-label required">*</span></label>
                         <div class="controls">
-                            <input id="dataCompra" class="datepicker" type="Text" name="dataCompra" value="<?php echo date('d/m/Y')?>"/>
+                            <input id="dataCompra" class="datepicker" type="Text" name="dataCompra" value="<?php echo date('d/m/Y H:i')?>"/>
                         </div>
                     </div>
 
@@ -32,7 +32,7 @@
                             <select id="posto" name="posto">
                                 <?php
                                 foreach ($postos as $p) { ?>
-                                    <option value = "<?php echo $p->id_posto  ?>"><?php echo $p->nome." | ".$p->cidade ?></option>
+                                    <option value = "<?php echo $p->id_posto  ?>"><?php echo $p->nome." | ".$p->cidade_nome ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -51,7 +51,7 @@
                      <div class="control-group">
                         <label for="quilometragem" class="control-label">Quilometragem<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="quilometragem" type="number" name="quilometragem" MIN='297000' value="<?php echo set_value('quilometragem'); ?>"  />
+                            <input id="quilometragem" type="number" name="quilometragem" MIN='297000' value="<?php echo $resultUltimo->quilometragem; ?>"  />
                         </div>
                     </div>
 
@@ -70,14 +70,14 @@
                     <div class="control-group">
                         <label for="precoCompra" class="control-label">Valor<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="precoCompra" class="money" type="text" name="precoCompra" value="<?php echo set_value('precoCompra'); ?>"  />
+                            <input id="precoCompra" class="money" type="number" name="precoCompra" value="<?php echo set_value('precoCompra'); ?>"  />
                         </div>
                     </div>
 
                     <div class="control-group">
                         <label for="precoCompra" class="control-label">Litros<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="litros" class="money" type="text" name="litros" value="<?php echo set_value('litros'); ?>"  />
+                            <input id="litros" class="money" type="number" name="litros" value="<?php echo set_value('litros'); ?>"  />
                         </div>
                     </div>
 
