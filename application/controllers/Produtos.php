@@ -211,7 +211,8 @@ class Produtos extends CI_Controller {
                 $this->data['custom_error'] = '<div class="form_error"><p>An Error Occured.</p></div>';
             }
         }
-        $this->data['resultUltimo']     = $this->produtos_model->getIdultimo('combustivel','data_abast');
+        $this->data['veiculos'] = $this->produtos_model->get2('veiculos');
+        $this->data['resultUltimo'] = $this->produtos_model->getMenorUltimoKm();
         $this->data['postos'] = $this->produtos_model->get2Join('postos', 'cidade', 'cidade', 'idC', 'postos.*, cidade.nome AS cidade_nome, cidade.estado');
         
 
@@ -271,7 +272,8 @@ class Produtos extends CI_Controller {
         }
         
         // Obtém os dados atualizados para exibição
-        $this->data['resultUltimo'] = $this->produtos_model->getIdultimo('combustivel', 'data_abast');
+        $this->data['veiculos'] = $this->produtos_model->get2('veiculos');
+        $this->data['resultUltimo'] = $this->produtos_model->getMenorUltimoKm();
         $this->data['result'] = $this->produtos_model->getById('combustivel', 'id_comb', $this->uri->segment(3));
         $this->data['postos'] = $this->produtos_model->get2Join(
             'postos',       // Tabela 1 (postos)

@@ -156,7 +156,7 @@ if(!$results){?>
                                     echo '<td>'.$r->litros.'</td>';
                                     echo '<td>R$ '.number_format($r->valor,2,',','.').'</td>';
                                     echo '<td> '.$r->nome_posto. ", " .$r->end_posto . " | " . $r->nome_cidade . '</td>';
-                                    echo '<td>'.$r->veiculo.'</font></td>';            
+                                    echo '<td>'.$r->marca.' '.$r->modelo.'</font></td>';
                                     echo '<td>';
                                     if($this->permission->checkPermission($this->session->userdata('permissao'),'vProduto')){
                                         echo '<a style="margin-right: 1%" href="'.base_url().'index.php/produtos/visualizar/'.$r->id_comb.'" class="btn tip-top" title="Visualizar Presente"><i class="icon-eye-open"></i></a>  '; 

@@ -128,7 +128,7 @@
                 <li><a href="<?php echo base_url()?>index.php/clientes">Beneficiários</a></li>
             <?php } ?>
             <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'eProduto')){ ?>
-                <li><a href="<?php echo base_url()?>index.php/produtos">Presentes Especiais</a></li>
+                <li><a href="<?php echo base_url()?>index.php/produtos">Abastecimento</a></li>
             <?php } ?>
             <?php if($this->permission->checkPermission($this->session->userdata('permissao'),'eServico')){ ?>
                 <li><a href="<?php echo base_url()?>index.php/servicos">Códigos</a></li>
@@ -169,7 +169,7 @@
         case "os": $seg ="Solicitação"; break;
         case 'vendas': $seg ='Lançamento'; break;               
         case 'clientes': $seg ='Beneficiário'; break;              
-        case 'produtos': $seg ='Presentes Especiais'; break;               
+        case 'produtos': $seg ='Abastecimento'; break;               
         case 'servicos': $seg ='Servicos'; break;                   
         case 'mapos': $seg ='CiscoFiP'; break; 
             default: $seg = $segmento1;

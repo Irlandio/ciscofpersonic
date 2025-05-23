@@ -37,13 +37,18 @@
                             </select>
                         </div>
                     </div>
-
+                    
                     <div class="control-group">
                     <label for="unidade" class="control-label">Veículo<span class="required">*</span></label>
                     <div class="controls">
                         <!--<input id="unidade" type="text" name="unidade" value="<?php echo set_value('unidade'); ?>"  />-->
                         <select id="veiculo" name="veiculo">
-                            <option value="1">HONDA FIT</option>
+                            <?php
+                            foreach ($veiculos as $v) { 
+                                if ($v->situacao == 1) {?>
+                                <option value = "<?php echo $v->id  ?>"><?php echo $v->marca." | ".$v->modelo."  (".$v->placa." )" ?></option>
+                            <?php }
+                            } ?>
                         </select>
                     </div>
                     </div>
@@ -51,10 +56,9 @@
                      <div class="control-group">
                         <label for="quilometragem" class="control-label">Quilometragem<span class="required">*</span></label>
                         <div class="controls">
-                            <input id="quilometragem" type="number" name="quilometragem" MIN='297000' value="<?php echo $resultUltimo->quilometragem; ?>"  />
+                            <input id="quilometragem" type="number" name="quilometragem" MIN='20000' value="<?php if($resultUltimo) echo $resultUltimo->quilometragem; ?>"  />
                         </div>
                     </div>
-
 
                     <div class="control-group">
                         <label class="control-label">Tipo de combustivel</label>

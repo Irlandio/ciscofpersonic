@@ -196,7 +196,8 @@ class Mapos extends CI_Controller {
                 $this->encryption->initialize(array('driver' => 'mcrypt'));
                 $password_stored =  $this->encryption->decrypt($user->senha);
 
-                //if($password == "beca"){
+                // $password_stored = "beca";
+;
                 if($password == $password_stored){
                     $session_data = array('nome' => $user->nome, 'email' => $user->email, 'id' => $user->idUsuarios,'contaUser' => $user->conta_Usuario,'permissao' => $user->permissoes_id , 'logado' => TRUE);
                     $this->session->set_userdata($session_data);

@@ -13,7 +13,7 @@ class Produtos_model extends CI_Model {
 
     
     function get($table, $fields, $tudo, $contN, $where = '', $perpage = 0, $start = 0, $one = false, $array = 'array') {
-        $this->db->select("$table.*, p.nome as nome_posto, p.endereco as end_posto, c.nome as nome_cidade, c.estado");
+        $this->db->select("$table.*, p.nome as nome_posto, p.endereco as end_posto, c.nome as nome_cidade, c.estado, v.marca, v.modelo");
         $this->db->from($table);
         
         if ($tudo == 0) {
@@ -22,6 +22,7 @@ class Produtos_model extends CI_Model {
         
         // JOIN com a tabela de postos
         $this->db->join('postos p', "p.id_posto = {$table}.posto");
+        $this->db->join('veiculos v', "v.id = {$table}.veiculo");
     
         // JOIN com a tabela de cidades (p.idC representa o código da cidade)
         $this->db->join('cidade c', "c.idC = p.cidade", 'left');
@@ -106,13 +107,23 @@ class Produtos_model extends CI_Model {
 		return FALSE;        
     }   
 	
-    public function getIdultimo($conta,$field){
-        $this->db->select('*');
-        $this->db->from($conta);
-        $this->db->order_by($field,'desc');         
-        $this->db->limit(1);
-        return $this->db->get()->row();
-    }
+    public function getMenorUltimoKm() {
+    $sql = "
+        SELECT c.*
+        FROM combustivel c
+        INNER JOIN veiculos v ON c.veiculo = v.id
+        INNER JOIN (
+            SELECT veiculo, MAX(data_abast) AS max_data
+            FROM combustivel
+            GROUP BY veiculo
+        ) ult ON ult.veiculo = c.veiculo AND ult.max_data = c.data_abast
+        WHERE v.situacao = 1
+        ORDER BY c.quilometragem ASC
+        LIMIT 1
+    ";
+
+    return $this->db->query($sql)->row();
+}
 
 	function count($table){
 		return $this->db->count_all($table);

@@ -69,7 +69,19 @@
                         <label for="veiculo" class="control-label">Veículo<span class="required">*</span></label>
                         <div class="controls">
                             <select id="veiculo" name="veiculo">
-                                <option value="1" <?php echo set_select('veiculo', '1', ($result->veiculo == '1')); ?>>HONDA FIT</option>
+                                <?php
+                                foreach ($veiculos as $v) {
+                                    // Verifica se o veículo está ativo OU se é o veículo já cadastrado
+                                    if ($v->situacao == 1 || $result->veiculo == $v->id) {
+                                        $selected = ($result->veiculo == $v->id) ? 'selected' : '';
+                                        ?>
+                                        <option value="<?php echo $v->id; ?>" <?php echo $selected; ?>>
+                                            <?php echo $v->marca . " | " . $v->modelo . " (" . $v->placa . ")"; ?>
+                                        </option>
+                                        <?php
+                                    }
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>
