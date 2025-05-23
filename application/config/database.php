@@ -11,12 +11,12 @@ $db['default'] = array(
 	'hostname' => 'localhost',
    'username' => 'root',
    'password' => '',
-   'database' => 'u344891621_titopers',
+   'database' => '',
    
 //    'hostname' => 'localhost',
-//    'username' => 'u344891621_titopers',
-//    'password' => 'Rebec@1980',
-//    'database' => 'u344891621_titopers',
+//    'username' => '',
+//    'password' => '',
+//    'database' => '',
     
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
