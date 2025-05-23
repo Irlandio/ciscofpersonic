@@ -33,9 +33,10 @@ class Produtos extends CI_Controller {
         $contaUser = $this->session->userdata('contaUser'); 
         $pesquisa = $this->input->get('pesquisa');
         $contas = $this->input->get('contas');
-        $benef = $this->input->get('benef');
+        $veiculo = $this->input->get('veiculo');
         $where_array = array();
 
+                $count = 10;
         if($pesquisa)
         {
             if($contas)
@@ -51,10 +52,11 @@ class Produtos extends CI_Controller {
                 $where_array['contas'] = $contP;
                 $count = 30;
             }
-            if($benef)
+            if($veiculo)
             {
-                $where_array['benef'] = $benef;
-                $_SESSION['benef'] = $benef;
+                $where_array['veiculo'] = $veiculo;
+                $_SESSION['veiculo'] = $veiculo;
+                $count = 30;
             }
         }
         $this->load->library('table');
@@ -63,7 +65,7 @@ class Produtos extends CI_Controller {
         
         $config['base_url'] = base_url().'index.php/produtos/gerenciar/';
         $config['total_rows'] = $this->produtos_model->count('combustivel');
-        $config['per_page'] = 10;
+        $config['per_page'] = $count;
         $config['next_link'] = 'Próxima';
         $config['prev_link'] = 'Anterior';
         $config['full_tag_open'] = '<div class="pagination alternate"><ul>';
@@ -164,6 +166,7 @@ class Produtos extends CI_Controller {
         // die();
 
 	    
+        $this->data['veiculos'] = $this->produtos_model->get2('veiculos');
         $this->data['contas'] = $this->produtos_model->get2('caixas');
 	    $this->data['beneficiarios'] = $this->produtos_model->getBeneficiarios('clientes',$contN);
        

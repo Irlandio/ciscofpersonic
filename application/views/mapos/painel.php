@@ -9,7 +9,8 @@
 
 <script type="text/javascript" src="<?php echo base_url();?>assets/js/dist/plugins/jqplot.pieRenderer.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/js/dist/plugins/jqplot.donutRenderer.min.js"></script>
-
+<?php 
+$sit = array(); ?>
 <!--Action boxes-->
   <div class="container-fluid">
       <h5> CiScoFiP (Cadastro de Informação e Suporte de controle Financeiro Pessoal)</h5>
@@ -205,7 +206,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php 
+                        <?php
+                        if (!empty($sit))
                             foreach ($sit as $st) {
 
                                 echo '<tr>';

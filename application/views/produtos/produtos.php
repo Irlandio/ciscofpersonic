@@ -22,8 +22,31 @@ $contaUser = $this->session->userdata('contaUser'); ?>
             
             <input type="hidden" name="pesquisa"  id="pesquisa"  value="true" >
         </div>
-        <div class="span1">
-            <select  style="width:120px;" id="contas" name="contas">
+
+        <div class="span2">        
+                    <div class="controls">
+                        <!--<input id="unidade" type="text" name="unidade" value="<?php echo set_value('unidade'); ?>"  />-->
+                        <select id="veiculo" name="veiculo">
+                            <?php
+                            foreach ($veiculos as $v) {
+                                // Verifica se é o veículo cadastrado
+                                $selected = ($v->situacao == 1) ? 'selected' : '';
+
+                                // Mostra veículos ativos ou o veículo já cadastrado mesmo que inativo
+                                // if ($v->situacao == 1 || $v->id == $result->veiculo) 
+                                { 
+                            ?>
+                                <option value="<?php echo $v->id; ?>" <?php echo $selected; ?>>
+                                    <?php echo $v->marca . " | " . $v->modelo . " (" . $v->placa . ")"; ?>
+                                </option>
+                            <?php 
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    
+            <select  style="width:120px; display:none;" id="contas" name="contas">
                    <option value = "">Todas contas</option>
              <?php
                     foreach ($contas as $rcx) {
@@ -83,7 +106,7 @@ if(!$results){?>
                 </thead>
                 <tbody>
                     <tr>
-                    <?php if(isset($_SESSION['benef'])){ ?>    
+                    <?php if(isset($_SESSION['veiculo'])){ ?>    
                         <td colspan="5">Nenhum Abastecimentos Cadastrado</td>
                         <?php } else { ?>    
                         <td colspan="5">Nenhum Registro de abastecimento Cadastrado</td>
@@ -94,7 +117,9 @@ if(!$results){?>
         </div>
     </div>
 
-    <?php } else{
+    <?php 
+        $aba1 = ""; $aba2 = ""; $aba3 = ""; $aba11 = "";
+    } else{
         $stt = 'ultimos';
         $aba1 = ""; $aba2 = ""; $aba3 = ""; $aba11 = "";
         switch ($stt)
@@ -181,7 +206,7 @@ if(!$results){?>
                 </div>
                 
                 <?php echo $this->pagination->create_links();}
-                    unset ($_SESSION['benef']);
+                    unset ($_SESSION['veiculo']);
                 ?>
             </div>
             

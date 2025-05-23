@@ -27,6 +27,12 @@ class Produtos_model extends CI_Model {
         // JOIN com a tabela de cidades (p.idC representa o código da cidade)
         $this->db->join('cidade c', "c.idC = p.cidade", 'left');
     
+        if($where){
+            $this->db->where($where);
+        } else {
+            $this->db->where("v.situacao", 1);
+        }
+        
         $this->db->order_by('data_abast', 'desc');
         $this->db->order_by('quilometragem', 'desc');
     
